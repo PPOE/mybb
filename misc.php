@@ -451,7 +451,7 @@ elseif($mybb->input['action'] == "whoposted")
 	}
 	else
 	{
-		$sortsql = ' ORDER BY p.username ASC';
+		$sortsql = ' ORDER BY lower(p.username) ASC';
 	}
 	$query = $db->query("
 		SELECT COUNT(p.pid) AS posts, p.username AS postusername, u.uid, u.username, u.usergroup, u.displaygroup

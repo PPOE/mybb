@@ -36,7 +36,7 @@ $bantimes = fetch_ban_times();
 // Load global language phrases
 $lang->load("modcp");
 
-if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
+if($mybb->user['uid'] == 0 || ($mybb->usergroup['canmodcp'] != 1 && !$db->fetch_array($db->query("SELECT 1 FROM ".TABLE_PREFIX."moderators A LEFT JOIN ".TABLE_PREFIX."forums B ON A.fid = B.fid WHERE A.id = ".$mybb->user['uid'])) && $mybb->input['action'] != ''))
 {
 	error_no_permission();
 }
@@ -82,7 +82,10 @@ if($unviewableforums && !is_super_admin($mybb->user['uid']))
 }
 
 // Fetch the Mod CP menu
-eval("\$modcp_nav = \"".$templates->get("modcp_nav")."\";");
+if ($mybb->user['uid'] != 0 && !($mybb->usergroup['canmodcp'] != 1 && !$db->fetch_array($db->query("SELECT 1 FROM ".TABLE_PREFIX."moderators A LEFT JOIN ".TABLE_PREFIX."forums B ON A.fid = B.fid WHERE A.id = ".$mybb->user['uid']))))
+{
+	eval("\$modcp_nav = \"".$templates->get("modcp_nav")."\";");
+}
 
 $plugins->run_hooks("modcp_start");
 
@@ -1604,6 +1607,11 @@ if($mybb->input['action'] == "modqueue")
 
 if($mybb->input['action'] == "do_editprofile")
 {
+        if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
+        {
+                error_no_permission();
+        }
+
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
@@ -1796,6 +1804,11 @@ if($mybb->input['action'] == "do_editprofile")
 
 if($mybb->input['action'] == "editprofile")
 {
+        if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
+        {
+                error_no_permission();
+        }
+
 	add_breadcrumb($lang->mcp_nav_editprofile, "modcp.php?action=editprofile");
 
 	$user = get_user($mybb->input['uid']);
@@ -2193,6 +2206,11 @@ if($mybb->input['action'] == "editprofile")
 
 if($mybb->input['action'] == "finduser")
 {
+	if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
+	{
+	        error_no_permission();
+	}
+
 	add_breadcrumb($lang->mcp_nav_users, "modcp.php?action=finduser");
 	
 	$perpage = intval($mybb->input['perpage']);
@@ -2804,10 +2822,10 @@ if($mybb->input['action'] == "banning")
 {
 	add_breadcrumb($lang->mcp_nav_banning, "modcp.php?action=banning");
 
-	if(!$mybb->settings['threadsperpage'])
+/*	if(!$mybb->settings['threadsperpage'])
 	{
 		$mybb->settings['threadsperpage'] = 20;
-	}
+	}*/
 
 	// Figure out if we need to display multiple pages.
 	$perpage = $mybb->settings['threadsperpage'];
@@ -2853,10 +2871,11 @@ if($mybb->input['action'] == "banning")
 	$plugins->run_hooks("modcp_banning_start");
 
 	$query = $db->query("
-		SELECT b.*, a.username AS adminuser, u.username
+		SELECT b.*, a.username AS adminuser, u.username, f.name AS forumname, f.syncom_newsgroup
 		FROM ".TABLE_PREFIX."banned b
 		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
+                LEFT JOIN ".TABLE_PREFIX."forums f ON (b.fid=f.fid)
 		ORDER BY lifted ASC
 		LIMIT {$start}, {$perpage}
 	");
@@ -2870,9 +2889,10 @@ if($mybb->input['action'] == "banning")
 		$edit_link = '';
 		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
 		{
-			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
+			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}&amp;fid={$banned['fid']}\">{$lang->lift_ban}</a></span>";
 		}
-
+                
+                $ban_forum = ($banned['fid'] == 0) ? 'Global' : $banned['forumname'] . ' (' . $banned['syncom_newsgroup'] . ')';
 		$admin_profile = build_profile_link($banned['adminuser'], $banned['admin']);
 
 		$trow = alt_trow();
@@ -2935,7 +2955,7 @@ if($mybb->input['action'] == "liftban")
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	$query = $db->simple_select("banned", "*", "uid='".intval($mybb->input['uid'])."'");
+	$query = $db->simple_select("banned", "*", "uid='".intval($mybb->input['uid'])."' AND fid='".intval($mybb->input['fid'])."'");
 	$ban = $db->fetch_array($query);
 
 	if(!$ban['uid'])
@@ -2951,16 +2971,37 @@ if($mybb->input['action'] == "liftban")
 	
 	$plugins->run_hooks("modcp_liftban_start");
 
-	$query = $db->simple_select("users", "username", "uid = '{$ban['uid']}'");
-	$username = $db->fetch_field($query, "username");
+        $query = $db->simple_select("users", "username, syncom_realmail, email", "uid = '{$ban['uid']}'");
+        $user = $db->fetch_array($query);
+	$username = $user['username'];
 
-	$updated_group = array(
+/*	$updated_group = array(
 		'usergroup' => $ban['oldgroup'],
 		'additionalgroups' => $ban['oldadditionalgroups'],
 		'displaygroup' => $ban['olddisplaygroup']
 	);
-	$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
-	$db->delete_query("banned", "uid='{$ban['uid']}'");
+	$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");*/
+	$db->delete_query("banned", "uid='{$ban['uid']}' AND fid='".intval($mybb->input['fid'])."'");
+
+        $query = $db->simple_select("forums", "syncom_newsgroup", "fid = '".intval($mybb->input['fid'])."'", array('limit' => 1));
+        $newsgroup = $db->fetch_field($query, "syncom_newsgroup");
+
+        if (strlen($newsgroup) > 0)
+        {
+ 	       $mailinglist = shell_exec('grep \"nntp : '.$newsgroup.'\" /usr/local/etc/synfu.conf -A3 | grep -E \"\S*@.*?\.at\" -o');
+               $mailinglist = str_replace('@\S.piratenpartei.at','',$mailinglist);
+               if (strlen($mailinglist) > 0)
+               {
+	                $query = $db->simple_select("forums", "syncom_newsgroup", "fid = '".intval($mybb->input['fid'])."'", array('limit' => 1));
+          	        $newsgroup = $db->fetch_field($query, "syncom_newsgroup");
+
+                	if (filter_var($user['email'], FILTER_VALIDATE_EMAIL))
+	                  exec("/var/lib/mailman/bin/withlist -r mod.set $mailinglist ".$user['email']." 0");
+         	        if (filter_var($user['syncom_realmail'], FILTER_VALIDATE_EMAIL))
+	                  exec("/var/lib/mailman/bin/withlist -r mod.set $mailinglist ".$user['syncom_realmail']." 0");
+		}
+	}
+
 
 	$cache->update_banned();
 	$cache->update_moderators();
@@ -2991,7 +3032,6 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		{
 			error($lang->error_invalidban);
 		}
-
 		// Permission to edit this ban?
 		if($mybb->user['uid'] != $user['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 		{
@@ -3002,7 +3042,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	else
 	{
 		// Get the users info from their Username
-		$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, displaygroup", "username = '".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
+		$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, displaygroup, syncom_realmail, email", "username = '".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
@@ -3028,16 +3068,26 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	}
 
 	// Check banned group
-	$query = $db->simple_select("usergroups", "gid", "isbannedgroup=1 AND gid='".intval($mybb->input['usergroup'])."'");
+	/*$query = $db->simple_select("usergroups", "gid", "isbannedgroup=1 AND gid='".intval($mybb->input['usergroup'])."'");
 	if(!$db->fetch_field($query, "gid"))
 	{
 		$errors[] = $lang->error_nobangroup;
-	}
+	}*/
+        // Check forum rights
+
+        $query = $db->query("SELECT 1 FROM ".TABLE_PREFIX."moderators A WHERE A.fid = '{$mybb->input['fid']}' AND A.id = '{$mybb->user['uid']}'");
+        if ($rights = $db->fetch_array($query)) {
+        }
+        else
+        {
+		$errors[] = "Keine Rechte den Nutzer in diesem Forum zu sperren.";
+        }
+
 
 	// If this is a new ban, we check the user isn't already part of a banned group
 	if(!$mybb->input['uid'] && $user['uid'])
 	{
-		$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'");
+		$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}' AND fid=" .intval($mybb->input['fid']));
 		if($db->fetch_field($query, "uid"))
 		{
 			$errors[] = $lang->error_useralreadybanned;
@@ -3049,6 +3099,9 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	// Still no errors? Ban the user
 	if(!$errors)
 	{
+                $query = $db->simple_select("forums", "syncom_newsgroup", "fid = '".intval($mybb->input['fid'])."'", array('limit' => 1));
+		$newsgroup = $db->fetch_field($query, "syncom_newsgroup");
+
 		// Ban the user
 		if($mybb->input['liftafter'] == '---')
 		{
@@ -3063,6 +3116,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		{
 			$update_array = array(
 				'gid' => intval($mybb->input['usergroup']),
+                                'fid' => intval($mybb->input['fid']),
 				'admin' => intval($mybb->user['uid']),
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->input['liftafter']),
@@ -3077,6 +3131,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			$insert_array = array(
 				'uid' => $user['uid'],
 				'gid' => intval($mybb->input['usergroup']),
+                                'fid' => intval($mybb->input['fid']),
 				'oldgroup' => $user['usergroup'],
 				'oldadditionalgroups' => $user['additionalgroups'],
 				'olddisplaygroup' => $user['displaygroup'],
@@ -3088,15 +3143,27 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			);
 
 			$db->insert_query('banned', $insert_array);
+			if (strlen($newsgroup) > 0)
+			{
+                        	$mailinglist = shell_exec('grep \"nntp : '.$newsgroup.'\" /usr/local/etc/synfu.conf -A3 | grep -E \"\S*@.*?\.at\" -o');
+				$mailinglist = str_replace('@\S.piratenpartei.at','',$mailinglist);
+				if (strlen($mailinglist) > 0)
+				{
+					if (filter_var($user['email'], FILTER_VALIDATE_EMAIL))
+		                          exec("/var/lib/mailman/bin/withlist -r mod.set $mailinglist ".$user['email']." 1");
+        		                if (filter_var($user['syncom_realmail'], FILTER_VALIDATE_EMAIL))
+                		          exec("/var/lib/mailman/bin/withlist -r mod.set $mailinglist ".$user['syncom_realmail']." 1");
+				}
+			}
 		}
 
 		// Move the user to the banned group
-		$update_array = array(
-			'usergroup' => intval($mybb->input['usergroup']),
-			'displaygroup' => 0,
-			'additionalgroups' => '',
-		);
-		$db->update_query('users', $update_array, "uid = {$user['uid']}");
+//		$update_array = array(
+//			'usergroup' => intval($mybb->input['usergroup']),
+//			'displaygroup' => 0,
+//			'additionalgroups' => '',
+//		);
+//		$db->update_query('users', $update_array, "uid = {$user['uid']}");
 
 		$cache->update_banned();
 		log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->banned_user);
@@ -3144,6 +3211,7 @@ if($mybb->input['action'] == "banuser")
 			WHERE b.uid='{$mybb->input['uid']}'
 		");
 		$banned = $db->fetch_array($query);
+                
 		if($banned['username'])
 		{
 			$username = htmlspecialchars_uni($banned['username']);
@@ -3182,6 +3250,28 @@ if($mybb->input['action'] == "banuser")
 		$banreason = htmlspecialchars_uni($mybb->input['banreason']);
 	}
 
+        $query = $db->query("SELECT A.fid,B.name,B.syncom_newsgroup FROM ".TABLE_PREFIX."moderators A LEFT JOIN ".TABLE_PREFIX."forums B ON A.fid = B.fid WHERE A.id = ".$mybb->user['uid']);
+        while ($rights = $db->fetch_array($query)) {
+
+                $forumlist .= "<option value=\"".$rights["fid"]."\"";
+                if($banned['fid'] == $rights["fid"])
+                {
+                        $forumlist .= " selected=\"selected\"";
+                }
+                $forumlist .= ">".$rights["name"]." (".$rights["syncom_newsgroup"].")</option>\n";
+        }
+
+
+        if($banned['username'])
+        {
+                        $username = htmlspecialchars_uni($banned['username']);
+                        $banreason = htmlspecialchars_uni($banned['reason']);
+                        $uid = $mybb->input['uid'];
+                        $user = get_user($banned['uid']);
+                        $lang->ban_user = $lang->edit_ban; // Swap over lang variables
+                        eval("\$banuser_username = \"".$templates->get("modcp_banuser_editusername")."\";");
+        }
+
 	// Generate the banned times dropdown
 	foreach($bantimes as $time => $title)
 	{
@@ -3202,7 +3292,7 @@ if($mybb->input['action'] == "banuser")
 	}
 	
 	$bangroups = '';
-	$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup=1");
+	/*$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup=1");
 	while($item = $db->fetch_array($query))
 	{
 		$selected = "";
@@ -3211,7 +3301,7 @@ if($mybb->input['action'] == "banuser")
 			$selected = " selected=\"selected\"";
 		}
 		$bangroups .= "<option value=\"{$item['gid']}\"{$selected}>".htmlspecialchars_uni($item['title'])."</option>\n";
-	}
+	}*/
 	
 	$lift_link = "<div class=\"float_right\"><a href=\"modcp.php?action=liftban&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></div>";
 	
@@ -3342,7 +3432,7 @@ if(!$mybb->input['action'])
 	$where = '';
 	if($tflist)
 	{
-		$where = "WHERE (t.fid <> 0 {$tflist}) OR (!l.fid)";
+		$where = "WHERE (t.fid <> 0 {$tflist}) OR (l.fid = 0)";
 	}
 
 	$query = $db->query("
@@ -3354,7 +3444,7 @@ if(!$mybb->input['action'])
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
 		{$where}
 		ORDER BY l.dateline DESC
-		LIMIT 5
+		LIMIT 10
 	");
 
 	while($logitem = $db->fetch_array($query))
@@ -3398,10 +3488,11 @@ if(!$mybb->input['action'])
 	}
 
 	$query = $db->query("
-		SELECT b.*, a.username AS adminuser, u.username, (b.lifted-".TIME_NOW.") AS remaining
+		SELECT b.*, a.username AS adminuser, u.username, f.name AS forumname, f.syncom_newsgroup, (b.lifted-".TIME_NOW.") AS remaining
 		FROM ".TABLE_PREFIX."banned b
 		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
+                LEFT JOIN ".TABLE_PREFIX."forums f ON (b.fid=f.fid)
 		WHERE b.bantime != '---' AND b.bantime != 'perm'
 		ORDER BY remaining ASC
 		LIMIT 5
@@ -3414,15 +3505,28 @@ if(!$mybb->input['action'])
 
 		// Only show the edit & lift links if current user created ban, or is super mod/admin
 		$edit_link = '';
+	if($mybb->user['uid'] == 0 || ($mybb->usergroup['canmodcp'] != 1 && !$db->fetch_array($db->query("SELECT 1 FROM ".TABLE_PREFIX."moderators A LEFT JOIN ".TABLE_PREFIX."forums B ON A.fid = B.fid WHERE A.id = ".$mybb->user['uid']))))
+	{
+	}
+	else
+	{
 		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
 		{
 			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
 		}
+	}
 
+                $ban_forum = ($banned['fid'] == 0) ? 'Global' : $banned['forumname'] . ' (' . $banned['syncom_newsgroup'] . ')';
 		$admin_profile = build_profile_link($banned['adminuser'], $banned['admin']);
 
 		$trow = alt_trow();
 
+	if($mybb->user['uid'] == 0 || ($mybb->usergroup['canmodcp'] != 1 && !$db->fetch_array($db->query("SELECT 1 FROM ".TABLE_PREFIX."moderators A LEFT JOIN ".TABLE_PREFIX."forums B ON A.fid = B.fid WHERE A.id = ".$mybb->user['uid']))))
+	{
+		$banned['reason'] = '<i>Wird nicht angezeigt.</i>';
+	}
+	else
+	{
 		if($banned['reason'])
 		{
 			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
@@ -3431,6 +3535,7 @@ if(!$mybb->input['action'])
 		{
 			$banned['reason'] = $lang->na;
 		}
+	}
 
 		if($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---')
 		{
@@ -3476,7 +3581,16 @@ if(!$mybb->input['action'])
 
 	$modnotes = $cache->read("modnotes");
 	$modnotes = htmlspecialchars_uni($modnotes['modmessage']);
-	
+
+        if($mybb->user['uid'] == 0 || ($mybb->usergroup['canmodcp'] != 1 && !$db->fetch_array($db->query("SELECT 1 FROM ".TABLE_PREFIX."moderators A LEFT JOIN ".TABLE_PREFIX."forums B ON A.fid = B.fid WHERE A.id = ".$mybb->user['uid']))))
+        {
+		$modcp_notes_block = '';
+	}
+	else
+	{
+        	eval("\$modcp_notes_block = \"".$templates->get("modcp_notes_block")."\";");
+	}
+
 	$plugins->run_hooks("modcp_end");
 
 	eval("\$modcp = \"".$templates->get("modcp")."\";");

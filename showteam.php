@@ -70,10 +70,11 @@ if(!$users_in)
 }
 $forum_permissions = forum_permissions();
 
-$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
+$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms, additionalgroups", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR (additionalgroups != '') OR uid IN ($users_in)", array('order_by' => 'lower(username)'));
 while($user = $db->fetch_array($query))
 {
-	// If this user is a moderator
+	$additionalgroups = explode(',', $user['additionalgroups']);
+        // If this user is a moderator
 	if(isset($moderators[$user['uid']]))
 	{
 		foreach($moderators[$user['uid']] as $forum)
@@ -89,7 +90,7 @@ while($user = $db->fetch_array($query))
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}
 	
-	if($user['displaygroup'] == '6' || $user['usergroup'] == '6')
+	if($user['displaygroup'] == '6' || $user['usergroup'] == '6' || in_array('6',$additionalgroups))
 	{
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}
@@ -107,6 +108,13 @@ while($user = $db->fetch_array($query))
 	if($usergroups[$group] && $group != 6)
 	{
 		$usergroups[$group]['user_list'][$user['uid']] = $user;
+	}
+        foreach ($additionalgroups as $ag)
+	{
+		if ($ag != $group && ($ag == 3 || $ag == 4))
+		{
+			$usergroups[$ag]['user_list'][$user['uid']] = $user;
+		}
 	}
 }
 

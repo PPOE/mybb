@@ -388,7 +388,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 		WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC 
-		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
+		LIMIT ".$mybb->settings['portal_showdiscussionsnum']
 	);
 	while($thread = $db->fetch_array($query))
 	{
@@ -463,7 +463,7 @@ $query = $db->query("
 	LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 	WHERE t.fid IN (".$announcementsfids.") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
 	ORDER BY t.dateline DESC 
-	LIMIT 0, {$numannouncements}"
+	LIMIT {$numannouncements}"
 );
 while($getid = $db->fetch_array($query))
 {
@@ -496,7 +496,7 @@ $query = $db->query("
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 	WHERE t.fid IN (".$announcementsfids.") AND t.tid IN (0{$tids}) AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 	ORDER BY t.dateline DESC
-	LIMIT 0, {$numannouncements}"
+	LIMIT {$numannouncements}"
 );
 while($announcement = $db->fetch_array($query))
 {

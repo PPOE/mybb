@@ -646,7 +646,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"showcodebuttons" => intval($mybb->input['showcodebuttons']),
 		"pmnotify" => $mybb->input['pmnotify'],
 		"showredirect" => $mybb->input['showredirect'],
-		"classicpostbit" => $mybb->input['classicpostbit']
+		//"classicpostbit" => $mybb->input['classicpostbit']
 	);
 
 	if($mybb->settings['usertppoptions'])
@@ -844,14 +844,14 @@ if($mybb->input['action'] == "options")
 		$user['threadmode'] = ''; // Leave blank to show default
 	}
 
-	if($user['classicpostbit'] != 0)
+/*	if($user['classicpostbit'] != 0)
 	{
 		$classicpostbitcheck = "checked=\"checked\"";
 	}
 	else
 	{
 		$classicpostbitcheck = '';
-	}
+	}*/
 
 
 	$date_format_options = "<option value=\"0\">{$lang->use_default}</option>";
@@ -3148,7 +3148,7 @@ if(!$mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 			WHERE s.uid='".$mybb->user['uid']."' {$visible}
 			ORDER BY t.lastpost DESC
-			LIMIT 0, 10
+			LIMIT 10
 		");
 		
 		$fpermissions = forum_permissions();
@@ -3308,7 +3308,7 @@ if(!$mybb->input['action'])
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 		WHERE t.uid='".$mybb->user['uid']."' AND t.firstpost != 0 AND t.visible != '-2' {$visible} {$f_perm_sql}
 		ORDER BY t.lastpost DESC
-		LIMIT 0, 5
+		LIMIT 5
 	");
 
 	// Figure out whether we can view these threads...

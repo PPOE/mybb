@@ -341,7 +341,7 @@ if($mybb->user['uid'] != 0)
 		eval("\$admincplink = \"".$templates->get("header_welcomeblock_member_admin")."\";");
 	}
 	
-	if($mybb->usergroup['canmodcp'] == 1)
+	//if($mybb->usergroup['canmodcp'] == 1 || $db->fetch_array($db->query("SELECT 1 FROM ".TABLE_PREFIX."moderators A LEFT JOIN ".TABLE_PREFIX."forums B ON A.fid = B.fid WHERE A.id = ".intval($mybb->user['uid']))))
 	{
 		eval("\$modcplink = \"".$templates->get("header_welcomeblock_member_moderator")."\";");
 	}
@@ -413,7 +413,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'])
+if(($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp']) || $db->fetch_array($db->query("SELECT 1 FROM ".TABLE_PREFIX."moderators A LEFT JOIN ".TABLE_PREFIX."forums B ON A.fid = B.fid WHERE A.id = ".intval($mybb->user['uid']))))
 {
 	// Read the reported posts cache
 	$reported = $cache->read("reportedposts");

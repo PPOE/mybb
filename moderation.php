@@ -342,11 +342,11 @@ switch($mybb->input['action'])
 						SELECT d.*, u.username, t.subject AS tsubject, f.name AS fname
 						FROM ".TABLE_PREFIX."delayedmoderation d
 						LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
-						LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=d.tids)
+						LEFT JOIN ".TABLE_PREFIX."threads t ON (','||d.tids||',' LIKE '%,'||t.tid||',%')
 						LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
 						WHERE ".$where_statement."
 						ORDER BY d.dateline DESC
-						LIMIT  0, 20
+						LIMIT  20
 					");
 					break;
 				default:
@@ -359,11 +359,11 @@ switch($mybb->input['action'])
 						SELECT d.*, u.username, t.subject AS tsubject, f.name AS fname
 						FROM ".TABLE_PREFIX."delayedmoderation d
 						LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
-						LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=d.tids)
+						LEFT JOIN ".TABLE_PREFIX."threads t ON (','||d.tids||',' LIKE '%,'||t.tid||',%')
 						LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
 						WHERE ".$where_statement."
 						ORDER BY d.dateline DESC
-						LIMIT  0, 20
+						LIMIT  20
 					");
 			}
 		}
@@ -377,11 +377,11 @@ switch($mybb->input['action'])
 						SELECT d.*, u.username, t.subject AS tsubject, f.name AS fname
 						FROM ".TABLE_PREFIX."delayedmoderation d
 						LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
-						LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=d.tids)
+						LEFT JOIN ".TABLE_PREFIX."threads t ON (','||d.tids||',' LIKE '%,'||t.tid||',%')
 						LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
 						WHERE ','||d.tids||',' LIKE '%,{$tid},%'
 						ORDER BY d.dateline DESC
-						LIMIT  0, 20
+						LIMIT  20
 					");
 					break;
 				default:
@@ -389,11 +389,11 @@ switch($mybb->input['action'])
 						SELECT d.*, u.username, t.subject AS tsubject, f.name AS fname
 						FROM ".TABLE_PREFIX."delayedmoderation d
 						LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
-						LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=d.tids)
+						LEFT JOIN ".TABLE_PREFIX."threads t ON (','||d.tids||',' LIKE '%,'||t.tid||',%')
 						LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
 						WHERE CONCAT(',',d.tids,',') LIKE '%,{$tid},%'
 						ORDER BY d.dateline DESC
-						LIMIT  0, 20
+						LIMIT  20
 					");
 			}
 		}
@@ -971,7 +971,7 @@ switch($mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
 			WHERE t.tid='$tid'
 			ORDER BY l.dateline DESC
-			LIMIT  0, 20
+			LIMIT  20
 		");
 		while($modaction = $db->fetch_array($query))
 		{
@@ -1039,7 +1039,7 @@ switch($mybb->input['action'])
 					LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
 					WHERE ','||d.tids||',' LIKE '%,{$tid},%'
 					ORDER BY d.dateline DESC
-					LIMIT  0, 20
+					LIMIT  20
 				");
 				break;
 			default:
@@ -1051,7 +1051,7 @@ switch($mybb->input['action'])
 					LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
 					WHERE CONCAT(',',d.tids,',') LIKE '%,{$tid},%'
 					ORDER BY d.dateline DESC
-					LIMIT  0, 20
+					LIMIT  20
 				");
 		}
 		while($delayedmod = $db->fetch_array($query))

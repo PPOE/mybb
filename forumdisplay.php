@@ -660,7 +660,7 @@ if($has_announcements == true)
 	$announcements = '';
 	if($mybb->settings['announcementlimit'])
 	{
-		$limit = "LIMIT 0, ".$mybb->settings['announcementlimit'];
+		$limit = "LIMIT ".$mybb->settings['announcementlimit'];
 	}
 
 	$sql = build_parent_list($fid, "fid", "OR", $parentlist);

@@ -577,21 +577,21 @@ if($mybb->input['action'] == "thread")
 	// Mark this thread as read
 	mark_thread_read($tid, $fid);
 
-	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
-	if($forum['open'] != 0)
-	{
-		eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
+	// // If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
+	// if($forum['open'] != 0)
+	// {
+		// eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
 
-		// Show the appropriate reply button if this thread is open or closed
-		if($thread['closed'] == 1)
-		{
-			eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
-		}
-		else
-		{
-			eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
-		}
-	}
+		// // Show the appropriate reply button if this thread is open or closed
+		// if($thread['closed'] == 1)
+		// {
+			// eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
+		// }
+		// else
+		// {
+			// eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
+		// }
+	// }
 
 	// Create the admin tools dropdown box.
 	if($ismod == true)
@@ -722,9 +722,112 @@ if($mybb->input['action'] == "thread")
 		$mybb->input['mode'] = $defaultmode;
 	}
 
-	// Threaded or linear display?
+	// // Threaded or linear display?
 	if($mybb->input['mode'] == 'threaded')
 	{
+                // if(!$mybb->settings['postsperpage'])
+                // {
+                        // $mybb->settings['postperpage'] = 20;
+                // }
+
+                // // Figure out if we need to display multiple pages.
+                // $perpage = $mybb->settings['postsperpage'];
+                // if($mybb->input['page'] != "last")
+                // {
+                        // $page = intval($mybb->input['page']);
+                // }
+                // if($mybb->input['pid'])
+                // {
+                        // $post = get_post($mybb->input['pid']);
+                        // $query = $db->query("
+                                // SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
+                                // WHERE p.tid='$tid'
+                                // AND p.dateline <= '".$post['dateline']."'
+                                // $visible
+                        // ");
+                        // $result = $db->fetch_field($query, "count");
+                        // if(($result % $perpage) == 0)
+                        // {
+                                // $page = $result / $perpage;
+                        // }
+                        // else
+                        // {
+                                // $page = intval($result / $perpage) + 1;
+                        // }
+                // }
+                // // Recount replies if user is a moderator to take into account unapproved posts.
+                if($ismod)
+                {
+                        $query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
+                        $thread['replies'] = $db->fetch_field($query, 'replies')-1;
+                }
+                $postcount = intval($thread['replies'])+1;
+                // $pages = $postcount / $perpage;
+                // $pages = ceil($pages);
+
+                // if($mybb->input['page'] == "last")
+                // {
+                        // $page = $pages;
+                // }
+
+                // if($page > $pages || $page <= 0)
+                // {
+                        // $page = 1;
+                // }
+
+                //if($page)
+                //{
+                       // $start = ($page-1) * $perpage;
+                //}
+                //else
+                //{
+                       // $start = 0;
+                       // $page = 1;
+                //}
+                //$upper = $start+$perpage;
+
+        // $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
+                //if($postcount > $perpage)
+                {
+                        eval("\$threadpages = \"".$templates->get("showthread_multipage")."\";");
+                }
+
+                // Lets get the pids of the posts on this page.
+                $pids = array();
+                $comma = '';
+                $query = $db->simple_select("posts p", "p.pid", "p.tid='$tid' $visible", array('order_by' => 'p.dateline', 'limit_start' => $start, 'limit' => $perpage));
+                while($getid = $db->fetch_array($query))
+                {
+                        // Set the ID of the first post on page to $pid if it doesn't hold any value
+                        // to allow this value to be used for Thread Mode/Linear Mode links
+                        // and ensure the user lands on the correct page after changing view mode
+                        if(!$pid)
+                        {
+                                $pid = $getid['pid'];
+                        }
+                        // Gather a comma separated list of post IDs
+                        $pids[] = "{$getid['pid']}";
+                }
+                if($pids)
+                {
+			$pids2 = "pid IN (" . implode(",", $pids) . ")";
+                        $attachcache = array();
+                        if($thread['attachmentcount'] > 0)
+                        {
+                                // Now lets fetch all of the attachments for these posts.
+                                $query = $db->simple_select("attachments", "*", $pids2);
+                                while($attachment = $db->fetch_array($query))
+                                {
+                                        $attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+                                }
+                        }
+                }
+                else
+                {
+                        // If there are no pid's the thread is probably awaiting approval.
+                        error($lang->error_invalidthread);
+                }
+
 		$isfirst = 1;
 
 		// Are we linked to a specific pid?
@@ -734,7 +837,7 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			$where = " ORDER BY dateline LIMIT 0, 1";
+			$where = " ORDER BY dateline LIMIT 1";
 		}
 		$query = $db->query("
 			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
@@ -758,17 +861,6 @@ if($mybb->input['action'] == "thread")
 			error($lang->error_invalidpost);
 		}
 		
-		$attachcache = array();
-		if($thread['attachmentcount'] > 0)
-		{
-			// Get the attachments for this post.
-			$query = $db->simple_select("attachments", "*", "pid=".$mybb->input['pid']);
-			while($attachment = $db->fetch_array($query))
-			{
-				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
-			}
-		}
-
 		// Build the threaded post display tree.
 		$query = $db->query("
             SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
@@ -786,14 +878,18 @@ if($mybb->input['action'] == "thread")
 					$postcounter = count($postsdone);
                     $isfirst = 0;
                 }
+		if (!in_array($post['replyto'],$pids))
+			$post['replyto'] = 0;
                 $tree[$post['replyto']][$post['pid']] = $post;
                 $postsdone[$post['pid']] = 1;
             }
         }
+
 		
-		$threadedbits = buildtree();
-		$posts = build_postbit($showpost);
-		eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
+		//$threadedbits = buildtree();
+		//$posts = build_postbit($showpost);
+                $posts .= buildtree2($pids);
+		//eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
 		$plugins->run_hooks("showthread_threaded");
 	}
 	else // Linear display
@@ -949,7 +1045,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Get the actual posts from the database here.
-		$posts = '';
+		// $posts = '';
 		$query = $db->query("
 			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
 			FROM ".TABLE_PREFIX."posts p
@@ -993,7 +1089,7 @@ if($mybb->input['action'] == "thread")
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 					WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') >= '{$mybb->settings['similarityrating']}'
 					ORDER BY t.lastpost DESC
-					LIMIT 0, {$mybb->settings['similarlimit']}
+					LIMIT {$mybb->settings['similarlimit']}
 				");
 		}
 
@@ -1157,10 +1253,10 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
-	if($mybb->settings['postlayout'] == "classic")
+/*	if($mybb->settings['postlayout'] == "classic")
 	{
 		eval("\$classic_header = \"".$templates->get("showthread_classic_header")."\";");		
-	}
+	}*/
 	
 	// Get users viewing this thread
 	if($mybb->settings['browsingthisthread'] != 0)
@@ -1296,4 +1392,93 @@ function buildtree($replyto="0", $indent="0")
 	}
 	return $posts;
 }
+
+/**
+ * Build a navigation tree for threaded display. (reddit like version)
+ *
+ * @param unknown_type $replyto
+ * @param unknown_type $indent
+ * @return unknown
+ */
+function buildtree2($pids=array(), $replyto="0", $indent="0")
+{
+        global $db, $tree, $mybb, $theme, $mybb, $pid, $fid, $tid, $templates, $parser, $ismod;
+
+        if($indent)
+        {
+                $indentsize = 25 * $indent;
+        }
+        else
+        {
+                $indentsize = 0;
+        }
+        ++$indent;
+        if(is_array($tree[$replyto]))
+        {
+                foreach($tree[$replyto] as $key => $post)
+                {
+                        $postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
+                        $posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+                        $post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
+
+                        if(!$post['subject'])
+                        {
+                                $post['subject'] = "[".$lang->no_subject."]";
+                        }
+
+                        $post['profilelink'] = build_profile_link($post['username'], $post['uid']);
+
+                               // Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
+                               if($ismod)
+                               {
+                                       $visible = "AND (p.visible='0' OR p.visible='1')";
+                               }
+                               else
+                               {
+                                       $visible = "AND p.visible='1'";
+                               }
+                               // Are we linked to a specific pid?
+                               if($mybb->input['pid'])
+                               {
+                                       $where = "AND p.pid='".$post['pid']."'";
+                               }
+                               else
+                               {
+                                       $where = " ORDER BY dateline LIMIT 1";
+                               }
+                                $query = $db->query("
+                                        SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+                                        FROM ".TABLE_PREFIX."posts p
+                                        LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+                                        LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+                                        LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
+                                        WHERE p.tid='$tid' $visible $where
+                                ");
+                                $showpost = $db->fetch_array($query);
+                
+                                // Choose what pid to display.
+                                if(!$post['pid'])
+                                {
+                                        $post['pid'] = $showpost['pid'];
+                                }
+                                if (in_array($post['pid'], $pids))
+                                {
+                                        $content = build_postbit($showpost);
+                                        eval("\$posts .= \"".$templates->get("indented_content")."\";");
+                                }
+                                else
+                                {
+                                        eval("\$posts .= \"".$templates->get("showthread_threaded_bit")."\";");
+                                }
+
+                        if($tree[$post['pid']])
+                        {
+                                $posts .= buildtree2($pids, $post['pid'], $indent);
+                        }
+                }
+                --$indent;
+        }
+        return $posts;
+}
+
 ?>

@@ -1872,6 +1872,11 @@ if($mybb->input['action'] == "profile")
 		$bg_color = alt_trow();
 		$reputation = get_reputation($memprofile['reputation']);
 
+                $query = $db->simple_select("thumbspostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid", "SUM(A.thumbsup) - SUM(A.thumbsdown) AS score", "B.uid='$uid'");
+                $post = $db->fetch_array($query);
+                $reppostings = intval($post['score']);
+
+		$reputation = "$reputation (Postings: $reppostings)";
 		// If this user has permission to give reputations show the vote link
 		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'])
 		{
