@@ -1,0 +1,19 @@
+#!/bin/sh
+
+PIDFILE="/var/run/syncom.pid"
+PID=$$
+
+if [ -f "${PIDFILE}" ] && kill -CONT $( cat "${PIDFILE}" ); then
+  echo "syncom is already running."
+  exit 1
+fi
+
+echo "${PID}" > "${PIDFILE}"
+
+while true; do
+  su www-data -c "/bin/sh /var/www/syncom/bin/synctonews >> /var/log/syncom/syncom.forum2news.log"
+  su www-data -c "/bin/sh /var/www/syncom/bin/syncfromnews >> /var/log/syncom/syncom.news2forum.log"
+  sleep 60
+done
+
+
