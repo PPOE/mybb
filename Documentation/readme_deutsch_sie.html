@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>MyBBoard.de - Deutsches Sprachpaket &quot;formell&quot;</title>
+<style type="text/css">
+  <!--
+  body,td,th {
+    font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+     font-size: 13px;
+     color: #333333;
+  }
+
+  body {
+     background: #efefef;
+     text-align: center;
+     margin: 0px;
+     padding: 0px;
+  }
+
+  a:link {
+     color: #900000;
+     text-decoration: none;
+  }
+
+  a:visited {
+     text-decoration: none;
+     color: #900000;
+  }
+
+  a:hover {
+     text-decoration: underline;
+     color: #333333;
+  }
+
+  a:active {
+     text-decoration: underline;
+     color: #333333;
+  }
+
+  #container {
+     width: 900px;
+     margin: auto auto;
+     text-align: left;
+     background: #ffffff;
+     border-left: 2px solid #cccccc;
+     border-right: 2px solid #cccccc;
+  }
+
+  #header {
+     width: 890px;
+     padding: 5px;
+     color: #ffffff;
+     background: #990000;
+     font-size: 14px;
+  }
+
+  #header h1 {
+    font-size: 30px;
+    font-weight: bold;
+    padding: 0px;
+    margin: 0px;
+    color: #ffffff;
+  }
+
+  #header h2 {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 0px;
+    margin: 0px;
+    color: #ffffff;
+  }
+
+  #content {
+     width: 840px;
+     padding: 30px;
+     text-align: justify;
+     line-height: 1.7;
+  }
+
+  h1 {
+     font-size: 20px;
+     font-family: "Segoe UI", "Century Gothic", Verdana, Arial, Helvetica, sans-serif;
+     color: #900000;
+     font-weight: bold;
+     padding: 0px;
+     margin: 6px 0px;
+  }
+
+  .file {
+     color: #009900;
+     font-weight: bold;
+  }
+  -->
+</style>
+</head>
+<body>
+<a name="top" id="top"></a>
+<div id="container">
+<div id="header">
+<h1>MyBBoard.de - Deutsches Sprachpaket &quot;formell&quot;</h1>
+<h2>Readme</h2>
+Version: 1.6.8
+</div>
+<div id="content">
+<em>Dieses Sprachpaket wurde erstellt für <strong>MyBB 1.6.8</strong>. Wenn Sie eine neuere Version des MyBBs verwenden, sollten Sie nachsehen, ob ein dafür vorgesehenes Sprachpaket zur Verfügung steht; gehen Sie dazu auf <a href="http://www.mybboard.de" target="_blank">MyBBoard.de</a></em>.<br /><br />
+<h1>Inhalt</h1>
+1. <a href="#a1">Einleitung</a><br />
+2. <a href="#a2">Installation</a><br />
+3. <a href="#a3">Update</a><br />
+4. <a href="#a4">Benutzung</a><br />
+5. <a href="#a5">Einstellungen</a><br />
+6. <a href="#a6">Änderungen</a><br />
+7. <a href="#a7">Weitere Hinweise</a><br />
+8. <a href="#a8">Lizenz / Nutzungsbedingungen</a><br />
+<br />
+<a name="a1" id="a1"></a><h1>1. Einleitung</h1>
+Sie haben sich dafür entschieden, MyBB als Forensoftware zu verwenden. Wir möchten uns für Ihre Wahl bedanken und hoffen, dass Sie mit der Software zufrieden sind.<br /><br />
+Damit möglichst viele Nutzer MyBB verwenden können, ist das Forum mehrsprachenfähig. Standardmäßig wird MyBB mit englischer Sprache installiert, aber dank vieler Freiwilliger, ist das MyBB auch in anderen Sprachen erhältlich. Dieses Sprachpaket erlaubt es Ihnen, MyBB auf Deutsch zu betreiben.<br />
+<div align="right"><a href="#top">Nach oben</a></div>
+<a name="a2" id="a2"></a><h1>2. Installation</h1>
+Der deutsche Text ist in Dateien gespeichert, die Sie im Ordner &quot;Sprachdateien&quot; finden. Die deutschen Standardbuttons befinden sich im Ordner &quot;Buttons&quot;.<br /><br />
+Im Folgenden wird in einzelnen Schritten beschrieben, wie Sie vorgehen m&uuml;ssen, um das Sprachpaket zu installieren.
+<br />
+<ol>
+    <li>Öffnen Sie Ihr FTP-Programm und stellen Sie eine Verbindung mit Ihrem Server her.</li>
+    <li>Öffnen Sie den Ordner, in den Sie MyBB installiert haben.</li>
+    <li>Öffnen Sie den Ordner <span class="file">inc</span> und darin den Ordner <span class="file">languages</span>.</li>
+    <li>Kopieren Sie die Datei <span class="file">deutsch_sie.php</span> und den Ordner <span class="file">deutsch_sie</span> aus dem Ordner &quot;Sprachdateien&quot; in den Ordner <span class="file">languages</span> auf dem Server.</li>
+    <li>Gehen Sie zurück in den Ordner, in den Sie MyBB installiert haben.</li>
+    <li>Öffnen Sie den Ordner <span class="file">images</span>.</li>
+    <li>Kopieren Sie den Ordner <span class="file">deutsch_sie</span> aus dem Ordner &quot;Buttons&quot; in den Ordner <span class="file">images</span> auf dem Server.</li>
+	<li>Falls Sie die Installation auf Deutsch übersetzt haben wollen, kopieren Sie <span class="file">language.lang.php</span> aus dem Ordner &quot;Installation &amp; Upgrade&quot; in den Ordner <span class="file">inc/languages</span> auf dem Server und überschreiben die englische Sprachdatei.</li>
+</ol>
+Sie haben nun alle erforderlichen Dateien auf den Server übertragen. Im folgenden Absatz wird beschrieben, wie Sie Ihr Forum auf das neue Sprachpaket umstellen können.<br />
+<div align="right"><a href="#top">Nach oben</a></div>
+<a name="a3" id="a3"></a><h1>3. Update</h1>
+Seit der letzten Version der Sprachdateien (1.4.x) gab es große Änderungen. Daher ist es erforderlich alle Dateien zu aktualisieren.
+<div align="right"><a href="#top">Nach oben</a></div><br />
+<a name="a4" id="a4"></a><h1>4. Benutzung</h1>
+Nachdem Sie alle erforderlichen Dateien auf den Server übertragen haben, können Sie das Sprachpaket für Ihr MyBB verwenden. Hier erfahren Sie, wie Sie die deutsche Sprache für das Forum und/oder das Admin Control-Panel einsetzen und wie Sie die deutsche Übersetzung als Standardsprache einstellen. Die Standardsprache wird für Gäste und registrierte Mitglieder verwendet, die keine Sprachauswahl getroffen haben.
+<ul>
+    <li>Um die deutsche Übersetzung im Forum zu benutzen, muss ein Benutzer in seinem Control-Panel unter &quot;Optionen ändern&quot;/&quot;Edit Options&quot; die Sprache &quot;Deutsch&quot; auswählen.</li>
+    <li>Um die deutsche Übersetzung auf den Administrationsbereich anzuwenden, müssen Sie sich im Admin-CP anmelden. Gehen Sie in die &quot;Konfiguration&quot;/&quot;Configuration&quot;. Unter &quot;Admin Control Panel&quot;/&quot;Control Panel Preferences (Global)&quot; können Sie die Sprache ändern.</li>
+    <li>Um die deutsche Übersetzung als Standard-Sprache für Ihr Forum zu setzen, müssen Sie sich im Admin-CP anmelden. Gehen Sie in die &quot;Konfiguration&quot;/&quot;Configuration&quot;. Unter &quot;Allgemeine Konfiguration&quot;/&quot;Global Configuration&quot; können Sie &quot;Deutsch&quot; als Standard-Sprache wählen.</li>
+</ul>
+<div align="right"><a href="#top">Nach oben</a></div>
+<a name="a5" id="a5"></a><h1>5. Einstellungen</h1>
+Wenn Sie das Board auf deutsch betreiben, werden im Folgenden Einstellungen erläutert, die angepasst werden sollten. Die Einstellungen finden Sie im Admin-CP unter &quot;Foreneinstellungen&quot; -&gt; &quot;Ändern&quot;.<br /><br />
+<strong>Allgemeine Konfiguration</strong>
+<ul>
+    <li>Dezimalpunkt: &quot;,&quot; (Komma)</li>
+    <li>Tausendertrennung: &quot;.&quot; (Punkt)</li>
+</ul>
+<strong>Datums- und Zeitformat</strong>
+<ul>
+    <li>Datumsformat: &quot;d.m.Y&quot;</li>
+    <li>Zeitformat: &quot;H:i&quot;</li>
+    <li>Zeitzone: &quot;+1&quot;</li>
+</ul>
+Desweiteren empfiehlt sich die Übersetzung der Profilfelder (&quot;Benutzer und Gruppen&quot; -&gt; &quot;Profilfelder&quot;) und der Benutzergruppen (&quot;Benutzer und Gruppen&quot; -&gt; &quot;Gruppen verwalten&quot;).<br />
+<div align="right"><a href="#top">Nach oben</a></div>
+<a name="a6" id="a6"></a><h1>6. Änderungen</h1>
+Im Folgenden finden Sie die Änderungen seit dem Sprachpaket für MyBB 1.4.x.
+<ul>
+    <li>Übersetzung neuer Sprachvariablen</li>
+    <li>Die Übersetzung einzelner Begriffe wurde verbessert und angeglichen</li>
+    <li>Verschiedene Grammatik- und Syntax-Fehler wurden korrigiert</li>
+    <li>Verbesserungsvorschläge von Benutzern wurden aufgenommen</li>
+</ul>
+Darüber hinaus wurden weitere Korrekturen vorgenommen, die die Übersetzung deutlich verbessern, jedoch nicht auf den ersten Blick ersichtlich sind.<br />
+<div align="right"><a href="#top">Nach oben</a></div>
+<a name="a7" id="a7"></a><h1>7. Hinweise </h1>
+Wir aktualisieren die Übersetzung regelmäßig und bitten Sie deshalb, Fehler auf <a href="http://www.mybboard.de" target="_blank">MyBBoard.de</a> zu melden. Ihre Meldungen/Kommentare sind ein wichtiger Bestandteil zur Verbesserung der Sprachpakete!<br /><br />
+Ein besonderer Dank gilt allen Beta-Testern, die bei der Verbesserung des Sprachpakets geholfen haben!<br /><br />
+<strong>Wir wünschen Ihnen viel Spaß und Erfolg mit dem MyBB!</strong><br />
+<div align="right"><a href="#top">Nach oben</a></div>
+<a name="a8" id="a8"></a><h1>8. Lizenz / Nutzungsbedingungen</h1>
+Das Copyright für die Sprachpakete liegt bei <a href="http://www.mybboard.de" target="_blank">MyBBoard.de</a>. Die Copyrighthinweise in den Sprachdateien dürfen nicht geändert oder entfernt werden. Sie dürfen die Sprachdateien und Buttons kostenlos benutzen.<br />
+<div align="right"><a href="#top">Nach oben</a></div>
+<br />
+<div style="text-align: center; font-weight: bold;">2005 - 2012 &copy; <a href="http://www.mybboard.de" target="_blank">MyBBoard.de</a></div>
+</div>
+</div>
+</body>
+</html>
