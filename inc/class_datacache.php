@@ -656,7 +656,6 @@ class datacache
 			$mailqueue['last_run'] = $last_run;
 		}
 		$mailqueue['locked'] = $lock_time;
-		
 		$this->update("mailqueue", $mailqueue);
 	}
 	

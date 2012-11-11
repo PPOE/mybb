@@ -848,7 +848,7 @@ function akismet_admin()
 				FROM ".TABLE_PREFIX."threads
 				WHERE fid='{$post['fid']}' AND visible='1' AND closed NOT LIKE 'moved|%'
 				ORDER BY lastpost DESC
-				LIMIT 0, 1
+				LIMIT 1
 			");
 			$lastpost = $db->fetch_array($query2);
 			
@@ -887,7 +887,7 @@ function akismet_admin()
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 				WHERE p.tid='{$post['tid']}'
 				ORDER BY p.dateline ASC
-				LIMIT 0,1
+				LIMIT 1
 			");
 			$firstpost = $db->fetch_array($query2);
 			

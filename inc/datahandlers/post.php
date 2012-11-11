@@ -913,7 +913,6 @@ class PostDataHandler extends DataHandler
 			);
 			$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
 		}
-
 		if($visible == 1 && $thread['visible'] == 1)
 		{
 			$thread = get_thread($post['tid']);
@@ -933,7 +932,6 @@ class PostDataHandler extends DataHandler
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=s.uid)
 				WHERE s.notification='1' AND s.tid='{$post['tid']}'
 				AND s.uid != '{$post['uid']}'
-				AND u.lastactive>'{$thread['lastpost']}'
 			");
 			while($subscribedmember = $db->fetch_array($query))
 			{
@@ -999,7 +997,9 @@ class PostDataHandler extends DataHandler
 					"message" => $db->escape_string($emailmessage),
 					"headers" => ''
 				);
+
 				$db->insert_query("mailqueue", $new_email);
+
 				unset($userlang);
 				$queued_email = 1;
 			}
@@ -1359,7 +1359,6 @@ class PostDataHandler extends DataHandler
 					LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
 					WHERE fs.fid='".intval($thread['fid'])."'
 					AND fs.uid != '".intval($thread['uid'])."'
-					AND u.lastactive > '{$forum['lastpost']}'
 					AND g.isbannedgroup != 1
 				");
 				while($subscribedmember = $db->fetch_array($query))

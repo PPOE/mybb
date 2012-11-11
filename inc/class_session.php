@@ -242,32 +242,32 @@ class session
 		}
 		
 		// Does this user prefer posts in classic mode?
-		if($mybb->user['classicpostbit'])
+//		if($mybb->user['classicpostbit'])
 		{
 			$mybb->settings['postlayout'] = 'classic';
 		}
-		else
+/*		else
 		{
 			$mybb->settings['postlayout'] = 'horizontal';
-		}
+		}*/
 
 		// Check if this user is currently banned and if we have to lift it.
 		if(!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
 			// must have been good.. bans up :D
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".intval($mybb->user['banoldgroup'])."', additionalgroups='".$mybb->user['oldadditionalgroups']."', displaygroup='".intval($mybb->user['olddisplaygroup'])."' WHERE uid='".$mybb->user['uid']."' LIMIT 1");
-			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
+//			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".intval($mybb->user['banoldgroup'])."', additionalgroups='".$mybb->user['oldadditionalgroups']."', displaygroup='".intval($mybb->user['olddisplaygroup'])."' WHERE uid='".$mybb->user['uid']."' LIMIT 1");
+			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."' AND dateline = ".$mybb->user['bandate']);
 			// we better do this..otherwise they have dodgy permissions
-			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
+/*			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
 			$mybb->user['displaygroup'] = $mybb->user['banolddisplaygroup'];
-			$mybb->user['additionalgroups'] = $mybb->user['banoldadditionalgroups'];
+			$mybb->user['additionalgroups'] = $mybb->user['banoldadditionalgroups'];*/
 			$cache->update_banned();
 
-			$mybbgroups = $mybb->user['usergroup'];
+/*			$mybbgroups = $mybb->user['usergroup'];
 			if($mybb->user['additionalgroups'])
 			{
 				$mybbgroups .= ','.$mybb->user['additionalgroups'];
-			}
+			}*/
 		}
 		else if(!empty($mybb->user['bandate']) && (empty($mybb->user['banlifted'])  || !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] > $time))
         {

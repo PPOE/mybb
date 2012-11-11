@@ -693,7 +693,7 @@ class DB_PgSQL
 		
 		if(isset($options['order_by']))
 		{
-			$query .= " ORDER BY ".$options['order_by'];
+    			$query .= " ORDER BY ".$options['order_by'];
 			if(isset($options['order_dir']))
 			{
 				$query .= " ".my_strtoupper($options['order_dir']);
@@ -1002,7 +1002,7 @@ class DB_PgSQL
 			LEFT JOIN pg_attribute ia ON (ia.attrelid = i.indexrelid)
 			LEFT JOIN pg_attribute ta ON (ta.attrelid = bc.oid AND ta.attrelid = i.indrelid AND ta.attnum = i.indkey[ia.attnum-1])
 			WHERE bc.relname = '{$this->table_prefix}{$table}'
-			ORDER BY index_name, tab_name, column_name
+			ORDER BY lower(index_name), lower(tab_name), lower(column_name)
 		");
 
 		$primary_key = array();

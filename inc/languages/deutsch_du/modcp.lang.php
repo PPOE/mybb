@@ -14,7 +14,6 @@
 $l['nav_width'] = "180";
 $l['nav_modcp'] = "Moderator-CP";
 $l['nav_menu'] = "Menü";
-
 $l['mcp_nav_home'] = "Moderator-CP Startseite";
 $l['mcp_nav_forums'] = "Foren &amp; Beiträge";
 $l['mcp_nav_announcements'] = "Ankündigungen";
@@ -32,9 +31,7 @@ $l['mcp_nav_ban_user'] = "Einen Benutzer ausschließen";
 $l['mcp_nav_modqueue_threads'] = "Moderations-Warteschlange für Themen";
 $l['mcp_nav_modqueue_posts'] = "Moderations-Warteschlange für Beiträge";
 $l['mcp_nav_modqueue_attachments'] = "Moderations-Warteschlange für Anhänge";
-
 $l['modcp'] = "Moderatoren-CP";
-
 $l['view_all_reported_posts'] = "Alle gemeldeten Beiträge anzeigen";
 $l['all_reported_posts'] = "Alle gemeldeten Beiträge";
 $l['all_reported_posts_note'] = "Alle gemeldeten Beiträge (ungelesene Beiträge sind hervorgehoben)";
@@ -53,12 +50,11 @@ $l['error_missing_ipaddress'] = "Du hast keine IP-Adresse zum Suchen eingegeben.
 $l['error_no_results'] = "Es gab leider keine Ergebnisse mit den angegebenen Kriterien.";
 $l['redirect_reportsmarked'] = "Die ausgewählten, gemeldeten Beiträge wurden als gelesen markiert.";
 $l['redirect_modnotes'] = "Die Moderatoren-Notiz wurde aktualisiert.";
-
 $l['moderator_notes'] = "Moderator-Notizen";
 $l['notes_public_all'] = "Diese Notizen sind für alle Moderatoren sichtbar.";
 $l['save_notes'] = "Notizen speichern";
 $l['bans_ending_soon'] = "Ausschlüsse, die in Kürze enden";
-$l['latest_5_modactions'] = "Die 5 letzten Moderator-Aktivitäten";
+$l['latest_5_modactions'] = "Die 10 letzten Moderator-Aktivitäten";
 $l['awaiting_moderation'] = "Erwarten Moderation";
 $l['type'] = "Typ";
 $l['number_awaiting'] = "Anzahl";
@@ -87,7 +83,7 @@ $l['all_moderators'] = "Alle Moderatoren";
 $l['date'] = "Datum";
 $l['ip'] = "IP-Adresse";
 $l['info_on_ip'] = "Information für diese IP-Adresse";
-$l['information']  = "Information";
+$l['information'] = "Information";
 $l['filter_modlogs'] = "Moderatoren-Protokoll filtern";
 $l['forum'] = "Forum:";
 $l['from_moderator'] = "Vom Moderator:";
@@ -111,7 +107,7 @@ $l['username_contains'] = "Benutzername beinhaltet";
 $l['no_user_results'] = "Es wurden keine Benutzer mit den angegebenen Kriterien gefunden.";
 $l['edit_profile'] = "Profil von {1} bearbeiten";
 $l['birthday'] = "Geburtsdatum:";
-$l['title'] = "Benutzertitel:";
+$l['title'] = "Thema";
 $l['profile_required'] = "Benötigte Felder";
 $l['remove_avatar'] = "Avatar des Benutzers entfernen?";
 $l['profile_optional'] = "Optionale Felder";
@@ -192,7 +188,6 @@ $l['edited_user'] = "Profil des Benutzers bearbeiten";
 $l['edited_user_info'] = "<strong>Benutzer:</strong> <a href=\"{2}\">{1}</a>";
 $l['banned_user'] = "Benutzer gesperrt";
 $l['lifted_ban'] = "Benutzer-Sperrung aufgehoben";
-
 $l['warning_logs'] = "Warnungs-Protokoll";
 $l['warned_user'] = "Benutzer";
 $l['warning'] = "Warnung";
@@ -218,7 +213,6 @@ $l['moderate_posts'] = "Beiträge des Benutzers moderieren";
 $l['suspend_posts'] = "Beitragserstellung sperren";
 $l['modpost_length'] = "Moderieren für:";
 $l['suspost_length'] = "Sperren für:";
-
 $l['moderateposts_for'] = "Moderieren bis {1}, {2}.<br />Entferne die Option oder erweitere sie unten.";
 $l['suspendposting_for'] = "Sperren bis {1}, {2}.<br />Entferne die Option oder erweitere sie unten.";
 $l['suspendsignature_for'] = "Sperren bis {1}, {2}.<br />Entferne die Option oder erweitere sie unten.";
@@ -229,13 +223,11 @@ $l['suspendsignature_error'] = "Du hast eine Sperre der Signatur dieses Benutzer
 $l['moderateposting_error'] = "Du hast eine Moderation der Beiträge dieses Benutzers ausgewählt, aber das Zeitspanne ist ungültig. Bitte gebe ein gültiges Datum ein oder entferne die Moderation um abzubrechen.";
 $l['suspendposting_error'] = "Du hast eine Sperre der Beitragserstellung dieses Benutzers ausgewählt, aber das Zeitspanne ist ungültig. Bitte gebe ein gültiges Datum ein oder entferne die Sperre um abzubrechen.";
 $l['suspendmoderate_error'] = "Du hast die Moderation der Beiträge und die Sperre der Beitragserstellung ausgewählt. Bitte wähle nur eine dieser Optionen aus.";
-
 $l['expire_hours'] = "Stunde(n)";
 $l['expire_days'] = "Tag(e)";
 $l['expire_weeks'] = "Woche(n)";
 $l['expire_months'] = "Monat(e)";
 $l['expire_permanent'] = "Permanent";
-
 $l['manage_announcement'] = "Ankündigungen verwalten";
 $l['forum_announcements'] = "Ankündigungen im Forum";
 $l['announcement'] = "Ankündigung";
@@ -284,5 +276,4 @@ $l['error_invalid_start_date'] = "Das Startdatum für die Ankündigung ist ungü
 $l['error_invalid_end_date'] = "Das Enddatum für die Ankündigung ist ungültig.";
 $l['error_end_before_start'] = "Das Enddatum muss nach dem Startdatum liegen.";
 $l['error_invalid_announcement'] = "Die angegebene Ankündigung ist ungültig.";
-
 ?>

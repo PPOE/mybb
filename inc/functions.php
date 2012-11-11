@@ -228,7 +228,6 @@ function run_shutdown()
 function send_mail_queue($count=10)
 {
 	global $db, $cache, $plugins;
-
 	$plugins->run_hooks("send_mail_queue_start");
 
 	// Check to see if the mail queue has messages needing to be sent
@@ -245,11 +244,7 @@ function send_mail_queue($count=10)
 		{
 			// Delete the message from the queue
 			$db->delete_query("mailqueue", "mid='{$email['mid']}'");
-			
-			if($db->affected_rows() == 1)
-			{
-				my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
-			}
+			my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
 		}
 		// Update the mailqueue cache and remove the lock
 		$cache->update_mailqueue(TIME_NOW, 0);
@@ -2036,7 +2031,7 @@ function update_forum_lastpost($fid)
 		FROM ".TABLE_PREFIX."threads
 		WHERE fid='{$fid}' AND visible='1' AND closed NOT LIKE 'moved|%'
 		ORDER BY lastpost DESC
-		LIMIT 0, 1
+		LIMIT 1
 	");
 	$lastpost = $db->fetch_array($query);
 
@@ -5826,23 +5821,9 @@ function fetch_ban_times()
 
 	// Days-Months-Years
 	$ban_times = array(
-		"1-0-0" => "1 {$lang->day}",
-		"2-0-0" => "2 {$lang->days}",
-		"3-0-0" => "3 {$lang->days}",
-		"4-0-0" => "4 {$lang->days}",
-		"5-0-0" => "5 {$lang->days}",
-		"6-0-0" => "6 {$lang->days}",
-		"7-0-0" => "1 {$lang->week}",
 		"14-0-0" => "2 {$lang->weeks}",
-		"21-0-0" => "3 {$lang->weeks}",
-		"0-1-0" => "1 {$lang->month}",
 		"0-2-0" => "2 {$lang->months}",
-		"0-3-0" => "3 {$lang->months}",
-		"0-4-0" => "4 {$lang->months}",
-		"0-5-0" => "5 {$lang->months}",
-		"0-6-0" => "6 {$lang->months}",
 		"0-0-1" => "1 {$lang->year}",
-		"0-0-2" => "2 {$lang->years}"
 	);
 
 	$ban_times = $plugins->run_hooks("functions_fetch_ban_times", $ban_times);

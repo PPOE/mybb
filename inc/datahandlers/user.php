@@ -592,14 +592,14 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
 		
-		if($mybb->settings['postlayout'] == 'classic')
+/*		if($mybb->settings['postlayout'] == 'classic')
 		{
 			$this->verify_yesno_option($options, 'classicpostbit', 1);
 		}
 		else
 		{
 			$this->verify_yesno_option($options, 'classicpostbit', 0);
-		}
+		}*/
 		
 		if(array_key_exists('subscriptionmethod', $options))
 		{
@@ -1028,7 +1028,7 @@ class UserDataHandler extends DataHandler
 			"suspendposting" => 0,
 			"suspensiontime" => 0,
 			"coppauser" => intval($user['coppa_user']),
-			"classicpostbit" => $user['options']['classicpostbit'],
+			//"classicpostbit" => $user['options']['classicpostbit'],
 			"usernotes" => ''
 		);
 		
