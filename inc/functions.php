@@ -249,7 +249,6 @@ function send_mail_queue($count=10)
 		// Update the mailqueue cache and remove the lock
 		$cache->update_mailqueue(TIME_NOW, 0);
 	}
-
 	$plugins->run_hooks("send_mail_queue_end");
 }
 

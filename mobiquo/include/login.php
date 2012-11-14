@@ -126,9 +126,9 @@ function update_push()
     
     if ($uid && $db->table_exists('tapatalk_users'))
     {
-        $db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "tapatalk_users (userid) VALUES ('$uid')", 1);
+        $result = $db->write_query("INSERT IGNORE INTO " . TABLE_PREFIX . "tapatalk_users (userid) VALUES ('$uid')", 1);
         
-        if ($db->affected_rows() == 0)
+        if ($db->affected_rows($result) == 0)
         {
             $db->write_query("UPDATE " . TABLE_PREFIX . "tapatalk_users SET updated = CURRENT_TIMESTAMP WHERE userid = '$uid'", 1);
         }

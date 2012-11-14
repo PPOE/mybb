@@ -50,8 +50,8 @@ if($mybb->input['action'] == 'prune')
 			$where .= " AND fid='".$db->escape_string($mybb->input['fid'])."'";
 		}
 		
-		$db->delete_query("moderatorlog", $where);
-		$num_deleted = $db->affected_rows();
+		$result = $db->delete_query("moderatorlog", $where);
+		$num_deleted = $db->affected_rows($result);
 		
 		$plugins->run_hooks("admin_tools_modlog_prune_commit");
 		

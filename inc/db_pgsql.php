@@ -567,9 +567,9 @@ class DB_PgSQL
 	 *
 	 * @return int The number of affected rows.
 	 */
-	function affected_rows()
+	function affected_rows($result)
 	{
-		return pg_affected_rows($this->current_link);
+		return pg_affected_rows($result);
 	}
 
 	/**

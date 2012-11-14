@@ -997,9 +997,12 @@ class PostDataHandler extends DataHandler
 					"message" => $db->escape_string($emailmessage),
 					"headers" => ''
 				);
-
-				$db->insert_query("mailqueue", $new_email);
-
+				$result = $db->insert_query("mailqueue", $new_email);
+				if ($db->affected_rows($result) != 1)
+				{
+					$new_email["subject"] = "Neuer Beitrag";
+					$db->insert_query("mailqueue", $new_email);
+				}
 				unset($userlang);
 				$queued_email = 1;
 			}
@@ -1426,7 +1429,12 @@ class PostDataHandler extends DataHandler
 						"message" => $db->escape_string($emailmessage),
 						"headers" => ''
 					);
-					$db->insert_query("mailqueue", $new_email);
+                                	$result = $db->insert_query("mailqueue", $new_email);
+                        	        if ($db->affected_rows($result) != 1)
+                               		{
+                	                        $new_email["subject"] = "Neuer Beitrag";
+        	                                $db->insert_query("mailqueue", $new_email);
+	                                }
 					unset($userlang);
 					$queued_email = 1;
 				}
