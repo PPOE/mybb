@@ -18,7 +18,7 @@ $templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similar
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,thumbnails_thumbnail,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl,postbit_rep_button";
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_classic,showthread_classic_header,showthread_poll_resultbit,showthread_poll_results";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,multipage_page_link_current,multipage_breadcrumb";
-
+$good_pids = array();
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."/inc/functions_indicators.php";
@@ -887,7 +887,6 @@ if($mybb->input['action'] == "thread")
 
 		
 		//$threadedbits = buildtree();
-		//$posts = build_postbit($showpost);
                 $posts .= buildtree2($pids);
 		//eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
 		$plugins->run_hooks("showthread_threaded");
@@ -1043,6 +1042,11 @@ if($mybb->input['action'] == "thread")
 			// If there are no pid's the thread is probably awaiting approval.
 			error($lang->error_invalidthread);
 		}
+                $query = $db->query("SELECT * FROM (SELECT *,CASE WHEN C.up + C.down = 0 THEN 0 ELSE ((C.up + 1.9208) / (C.up + C.down) - 1.96 * SQRT((C.up * C.down) / (C.up + C.down) + 0.9604) / (C.up + C.down)) / (1 + 3.8416 / (C.up + C.down)) END AS lb FROM (SELECT pid,(SELECT COUNT(*) FROM mybb_thumbspostrating WHERE pid = A.pid AND thumbsup > 0) AS up,(SELECT COUNT(*) FROM mybb_thumbspostrating WHERE pid = A.pid AND thumbsdown > 0) AS down FROM mybb_posts A WHERE tid = '$tid') C) D WHERE lb > 0 ORDER BY lb DESC;");
+                while($getgoodid = $db->fetch_array($query))
+                {
+                        $good_pids[] = $getgoodid['pid'];
+                }
 
 		// Get the actual posts from the database here.
 		// $posts = '';
@@ -1402,8 +1406,8 @@ function buildtree($replyto="0", $indent="0")
  */
 function buildtree2($pids=array(), $replyto="0", $indent="0")
 {
-        global $db, $tree, $mybb, $theme, $mybb, $pid, $fid, $tid, $templates, $parser, $ismod;
-
+        global $db, $tree, $mybb, $theme, $mybb, $pid, $fid, $tid, $templates, $parser, $ismod, $good_pids;
+        
         if($indent)
         {
                 $indentsize = 25 * $indent;
@@ -1455,7 +1459,13 @@ function buildtree2($pids=array(), $replyto="0", $indent="0")
                                         WHERE p.tid='$tid' $visible $where
                                 ");
                                 $showpost = $db->fetch_array($query);
-                
+
+                $query = $db->query("SELECT * FROM (SELECT *,CASE WHEN C.up + C.down = 0 THEN 0 ELSE ((C.up + 1.9208) / (C.up + C.down) - 1.96 * SQRT((C.up * C.down) / (C.up + C.down) + 0.9604) / (C.up + C.down)) / (1 + 3.8416 / (C.up + C.down)) END AS lb FROM (SELECT pid,(SELECT COUNT(*) FROM mybb_thumbspostrating WHERE pid = A.pid AND thumbsup > 0) AS up,(SELECT COUNT(*) FROM mybb_thumbspostrating WHERE pid = A.pid AND thumbsdown > 0) AS down FROM mybb_posts A WHERE tid = '$tid') C) D WHERE lb > 0 ORDER BY lb DESC;");
+                while($getgoodid = $db->fetch_array($query))
+                {
+			$good_pids[] = $getgoodid['pid'];
+                }
+
                                 // Choose what pid to display.
                                 if(!$post['pid'])
                                 {

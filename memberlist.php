@@ -136,7 +136,7 @@ else
 		}
 		else if(strlen($letter) == 1)
 		{
-			$search_query .= " AND u.username LIKE '".$db->escape_string($letter)."%'";
+			$search_query .= " AND UPPER(u.username) LIKE '".$db->escape_string($letter)."%'";
 		}
 		$search_url .= "&letter={$letter}";
 	}
@@ -150,7 +150,7 @@ else
 		// Name begins with
 		if($mybb->input['username_match'] == "begins")
 		{
-			$search_query .= " AND u.username LIKE '".$username_like_query."%'";
+			$search_query .= " AND UPPER(u.username) LIKE '".$username_like_query."%'";
 			$search_url .= "&username_match=begins";
 		}
 		// Just contains

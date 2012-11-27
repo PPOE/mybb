@@ -22,6 +22,7 @@ function build_postbit($post, $post_type=0)
 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
 	global $plugins, $parser, $cache, $ignored_users, $hascustomtitle;
+        global $good_pids;
 	
 	$hascustomtitle = 0;
 
@@ -632,6 +633,15 @@ function build_postbit($post, $post_type=0)
 				$ignored_message = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
 				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
 				$post_visibility = "display: none;";
+			}
+                        if ($post['dateline'] > microtime()-7*86400)
+			{
+                        if(!is_array($good_pids) || !in_array($post['pid'],$good_pids))
+                        {
+                                $ignored_message = "Ausgeblendeter Beitrag: " . $post['subject'];
+                                eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
+                                $post_visibility = "display: none;";
+                        }
 			}
 			break;
 	}
