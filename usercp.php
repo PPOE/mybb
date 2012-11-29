@@ -638,6 +638,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"threadmode" => $mybb->input['threadmode'],
 		"showsigs" => $mybb->input['showsigs'],
 		"showavatars" => $mybb->input['showavatars'],
+                "disablereddit" => (($mybb->input['disablereddit'] == '1') ? '0' : '1'),
 		"showquickreply" => $mybb->input['showquickreply'],
 		"receivepms" => $mybb->input['receivepms'],
 		"pmnotice" => $mybb->input['pmnotice'],
@@ -761,6 +762,15 @@ if($mybb->input['action'] == "options")
 	{
 		$showavatarscheck = "";
 	}
+
+        if($user['disablereddit'] == 1)
+        {
+                $disableredditcheck = "";
+        }
+        else
+        {
+                $disableredditcheck = "checked=\"checked\"";
+        }
 
 	if($user['showquickreply'] == 1)
 	{

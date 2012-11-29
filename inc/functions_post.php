@@ -22,7 +22,7 @@ function build_postbit($post, $post_type=0)
 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
 	global $plugins, $parser, $cache, $ignored_users, $hascustomtitle;
-        global $good_pids;
+        global $bad_pids;
 	
 	$hascustomtitle = 0;
 
@@ -634,9 +634,8 @@ function build_postbit($post, $post_type=0)
 				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
 				$post_visibility = "display: none;";
 			}
-                        if ($post['dateline'] > microtime()-7*86400)
-			{
-                        if(!is_array($good_pids) || !in_array($post['pid'],$good_pids))
+			else if ($mybb->user['disablereddit'] != 1) {
+                        if(is_array($bad_pids) && in_array($post['pid'],$bad_pids))
                         {
                                 $ignored_message = "Ausgeblendeter Beitrag: " . $post['subject'];
                                 eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");

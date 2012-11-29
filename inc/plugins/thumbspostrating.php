@@ -368,8 +368,8 @@ function tpr_box(&$post)
 		// Make thumbs for user who can rate
 		else
 		{
-			$tu_img = '<a href='.$tu_url.' class="tpr_thumb tu2" title="'.$lang->tpr_rate_up.'" onclick="return thumbRate(1,0,'.$pid.')" ></a>';
-			$td_img = '<a href='.$td_url.' class="tpr_thumb td2" title="'.$lang->tpr_rate_down.'" onclick="return thumbRate(0,1,'.$pid.')" ></a>';
+			$tu_img = '<a href="'.$tu_url.'" class="tpr_thumb tu2" title="'.$lang->tpr_rate_up.'" onclick="return thumbRate(1,0,'.$pid.')" ></a>';
+			$td_img = '<a href="'.$td_url.'" class="tpr_thumb td2" title="'.$lang->tpr_rate_down.'" onclick="return thumbRate(0,1,'.$pid.')" ></a>';
 			
 			// Respect MyBB's wish to disable xmlhttp
 			if($mybb->settings['use_xmlhttprequest'] == 0)

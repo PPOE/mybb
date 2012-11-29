@@ -831,9 +831,9 @@ if($mybb->input['action'] == "delete")
 		
 		$children = make_child_theme_list($theme['tid']);
 		$child_tid = $children[0];
-			
+			if ($child_tid != null) {
 		$db->update_query("themes", array('pid' => $theme['pid']), "tid='{$child_tid}'");
-				
+				}
 		$db->delete_query("themes", "tid='{$theme['tid']}'", 1);
 		
 		$plugins->run_hooks("admin_style_themes_delete_commit");
