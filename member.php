@@ -1865,18 +1865,19 @@ if($mybb->input['action'] == "profile")
 		// Manually set to override colours...
 		$alttrow = 'trow2';
 	}
-
+	
+	
+	// Get reputation ratings from Thumbspostrating addon
+	$query = $db->simple_select("thumbspostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid", "SUM(A.thumbsdown) AS scoredown, SUM(A.thumbsup) AS scoreup", "B.uid='$uid'");
+	$post = $db->fetch_array($query);
+	$reppostingsdown = intval($post['scoredown']);
+	$reppostingsup = intval($post['scoreup']);
+				
 	// Fetch the reputation for this user
 	if($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
 	{
 		$bg_color = alt_trow();
 		$reputation = get_reputation($memprofile['reputation']);
-
-                $query = $db->simple_select("thumbspostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid", "SUM(A.thumbsup) - SUM(A.thumbsdown) AS score", "B.uid='$uid'");
-                $post = $db->fetch_array($query);
-                $reppostings = intval($post['score']);
-
-		$reputation = "$reputation (Postings: $reppostings)";
 		// If this user has permission to give reputations show the vote link
 		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'])
 		{
@@ -2195,4 +2196,5 @@ if(!$mybb->input['action'])
 {
 	header("Location: index.php");
 }
+?>
 ?>
