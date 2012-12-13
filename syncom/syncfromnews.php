@@ -18,6 +18,15 @@ require_once "convertpost.php";
 
 require_once "mybbapi.php";
 
+function  fix_encoding($in_str) {
+        $cur_encoding = mb_detect_encoding($in_str) ;
+        if($cur_encoding == "UTF-8" && mb_check_encoding($in_str,"UTF-8")){
+            return $in_str;
+        }else{
+            return utf8_encode($in_str);
+        }
+}
+
 function fetcharticles($nntp, $newsgroup, $start, $end = -1)
 {
 	global $syncom;
@@ -171,6 +180,8 @@ if ($pid == -1) {
 
 	$struct['subject'] = substr($struct['subject'], 0, 84);
         $struct['subject'] = $db->escape_string($struct['subject']);
+
+	$struct['body'] = fix_encoding($struct['body']);
 
         if ($post['pid'] == 0)
 		$post = $api->getidbysubject($struct, $fid);

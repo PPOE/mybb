@@ -18,7 +18,6 @@ $templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similar
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,thumbnails_thumbnail,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl,postbit_rep_button";
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_classic,showthread_classic_header,showthread_poll_resultbit,showthread_poll_results";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,multipage_page_link_current,multipage_breadcrumb";
-$bad_pids = array();
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."/inc/functions_indicators.php";
@@ -1042,12 +1041,6 @@ if($mybb->input['action'] == "thread")
 			// If there are no pid's the thread is probably awaiting approval.
 			error($lang->error_invalidthread);
 		}
-		$bad_pids = array();
-                $query = $db->query("SELECT A.pid FROM mybb_posts A LEFT JOIN mybb_thumbspostrating B ON A.pid = B.pid WHERE tid = '$tid' AND B.thumbsdown * 2 > B.thumbsup;");
-                while($getbadid = $db->fetch_array($query))
-                {
-                        $bad_pids[] = $getbadid['pid'];
-                }
 
 		// Get the actual posts from the database here.
 		// $posts = '';
@@ -1407,7 +1400,7 @@ function buildtree($replyto="0", $indent="0")
  */
 function buildtree2($pids=array(), $replyto="0", $indent="0")
 {
-        global $db, $tree, $mybb, $theme, $mybb, $pid, $fid, $tid, $templates, $parser, $ismod, $bad_pids;
+        global $db, $tree, $mybb, $theme, $mybb, $pid, $fid, $tid, $templates, $parser, $ismod;
         
         if($indent)
         {
@@ -1460,13 +1453,6 @@ function buildtree2($pids=array(), $replyto="0", $indent="0")
                                         WHERE p.tid='$tid' $visible $where
                                 ");
                                 $showpost = $db->fetch_array($query);
-
-                $bad_pids = array();
-                $query = $db->query("SELECT A.pid FROM mybb_posts A LEFT JOIN mybb_thumbspostrating B ON A.pid = B.pid WHERE tid = '$tid' AND B.thumbsdown * 2 > B.thumbsup;");
-                while($getbadid = $db->fetch_array($query))
-                {
-                        $bad_pids[] = $getbadid['pid'];
-                }
 
                                 // Choose what pid to display.
                                 if(!$post['pid'])

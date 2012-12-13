@@ -55,8 +55,9 @@ if($mybb->input['action'] == 'prune')
 			$where .= " AND module='".$db->escape_string($mybb->input['filter_module'])."'";
 		}
 		
+                $result = $db->query("SELECT * FROM ".TABLE_PREFIX."adminlog WHERE $where");
+                $num_deleted = $db->num_rows($result);
 		$result = $db->delete_query("adminlog", $where);
-		$num_deleted = $db->affected_rows($result);
 		
 		$plugins->run_hooks("admin_tools_adminlog_prune_commit");
 		

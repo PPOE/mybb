@@ -34,7 +34,7 @@ $query = $db->simple_select("calendars", "name", "cid=".$db->escape_string($cale
 if ($calendardata = $db->fetch_array($query))
 	$calendarname = $calendardata["name"];
 else
-	$calendarname = "Kalender";
+	$calendarname = "Standardkalender";
 
 
 // Zeitzone auf UTC stellen, damit die Kalenderdaten nicht umgerechnet werden
@@ -48,8 +48,8 @@ echo "METHOD:PUBLISH\r\n";
 echo "X-WR-TIMEZONE:Europe/Berlin\r\n";
 echo "X-WR-CALNAME:".$calendarname."\r\n";
 
-$events = get_events($calendar, time()-(86400*30), time()+(86400*90), false);
-
+$events = get_events($calendar, time()-(86400*300), time()+(86400*900), true);
+print_r($events);
 foreach ($events as $day=>$events2) {
 	// in $day steht der Wochentag
 	$dayarr = explode('-', $day);

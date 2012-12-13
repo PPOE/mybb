@@ -22,7 +22,6 @@ function build_postbit($post, $post_type=0)
 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
 	global $plugins, $parser, $cache, $ignored_users, $hascustomtitle;
-        global $bad_pids;
 	
 	$hascustomtitle = 0;
 
@@ -635,13 +634,25 @@ function build_postbit($post, $post_type=0)
 				$post_visibility = "display: none;";
 			}
 			else if ($mybb->user['disablereddit'] != 1) {
-                        if(is_array($bad_pids) && in_array($post['pid'],$bad_pids))
+	                $query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '{$post['pid']}';");
+			$thumbs = $db->fetch_array($query);
+			$thumbs_sum = $thumbs['sum'] + 0;
+			if ($thumbs['sum'] && $mybb->user['uid'])
+			{
+                        	$query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '{$post['pid']}' AND uid = '{$mybb->user['uid']}';");
+                       		$thumbs_own = $db->fetch_array($query);
+				$thumbs_sum_own = $thumbs_own['sum'] + 0;
+			}
+                        if(($thumbs_sum < -1 || $thumbs_sum_own < 0) && $thumbs_sum_own <= 0)
                         {
-                                $ignored_message = "Ausgeblendeter Beitrag: " . $post['subject'];
+                                $ignored_message = "Ausgeblendet (Bewertung: " . $thumbs_sum . "): " . $post['subject'];
                                 eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
                                 $post_visibility = "display: none;";
                         }
 			}
+			$post["postbit_ignored"] = $ignore_bit;
+                        $post = $plugins->run_hooks("postbit_ignored", $post);
+			$ignore_bit = $post["postbit_ignored"];
 			break;
 	}
 	

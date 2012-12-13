@@ -13,7 +13,6 @@
 
 $l['redirect_width'] = "50%";
 $l['lastvisit_never'] = "Nie";
-
 $l['toplinks_memberlist'] = "Mitglieder";
 $l['toplinks_search'] = "Suche";
 $l['toplinks_calendar'] = "Kalender";
@@ -24,7 +23,6 @@ $l['bottomlinks_returntop'] = "Nach oben";
 $l['bottomlinks_returncontent'] = "Zum Inhalt";
 $l['bottomlinks_syndication'] = "RSS-Synchronisation";
 $l['bottomlinks_litemode'] = "Archiv-Modus";
-
 $l['welcome_usercp'] = "Benutzer-CP";
 $l['welcome_modcp'] = "Moderator-CP";
 $l['welcome_admin'] = "Admin-CP";
@@ -32,19 +30,17 @@ $l['welcome_logout'] = "Abmelden";
 $l['welcome_login'] = "Anmelden";
 $l['welcome_register'] = "Registrieren";
 $l['welcome_open_buddy_list'] = "Freundesliste öffnen";
-$l['welcome_newposts'] = "Neue Beiträge ansehen";
-$l['welcome_todaysposts'] = "Heutige Beiträge ansehen";
+$l['welcome_newposts'] = "Neue Beiträge";
+$l['welcome_todaysposts'] = "Aktive Themen";
 $l['welcome_pms'] = "Private Nachrichten";
 $l['welcome_pms_usage'] = "({1} ungelesen, {2} insgesamt)";
 $l['welcome_back'] = "<strong>Willkommen zurück, {1}</strong> - Letzter Besuch: {2}";
 $l['welcome_guest'] = "Hallo, Gast!";
 $l['welcome_current_time'] = "<strong>Es ist:</strong> {1}";
-
 $l['moved_prefix'] = "<strong>Verschoben:</strong>";
 $l['sticky_prefix'] = "<strong>Wichtig:</strong>";
 $l['poll_prefix'] = "<strong>Umfrage:</strong>";
 $l['announcement_prefix'] = "<strong>Ankündigung:</strong>";
-
 $l['forumbit_announcements'] = "Ankündigungen";
 $l['forumbit_stickies'] = "Wichtige Themen";
 $l['forumbit_forum'] = "Forum";
@@ -61,13 +57,11 @@ $l['viewing_one'] = " (1 Benutzer im Forum)";
 $l['viewing_multiple'] = " ({1} Benutzer im Forum)";
 $l['by'] = "von";
 $l['more_subforums'] = "und {1} mehr.";
-
 $l['password_required'] = "Passwort benötigt";
 $l['forum_password_note'] = "Der Administrator hat festgelegt, dass für den Zugang zu diesem Forum ein Passwort benötigt wird.";
 $l['enter_password_below'] = "Bitte gib das Passwort ein:";
 $l['verify_forum_password'] = "Passwort bestätigen";
 $l['wrong_forum_password'] = "Das eingegebene Passwort ist falsch. Bitte versuche es erneut.";
-
 $l['reset_button'] = "Zurücksetzen";
 $l['username'] = "Benutzername:";
 $l['username1'] = "E-Mail:";
@@ -80,7 +74,6 @@ $l['login_password'] = "Passwort";
 $l['lost_password'] = "Passwort vergessen?";
 $l['remember_me'] = "Merken";
 $l['remember_me_desc'] = "Falls aktiv wird dein Login auf diesem Computer gespeichert, andernfalls wirst du ausgeloggt, sobald du den Browser schließt.";
-
 $l['month_1'] = "Januar";
 $l['month_2'] = "Februar";
 $l['month_3'] = "März";
@@ -93,7 +86,6 @@ $l['month_9'] = "September";
 $l['month_10'] = "Oktober";
 $l['month_11'] = "November";
 $l['month_12'] = "Dezember";
-
 $l['sunday'] = "Sonntag";
 $l['monday'] = "Montag";
 $l['tuesday'] = "Dienstag";
@@ -108,12 +100,9 @@ $l['short_thursday'] = "Do";
 $l['short_friday'] = "Fr";
 $l['short_saturday'] = "Sa";
 $l['short_sunday'] = "So";
-
 $l['yes'] = "Ja";
 $l['no'] = "Nein";
-
 $l['and'] = "und";
-
 $l['attachments'] = "Attachments";
 $l['attachments_desc'] = "Du kannst ein oder mehrere Attachments zu diesem Beitrag hinzufügen. Wähle die Datei auf der rechten Seite und klicke auf 'Attachment hinzufügen', um die Datei hochzuladen.";
 $l['remove_attachment'] = "Entfernen";
@@ -131,11 +120,9 @@ $l['thread_subscription_method'] = "<strong>Themen Abonnement:</strong><br /><sp
 $l['no_subscribe'] = "Dieses Thema nicht abonnieren";
 $l['no_email_subscribe'] = "Abonnieren, ohne bei einer neuen Antwort eine E-Mail zu erhalten";
 $l['instant_email_subscribe'] = "Abonnieren und eine E-Mail-Benachrichtigung bei neuen Antworten erhalten";
-
 $l['today'] = "Heute";
 $l['yesterday'] = "Gestern";
 $l['error'] = "Forenmeldung";
-
 $l['multipage_pages'] = "Seiten ({1}):";
 $l['multipage_last'] = "Letzte";
 $l['multipage_first'] = "Erste";
@@ -143,7 +130,6 @@ $l['multipage_next'] = "Nächste";
 $l['multipage_previous'] = "Vorherige";
 $l['multipage_link_start'] = " ...";
 $l['multipage_link_end'] = "... ";
-
 $l['editor_title_bold'] = "Fettgedruckten Text eingeben";
 $l['editor_title_italic'] = "Kursiven Text eingeben";
 $l['editor_title_underline'] = "Unterstrichenen Text eingeben";
@@ -183,14 +169,12 @@ $l['editor_size_xx_large'] = "Größte";
 $l['editor_font'] = "Schrift";
 $l['editor_size'] = "Schriftgröße";
 $l['editor_color'] = "Schriftfarbe";
-
 $l['quote'] = "Zitat:";
 $l['wrote'] = "schrieb:";
 $l['code'] = "Code:";
 $l['php_code'] = "PHP-Code:";
 $l['posted_image'] = "[Bild: {1}]";
 $l['linkback'] = "Ursprünglicher Beitrag";
-
 $l['at'] = "um";
 $l['na'] = "Keine Angabe";
 $l['guest'] = "Gast";
@@ -222,7 +206,7 @@ $l['postbit_find'] = "Alle Beiträge dieses Benutzers finden";
 $l['postbit_report'] = "Diesen Beitrag einem Moderator melden";
 $l['postbit_quote'] = "Diese Nachricht in einer Antwort zitieren";
 $l['postbit_qdelete'] = "Diesen Beitrag löschen";
-$l['postbit_profile'] = "Profil des Benutzers ansehen";
+$l['postbit_profile'] = "Profil des Benutzers";
 $l['postbit_pm'] = "Eine private Nachricht an den Benutzer senden";
 $l['postbit_edit'] = "Diesen Beitrag bearbeiten";
 $l['postbit_multiquote'] = "Diesen Beitrag zitieren";
@@ -232,7 +216,6 @@ $l['postbit_show_ignored_post'] = "Zeige diesen Beitrag";
 $l['postbit_currently_ignoring_user'] = "Der Inhalt dieses Beitrags wird nicht angezeigt, weil {1} auf deiner <a href=\"usercp.php?action=editlists\">Ignorierliste</a> steht.";
 $l['postbit_warning_level'] = "Verwarnungslevel:";
 $l['postbit_warn'] = "Den Autor dieses Beitrags verwarnen";
-
 $l['forumjump'] = "Gehe zu:";
 $l['forumjump_select'] = "Bitte wähle:";
 $l['forumjump_pms'] = "Private Nachrichten";
@@ -240,10 +223,8 @@ $l['forumjump_usercp'] = "Benutzer Control-Panel";
 $l['forumjump_wol'] = "Wer ist online?";
 $l['forumjump_search'] = "Suche";
 $l['forumjump_home'] = "Forenstartseite";
-
 $l['redirect'] = "Du wirst jetzt weitergeleitet";
 $l['unknown_error'] = "Ein unbekannter Fehler ist aufgetreten.";
-
 $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "mehr";
 $l['on'] = "aktiviert";
@@ -252,7 +233,6 @@ $l['unread_report'] = "Moderatoren-Nachricht: Es gibt einen ungelesenen gemeldet
 $l['unread_reports'] = "Moderatoren-Nachricht: Es gibt {1} ungelesene gemeldete Beiträge.";
 $l['pending_joinrequest'] = "Gruppenleiter-Notiz: Du hast eine austehende Gruppenbeitrittsanfrage.";
 $l['pending_joinrequests'] = "Gruppenleiter-Notiz: Du hast {1} austehende Gruppenbeitrittsanfragen.";
-
 $l['year'] = "Jahr";
 $l['year_short'] = "J";
 $l['years'] = "Jahre";
@@ -272,13 +252,13 @@ $l['days_short'] = "T";
 $l['hour'] = "Stunde";
 $l['hour_short'] = "h";
 $l['hours'] = "Stunden";
-$l['hours_short'] ="h";
+$l['hours_short'] = "h";
 $l['minute'] = "Minute";
-$l['minute_short'] ="m";
+$l['minute_short'] = "m";
 $l['minutes'] = "Minuten";
 $l['minutes_short'] = "m";
 $l['second'] = "Sekunde";
-$l['second_short'] ="s";
+$l['second_short'] = "s";
 $l['seconds'] = "Sekunden";
 $l['seconds_short'] = "s";
 $l['permanent'] = "Permanent";
@@ -293,14 +273,11 @@ $l['banned_email_warning'] = "Du benutzt eine E-Mail-Adresse, die in diesem Foru
 $l['powered_by'] = "Deutsche Übersetzung: <a href=\"http://www.mybboard.de\" target=\"_blank\">MyBBoard.de</a>, Powered by";
 $l['copyright'] = "Copyright";
 $l['attach_quota'] = "Du benutzt zur Zeit <strong>{1}</strong> des dir insgesamt zur Verfügung stehenden Speicherplatzes von: <strong>{2}</strong> &mdash; ";
-$l['view_attachments'] = "Meine Attachments ansehen";
+$l['view_attachments'] = "Meine Attachments";
 $l['unlimited'] = "Unbegrenzt";
-
 $l['click_hold_edit'] = "(Maus gedrückt halten zum Bearbeiten)";
-
 $l['guest_count'] = "1 Gast";
 $l['guest_count_multiple'] = "{1} Gäste";
-
 $l['size_yb'] = "YB";
 $l['size_zb'] = "ZB";
 $l['size_eb'] = "EB";
@@ -310,47 +287,37 @@ $l['size_gb'] = "GB";
 $l['size_mb'] = "MB";
 $l['size_kb'] = "KB";
 $l['size_bytes'] = "Bytes";
-
 $l['slaps'] = "schlägt";
 $l['with_trout'] = "mit einer großen Forelle.";
-
 $l['mybb_engine'] = "MyBB Engine";
 $l['quickdelete_confirm'] = "Möchtest du diesen Beitrag wirklich löschen?";
 $l['newpm_notice_one'] = "<strong>Du hast eine ungelesene Nachricht</strong> von {1} mit dem Betreff <a href=\"private.php?action=read&amp;pmid={2}\" style=\"font-weight:bold;\">{3}</a>";
 $l['newpm_notice_multiple'] = "<strong>Du hast {1} ungelesene Nachrichten.</strong> Die neueste ist von {2} mit dem Betreff <a href=\"private.php?action=read&amp;pmid={3}\" style=\"font-weight:bold;\">{4}</a>";
 $l['deleteevent_confirm'] = "Möchtest Du dieses Ereignis wirklich löschen?";
 $l['removeattach_confirm'] = "Möchtest du die ausgewählten Anhänge wirklich löschen?";
-
 $l['latest_threads'] = "Letzte Themen";
-
 $l['folder_inbox'] = "Eingang";
 $l['folder_sent_items'] = "Ausgang";
 $l['folder_drafts'] = "Entwürfe";
 $l['folder_trash'] = "Papierkorb";
 $l['folder_untitled'] = "Unbenannter Ordner";
-
 $l['standard_mod_tools'] = "Standard-Tools";
 $l['custom_mod_tools'] = "Eigene Tools";
-
 $l['error_loadlimit'] = "Das maximale Server-Load-Limit ist erreicht. Bitte versuche es später nochmal, wenn der Server nicht mehr so ausgelastet ist.";
 $l['error_boardclosed'] = "Dieses Forum ist zur Zeit geschlossen. Der Administrator hat folgenden Grund angegeben:";
 $l['error_banned'] = "Entschuldigung, aber du bist aus dem Forum ausgeschlossen. Es kann sein, dass du keine Beiträge schreiben, Themen lesen oder das Forum betreten kannst. Bei weiteren Fragen kontaktiere bitte den Forenadministrator.";
 $l['error_cannot_upload_php_post'] = "Die Datei konnte nicht hochgeladen werden - Zu groß für die PHP-Einstellung post_max_size. Bitte klicke auf den Zurück-Button.";
 $l['error_database_repair'] = "MyBB repariert automatisch die beschädigten Datenbanktabellen.";
-
 $l['unknown_user_trigger'] = "Ein unbekannter Fehler ist aufgetreten.";
 $l['warnings'] = "Folgende Warnungen sind aufgetreten:";
-
 $l['ajax_loading'] = "Lade.<br />Bitte warten...";
 $l['saving_changes'] = "Änderungen werden gespeichert ...";
 $l['refresh'] = "Aktualisieren";
 $l['select_language'] = "Einfache Sprachauswahl";
-
 $l['invalid_post_code'] = "Falscher Autorisierungscode! Greifst du auf diese Funktion auf die übliche Weise zu? Bitte gehe zurück und versuche es erneut.";
 $l['invalid_captcha'] = "Bitte übertrage den Verifizierungscode in das Textfeld um fortfahren zu können. Bitte gib ihn genau so ein, wie er im Bild erscheint.";
 $l['invalid_captcha_verify'] = "Der Verifizierungscode des Bildes war falsch. Bitte gib den Code genau so ein, wie er im Bild erscheint.";
 $l['invalid_captcha_transmit'] = "Es ist ein Fehler bei der Verifizierung aufgetreten. Bitte versuche es erneut.";
-
 $l['timezone_gmt_minus_1200'] = "(GMT -12:00) Eniwetok, Kwajalein";
 $l['timezone_gmt_minus_1100'] = "(GMT -11:00) Nome, Midwayinseln, Samoa";
 $l['timezone_gmt_minus_1000'] = "(GMT -10:00) Hawaii";
@@ -383,7 +350,6 @@ $l['timezone_gmt_1000'] = "(GMT +10:00) Melbourne, Papua Neuguinea, Sydney, Vlad
 $l['timezone_gmt_1100'] = "(GMT +11:00) Magadan, Neukaledonien, Solomoninseln";
 $l['timezone_gmt_1200'] = "(GMT +12:00) Auckland, Wellington, Fiji, Marshallinsel";
 $l['timezone_gmt_short'] = "GMT {1}({2})";
-
 $l['missing_task'] = "Fehler: Aufgabendatei existiert nicht";
 $l['task_backup_cannot_write_backup'] = "Fehler: Datenbanksicherungen können nicht automatisch angelegt werden, da der Backup-Ordner nicht beschreibbar ist.";
 $l['task_backup_ran'] = "Die Datenbanksicherung wurde erfolgreich durchgeführt.";
@@ -400,17 +366,13 @@ $l['task_userpruning_ran'] = "Die Benutzer wurden erfolgreich reduziert.";
 $l['task_delayedmoderation_ran'] = "Die verzögerte Moderation wurde erfolgreich durchgeführt.";
 $l['task_massmail_ran_errors'] = "Es gab ein oder mehrere Problem(e) beim Senden an \"{1}\":
 {2}";
-
 $l['dismiss_notice'] = "Diese Notiz löschen";
-
 $l['next'] = "Weiter";
 $l['previous'] = "Zurück";
 $l['delete'] = "Löschen";
-
 $l['massmail_username'] = "Benutzername";
 $l['email_addr'] = "E-Mail-Adresse";
 $l['board_name'] = "Forenname";
 $l['board_url'] = "Foren-URL";
-
 $l['comma'] = ", ";
 ?>

@@ -25,8 +25,9 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 	
 	if($mybb->input['delete_all'])
 	{
+		$result = $db->query("SELECT * FROM ".TABLE_PREFIX."maillogs");
+		$num_deleted = $db->num_rows($result);
 		$result = $db->delete_query("maillogs");
-		$num_deleted = $db->affected_rows($result);
 		
 		$plugins->run_hooks("admin_tools_maillogs_prune_delete_all_commit");
 		
@@ -41,8 +42,9 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 		$log_ids = implode(",", array_map("intval", $mybb->input['log']));
 		if($log_ids)
 		{
+	                $result = $db->query("SELECT * FROM ".TABLE_PREFIX."maillogs WHERE mid IN ({$log_ids})");
+	                $num_deleted = $db->num_rows($result);
 			$result = $db->delete_query("maillogs", "mid IN ({$log_ids})");
-			$num_deleted = $db->affected_rows($result);
 		}
 	}
 	

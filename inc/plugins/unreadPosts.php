@@ -139,6 +139,7 @@ class unreadPosts
             $mybb->user['lastmark'] = (int) $mybb->user['lastmark'];
             
             $plugins->hooks["postbit"][10]["up_analyzePostbit"] = array("function" => create_function('&$arg', 'global $plugins; $plugins->objects[\'unreadPosts\']->analyzePostbit($arg);'));
+            $plugins->hooks["postbit_ignored"][10]["up_analyzePostbit"] = array("function" => create_function('&$arg', 'global $plugins; $plugins->objects[\'unreadPosts\']->analyzePostbit($arg);'));
             $plugins->hooks["showthread_start"][10]["up_getReadTime"] = array("function" => create_function('', 'global $plugins; $plugins->objects[\'unreadPosts\']->getReadTime();'));
             $plugins->hooks["showthread_linear"][10]["up_markShowthreadLinear"] = array("function" => create_function('', 'global $plugins; $plugins->objects[\'unreadPosts\']->markShowthreadLinear();'));
             
@@ -249,6 +250,7 @@ class unreadPosts
             }
 
             $post['posturl'] = str_replace('<!-- IS_UNREAD -->', $tpl_indicator, $post['posturl']);
+            $post['postbit_ignored'] = str_replace('<!-- IS_UNREAD -->', $tpl_indicator, $post['postbit_ignored']);
         }
     }
 

@@ -3224,7 +3224,7 @@ function build_breadcrumb()
 					$sep = "";
 				}
 				
-				$multipage = null;
+/*				$multipage = null;
 				$multipage_dropdown = null;
 				if(!empty($navbit['multipage']))
 				{
@@ -3236,7 +3236,7 @@ function build_breadcrumb()
 						$sep = $multipage_dropdown.$sep;
 					}
 				}
-
+*/
 				// Replace page 1 URLs
 				$navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
 				$navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);

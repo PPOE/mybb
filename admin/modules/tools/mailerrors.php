@@ -25,8 +25,9 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 	
 	if($mybb->input['delete_all'])
 	{
+                $result = $db->query("SELECT * FROM ".TABLE_PREFIX."mailerrors");
+                $num_deleted = $db->num_rows($result);
 		$result = $db->delete_query("mailerrors");
-		$num_deleted = $db->affected_rows($result);
 		
 		$plugins->run_hooks("admin_tools_mailerrors_prune_delete_all_commit");
 		
@@ -41,8 +42,9 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 		$log_ids = implode(",", array_map("intval", $mybb->input['log']));
 		if($log_ids)
 		{
+	                $result = $db->query("SELECT * FROM ".TABLE_PREFIX."mailerrors WHERE eid IN ({$log_ids})");
+	                $num_deleted = $db->num_rows($result);
 			$result = $db->delete_query("mailerrors", "eid IN ({$log_ids})");
-			$num_deleted = $db->affected_rows($result);
 		}
 	}
 	

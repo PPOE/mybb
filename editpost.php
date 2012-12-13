@@ -72,7 +72,7 @@ if($forum['open'] == 0 || $mybb->user['suspendposting'] == 1)
 }
 
 // Add prefix to breadcrumb
-$query = $db->simple_select('threadprefixes', 'displaystyle', "pid='{$thread['prefix']}'");
+$query = $db->simple_select('threadprefixes', 'displaystyle', "pid='{$thread['prefix']+0}'");
 $breadcrumbprefix = $db->fetch_field($query, 'displaystyle');
 
 if($breadcrumbprefix)

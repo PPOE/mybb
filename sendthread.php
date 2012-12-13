@@ -27,7 +27,7 @@ $tid = intval($mybb->input['tid']);
 $thread = get_thread($tid);
 
 // Get thread prefix
-$query = $db->simple_select('threadprefixes', 'prefix, displaystyle', "pid='{$thread['prefix']}'");
+$query = $db->simple_select('threadprefixes', 'prefix, displaystyle', "pid='{$thread['prefix']+0}'");
 $threadprefix = $db->fetch_array($query);
 
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));

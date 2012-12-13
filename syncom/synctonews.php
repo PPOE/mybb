@@ -63,19 +63,20 @@ function postarticle($message)
 
 	$mime = new Mail_mime("\n");
 
-	$body = stripslashes(str_replace(array('\r', '\n'), array("\r", "\n"), $message['body']));
+//	$body = stripslashes(str_replace(array('\r', '\n'), array("\r", "\n"), $message['body']));
+	$body = str_replace(array('\r', '\n', "''"), array("\r", "\n", "'"), $message['body']);
 
 	// Quotes umstellen
 	//$pattern = "/\[quote=\"'(.*?)' pid='(\d+)' dateline='(\d+)'\"\].*?/is";
 	//$body = preg_replace($pattern, '[quote=$1]', $body);
 
-	$pattern = "/\[quote='(.*?)' pid='(\d+)' dateline='(\d+)'\].*?/is";
+	$pattern = "/\[quote='+(.*?)'+ pid='+(\d+)'+ dateline='+(\d+)'+\].*?/is";
 	$body = preg_replace($pattern, '[quote=$1]', $body);
 	$body = str_ireplace(array('[collapsed]', '[/collapsed]'), array('[quote]', '[/quote]'), $body);
 
 	// Eher temporaer, bis es neue Routinen bbcode2plain gibt
 	$pattern = "/\[url=(.*?)\](.*?)\[\/url\].*?/is";
-	$body2 = preg_replace($pattern, '$2[url]$1[/url]', $body);
+	$body2 = preg_replace($pattern, '$2 ([url]$1[/url])', $body);
 
 	if ($message['html']) {
 		$mime->setTXTBody(bbcode2plain2($body));

@@ -407,6 +407,8 @@ class DB_PgSQL
 	 */
 	function fetch_array($query)
 	{
+		if (!$query)
+			return false;
 		$array = pg_fetch_assoc($query);
 		return $array;
 	}
