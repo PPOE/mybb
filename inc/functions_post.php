@@ -16,7 +16,7 @@
  * @param int The type of post bit we're building (1 = preview, 2 = pm, 3 = announcement, else = post)
  * @return string The built post bit
  */
-function build_postbit($post, $post_type=0)
+function build_postbit($post, $post_type=0, $uncover="")
 {
 	global $db, $altbg, $theme, $mybb, $postcounter;
 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
@@ -611,7 +611,7 @@ function build_postbit($post, $post_type=0)
 		$post['icon'] = "";
 	}
 	
-	$post_visibility = '';
+	$post_visibility = 'display: inherit;';
 	switch($post_type)
 	{
 		case 1: // Message preview
@@ -624,8 +624,8 @@ function build_postbit($post, $post_type=0)
 			$post = $plugins->run_hooks("postbit_announcement", $post);
 			break;
 		default: // Regular post
+                        $post['uncover'] = $uncover;
 			$post = $plugins->run_hooks("postbit", $post);
-
 			// Is this author on the ignore list of the current user? Hide this post
 			if(is_array($ignored_users) && $post['uid'] != 0 && $ignored_users[$post['uid']] == 1)
 			{
@@ -655,6 +655,16 @@ function build_postbit($post, $post_type=0)
 			$ignore_bit = $post["postbit_ignored"];
 			break;
 	}
+
+        if($post_visibility != "display: none;")
+        {
+	        $ignored_message = "Ausgeblendet (Bewertung: " . $thumbs_sum . "): " . $post['subject'];
+		$ignore_extra_style = "display: none;";
+                eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
+        }
+        $post["postbit_ignored"] = $ignore_bit;
+        $post = $plugins->run_hooks("postbit_ignored", $post);
+        $ignore_bit = $post["postbit_ignored"];
 	
 /*	if($mybb->settings['postlayout'] == "classic")
 	{

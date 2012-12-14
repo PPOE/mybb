@@ -264,7 +264,11 @@ function tpr_box(&$post)
 	}
 
 	// Stick in JS and CSS
-	$GLOBALS['headerinclude'] .= '<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/thumbspostrating.js?ver=1600"></script><link type="text/css" rel="stylesheet" href="'.$mybb->settings['bburl'].'/css/thumbspostrating.css" />';
+	if (!$GLOBALS['tpr_box_headerincluded'])
+	{
+		$GLOBALS['headerinclude'] .= '<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/thumbspostrating.js?ver=1600"></script><link type="text/css" rel="stylesheet" href="'.$mybb->settings['bburl'].'/css/thumbspostrating.css" />';
+	        $GLOBALS['tpr_box_headerincluded'] = true;
+	}
 
 	// Build user rating cache
 	static $done_init = false;

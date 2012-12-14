@@ -1398,13 +1398,13 @@ function buildtree($replyto="0", $indent="0")
  * @param unknown_type $indent
  * @return unknown
  */
-function buildtree2($pids=array(), $replyto="0", $indent="0")
+function buildtree2($pids=array(), $replyto="0", $indent="0", $uncover="")
 {
         global $db, $tree, $mybb, $theme, $mybb, $pid, $fid, $tid, $templates, $parser, $ismod;
         
         if($indent)
         {
-                $indentsize = 25 * $indent;
+                $indentsize = 25;// * $indent;
         }
         else
         {
@@ -1418,7 +1418,6 @@ function buildtree2($pids=array(), $replyto="0", $indent="0")
                         $postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
                         $posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
                         $post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
-
                         if(!$post['subject'])
                         {
                                 $post['subject'] = "[".$lang->no_subject."]";
@@ -1459,20 +1458,27 @@ function buildtree2($pids=array(), $replyto="0", $indent="0")
                                 {
                                         $post['pid'] = $showpost['pid'];
                                 }
-                                if (in_array($post['pid'], $pids))
+				$end_div = false;
+                                //if (in_array($post['pid'], $pids))
                                 {
-                                        $content = build_postbit($showpost);
+                                        $content = build_postbit($showpost, 0, $uncover);
                                         eval("\$posts .= \"".$templates->get("indented_content")."\";");
+					$end_div = true;
                                 }
-                                else
+                                /*else
                                 {
                                         eval("\$posts .= \"".$templates->get("showthread_threaded_bit")."\";");
-                                }
+                                }*/
 
-                        if($tree[$post['pid']])
-                        {
-                                $posts .= buildtree2($pids, $post['pid'], $indent);
-                        }
+	                        if($tree[$post['pid']])
+	                        {
+	                                $posts .= buildtree2($pids, $post['pid'], $indent, $uncover . "$('ignored_post_{$post['pid']}_unread').show();");
+	                        }
+				$posts .= '</div>';
+                                if ($end_div)
+                                {
+                                        $posts .= '</div>';
+                                }
                 }
                 --$indent;
         }
