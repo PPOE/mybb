@@ -18,13 +18,26 @@ require_once "convertpost.php";
 
 require_once "mybbapi.php";
 
-function  fix_encoding($in_str) {
-        $cur_encoding = mb_detect_encoding($in_str) ;
-        if($cur_encoding == "UTF-8" && mb_check_encoding($in_str,"UTF-8")){
-            return $in_str;
-        }else{
-            return utf8_encode($in_str);
+function check_utf8($str) {
+    $len = strlen($str);
+    for($i = 0; $i < $len; $i++){
+        $c = ord($str[$i]);
+        if ($c > 128) {
+            if (($c > 247)) return false;
+            elseif ($c > 239) $bytes = 4;
+            elseif ($c > 223) $bytes = 3;
+            elseif ($c > 191) $bytes = 2;
+            else return false;
+            if (($i + $bytes) > $len) return false;
+            while ($bytes > 1) {
+                $i++;
+                $b = ord($str[$i]);
+                if ($b < 128 || $b > 191) return false;
+                $bytes--;
+            }
         }
+    }
+    return true;
 }
 
 function fetcharticles($nntp, $newsgroup, $start, $end = -1)
@@ -177,11 +190,18 @@ if ($pid == -1) {
 
 	//echo "Und dann schauen, ob es den gleichen Betreff innerhalb von X Tagen gab\n";
 
+        if (!mb_detect_encoding($struct['subject'], 'UTF-8', true))
+        {
+                $struct['subject'] = mb_convert_encoding($struct['subject'], "ISO-8859-1", "UTF-8");
+        }
 
 	$struct['subject'] = substr($struct['subject'], 0, 84);
         $struct['subject'] = $db->escape_string($struct['subject']);
 
-	$struct['body'] = fix_encoding($struct['body']);
+	if (!mb_detect_encoding($struct['body'], 'UTF-8', true))
+	{
+		$struct['body'] = mb_convert_encoding($struct['body'], "ISO-8859-1", "UTF-8");
+	}
 
         if ($post['pid'] == 0)
 		$post = $api->getidbysubject($struct, $fid);
@@ -284,7 +304,7 @@ function processarticles()
 			if (($fid == 0) or processarticle($api, $fid, $message['article'], $message['number']))
 				@unlink($file);
 			else
-				rename($file, $syncom['incoming-spool'].'/error/'.$spoolfile);
+				@rename($file, $syncom['incoming-spool'].'/error/'.$spoolfile);
 		}
 	}
 }

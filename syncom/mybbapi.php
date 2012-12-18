@@ -256,6 +256,10 @@ class mybbapi
 		global $db;
 
 		$subject = substr(ltrim(substr($data['subject'], 3)), 0, 120);
+	        if (!mb_detect_encoding($subject, 'UTF-8', true))
+	        {
+	                $subject = mb_convert_encoding($subject, "ISO-8859-1", "UTF-8");
+	        }
 
 		$sql = "fid=".$db->escape_string($fid)." and subject='".$db->escape_string($subject)."'";
 

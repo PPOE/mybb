@@ -643,7 +643,7 @@ function build_postbit($post, $post_type=0, $uncover="")
                        		$thumbs_own = $db->fetch_array($query);
 				$thumbs_sum_own = $thumbs_own['sum'] + 0;
 			}
-                        if(($thumbs_sum < -1 || $thumbs_sum_own < 0) && $thumbs_sum_own <= 0)
+                        if(($thumbs_sum < -1 || $thumbs_sum_own < 0) && $thumbs_sum_own <= 0 && $mybb->user['uid'] != $post['uid'])
                         {
                                 $ignored_message = "Ausgeblendet (Bewertung: " . $thumbs_sum . "): " . $post['subject'];
                                 eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");

@@ -48,7 +48,7 @@ echo "METHOD:PUBLISH\r\n";
 echo "X-WR-TIMEZONE:Europe/Berlin\r\n";
 echo "X-WR-CALNAME:".$calendarname."\r\n";
 
-$events = get_events($calendar, time()-(86400*300), time()+(86400*900), true);
+/*$events = get_events($calendar, time()-(86400*300), time()+(86400*900), true);
 print_r($events);
 foreach ($events as $day=>$events2) {
 	// in $day steht der Wochentag
@@ -94,6 +94,6 @@ foreach ($events as $day=>$events2) {
 		$line = str_replace("\n", "\r\n", $line);
 		echo $line;
 	}
-}
+}*/
 echo "END:VCALENDAR\r\n";
 ?>
