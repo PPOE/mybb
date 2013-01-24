@@ -1004,7 +1004,7 @@ class DB_PgSQL
 			LEFT JOIN pg_attribute ia ON (ia.attrelid = i.indexrelid)
 			LEFT JOIN pg_attribute ta ON (ta.attrelid = bc.oid AND ta.attrelid = i.indrelid AND ta.attnum = i.indkey[ia.attnum-1])
 			WHERE bc.relname = '{$this->table_prefix}{$table}'
-			ORDER BY lower(index_name), lower(tab_name), lower(column_name)
+			ORDER BY lower(ic.relname), lower(bc.relname), lower(ta.attname)
 		");
 
 		$primary_key = array();
