@@ -31,7 +31,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * $Id: class_captcha.php 5772 2012-04-19 09:47:45Z Tomm $
+ * $Id$
  */
 
 class captcha
@@ -167,7 +167,7 @@ class captcha
 
 	function build_hidden_captcha()
 	{
-		global $mybb, $templates;
+		global $db, $mybb, $templates;
 
 		$field = array();
 

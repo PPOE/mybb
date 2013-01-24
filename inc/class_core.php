@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: class_core.php 5828 2012-05-08 16:06:16Z Tomm $
+ * $Id$
  */
 
 class MyBB {
@@ -15,14 +15,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.6.8";
+	public $version = "1.6.9";
 	
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1608;
+	public $version_code = 1609;
 	
 	/**
 	 * The current working directory.
