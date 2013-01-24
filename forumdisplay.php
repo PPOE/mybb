@@ -755,7 +755,7 @@ if($fpermissions['canviewthreads'] != 0)
 {
 	// Start Getting Threads
 	$query = $db->query("
-		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username
+		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=t.tid)) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=t.tid) AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 		WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
@@ -945,6 +945,18 @@ if(is_array($threadcache))
 
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+                $thread['opacity'] = "1.0";
+                $thread['fontsize'] = "";
+		if ($mybb->user['disablereddit'] != 1) {
+			$thread['thumbs'] = intval($thread['thumbs']);
+			$thread['my_thumbs'] = intval($thread['my_thumbs']);
+			if(($thread['thumbs'] < -1 || $thread['my_thumbs'] < 0) && $thread['my_thumbs'] <= 0 && $mybb->user['uid'] != $thread['uid'])
+			{
+				$thread['subject'] = "Ausgeblendeter Beitrag (Bewertung: " . $thread['thumbs'] . ")";
+				$thread['opacity'] = "0.25";
+				$thread['fontsize'] = "font-size: 0.75em;";
+			}
+		}
 
 		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 		{

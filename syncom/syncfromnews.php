@@ -208,7 +208,7 @@ if ($pid == -1) {
 
 	//echo "Wenn immer noch kein Bezug gefunden wird, wird das \"re:\" entfernt\n";
 	if ($post['pid'] == 0)
-		if (strtolower(substr($struct['subject'],0,3)) == 're:')
+		if (strtolower(substr($struct['subject'],0,3)) == 're:' || strtolower(substr($struct['subject'],0,3)) == 'aw:')
 			$struct['subject'] = ltrim(substr($struct['subject'], 3));
 
 	$user = $db->escape_string($struct['from']['personal']);

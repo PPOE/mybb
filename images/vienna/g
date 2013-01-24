@@ -1,0 +1,6 @@
+#!/bin/bash
+if [ $# -gt 1 ]; then
+wget --no-check-certificate $1 -O $2
+else
+wget --no-check-certificate $1
+fi

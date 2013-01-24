@@ -747,10 +747,16 @@ function perform_search_mysql($search)
 				$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 				error($lang->error_minsearchlength);
 			}
-			$subject_lookin = " AND LOWER(t.subject) LIKE '%{$keywords}%'";
-			if($search['postthread'] == 1)
+			$keywords_arr = explode(" ", $keywords);
+			$subject_lookin = "";
+			$message_lookin = "";
+			foreach ($keywords_arr as $keyword)
 			{
-				$message_lookin = " AND LOWER(p.message) LIKE '%{$keywords}%'";
+				$subject_lookin .= " AND LOWER(t.subject) LIKE '%{$keyword}%'";
+				if($search['postthread'] == 1)
+				{
+					$message_lookin .= " AND LOWER(p.message) LIKE '%{$keyword}%'";
+				}
 			}
 		}
 	}
@@ -823,7 +829,7 @@ function perform_search_mysql($search)
 	$forumin = '';
 	$fidlist = array();
 	$searchin = array();
-	if($search['forums'] != "all")
+	if($search['forums'] != "all" && $search['forums'][0] != "all")
 	{
 		if(!is_array($search['forums']))
 		{

@@ -54,7 +54,10 @@ function postarticle($message)
 		$message['from'] = $message['sender'];
 	if (!strpos($message['from'], ".") and ($message['sender'] !=""))
 		$message['from'] = $message['sender'];
-        $message['from'] = preg_replace('/@$/is', '@forum.piratenpartei.at', $message['from']);
+	if ($syncom['user'] != '')
+        	$message['from'] = preg_replace('/[^a-z0-9-_\.]/','', str_replace('+','%20',urlencode(strtolower($message['user'])))) . '@forum.piratenpartei.at';
+	else
+	        $message['from'] = preg_replace('/@$/is', '@forum.piratenpartei.at', $message['from']);
 
 	$hdrs = array(
 		'From' => $message['from'],

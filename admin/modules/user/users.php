@@ -3341,7 +3341,7 @@ function build_users_view($view)
 				$view['sortby'] = "warningpoints";
 				break;
 			default:
-				$view['sortby'] = "username";
+				$view['sortby'] = "lower(username)";
 		}
 
 		if($view['sortorder'] != "desc")

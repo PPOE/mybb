@@ -2,4 +2,11 @@ install
 cache
 *.bak
 *.bak2
+*.gz
+*.log
 uploads
+*.sample
+*.zip
+*.log.1
+*.tar
+config.php

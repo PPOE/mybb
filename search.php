@@ -57,7 +57,6 @@ if($mybb->input['action'] == "results")
 	$sid = $db->escape_string($mybb->input['sid']);
 	$query = $db->simple_select("searchlog", "*", "sid='$sid'");
 	$search = $db->fetch_array($query);
-
 	if(!$search['sid'])
 	{
 		error($lang->error_invalidsearch);
@@ -280,7 +279,13 @@ if($mybb->input['action'] == "results")
 		// This search doesn't use a query cache, results stored in search table.
 		else
 		{
-			$where_conditions = "t.tid IN (".$search['threads'].")";
+			if (strlen($search['threads']) > 0)
+			{
+				if (strlen($where_conditions) > 0)
+					$where_conditions .= " AND t.tid IN (".$search['threads'].")";
+				else
+					$where_conditions = " t.tid IN (".$search['threads'].")";
+			}
 			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' {$limitsql}");
 			$count = $db->fetch_array($query);
 
@@ -327,7 +332,7 @@ if($mybb->input['action'] == "results")
 			'limit' => $perpage
 		);
 		$query = $db->query("
-			SELECT t.*, u.username AS userusername, p.displaystyle AS threadprefix
+			SELECT t.*, u.username AS userusername, p.displaystyle AS threadprefix,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=t.tid)) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=t.tid) AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 			LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
@@ -341,7 +346,6 @@ if($mybb->input['action'] == "results")
 			$thread_cache[$thread['tid']] = $thread;
 		}
 		$thread_ids = implode(",", array_keys($thread_cache));
-		
 		if(empty($thread_ids))
 		{
 			error($lang->error_nosearchresults);
@@ -398,6 +402,18 @@ if($mybb->input['action'] == "results")
 			
 			$thread['subject'] = $parser->parse_badwords($thread['subject']);
 			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+			$thread['opacity'] = "1.0";
+			$thread['fontsize'] = "";
+                        if ($mybb->user['disablereddit'] != 1) {
+			$thread['thumbs'] = intval($thread['thumbs']);
+			$thread['my_thumbs'] = intval($thread['my_thumbs']);
+                        if(($thread['thumbs'] < -1 || $thread['my_thumbs'] < 0) && $thread['my_thumbs'] <= 0 && $mybb->user['uid'] != $thread['uid'])
+                        {
+                                $thread['subject'] = "Ausgeblendeter Beitrag (Bewertung: " . $thread['thumbs'] . ")";
+				$thread['opacity'] = "0.25";
+				$thread['fontsize'] = "font-size: 0.75em;";
+                        }
+                        }
 
 			if($icon_cache[$thread['icon']])
 			{
@@ -772,7 +788,7 @@ if($mybb->input['action'] == "results")
 		}
 
 		$query = $db->query("
-			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid
+			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=p.tid)) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=p.tid) AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
@@ -942,6 +958,20 @@ if($mybb->input['action'] == "results")
 			{
 				$prev = $post['message'];
 			}
+                        $post['opacity'] = "1.0";
+                        $post['fontsize'] = "";
+                        if ($mybb->user['disablereddit'] != 1) {
+                        $post['thumbs'] = intval($post['thumbs']);
+                        $post['my_thumbs'] = intval($post['my_thumbs']);
+                        if(($post['thumbs'] < -1 || $post['my_thumbs'] < 0) && $post['my_thumbs'] <= 0 && $mybb->user['uid'] != $post['uid'])
+                        {
+                                $post['opacity'] = "0.25";
+                                $post['fontsize'] = "font-size: 0.75em;";
+				$prev = "";
+                                $post['subject'] = "Ausgeblendeter Beitrag (Bewertung: " . $post['thumbs'] . ")";
+                        }
+                        }
+
 			$posted = my_date($mybb->settings['dateformat'], $post['dateline']).", ".my_date($mybb->settings['timeformat'], $post['dateline']);
 			
 			$thread_url = get_thread_link($post['tid']);
