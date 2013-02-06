@@ -571,7 +571,7 @@ class DB_PgSQL
 	 */
 	function affected_rows($result)
 	{
-		return pg_affected_rows($result);
+		return pg_affected_rows($result) or error_log("Error! Params: ".$result, 3, "/var/www/error.log");
 	}
 
 	/**
