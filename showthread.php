@@ -1461,7 +1461,7 @@ function buildtree2($pids=array(), $replyto="0", $indent="0", $uncover="")
 				$end_div = false;
                                 //if (in_array($post['pid'], $pids))
                                 {
-                                        $content = build_postbit($showpost, 0, $uncover);
+                                        $content = build_postbit($showpost, 0, $uncover . "Thread.showIgnoredPost({$post['pid']});");
                                         eval("\$posts .= \"".$templates->get("indented_content")."\";");
 					$end_div = true;
                                 }
@@ -1472,8 +1472,12 @@ function buildtree2($pids=array(), $replyto="0", $indent="0", $uncover="")
 
 	                        if($tree[$post['pid']])
 	                        {
-	                                $posts .= buildtree2($pids, $post['pid'], $indent, $uncover . "$('ignored_post_{$post['pid']}_unread').show();");
-	                        }
+	                                $posts .= buildtree2($pids, $post['pid'], $indent, $uncover . "Thread.showIgnoredPost({$post['pid']});");
+                          }
+                          if ($mybb->input['pid'] && intval($mybb->input['pid']) == intval($post['pid']))
+                          {
+                                  $posts .= '<script type="text/javascript">' . $uncover . "Thread.showIgnoredPost({$post['pid']});" . '</script>';
+                          }
 				$posts .= '</div>';
                                 if ($end_div)
                                 {

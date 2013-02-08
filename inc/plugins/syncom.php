@@ -468,14 +468,14 @@ function syncom_activate()
 {
 	require MYBB_ROOT.'/inc/adminfunctions_templates.php';
 
-	find_replace_templatesets('usercp_profile',
+/*	find_replace_templatesets('usercp_profile',
 		preg_quote('#{$user[\'yahoo\']}" /></td>#is'),
 		'{$user[\'yahoo\']}" /></td></tr>
 <tr><td><span class="smalltext">{$lang->syncom_realname}</span></td></tr>
 <tr><td><input type="text" class="textbox" name="syncom_realname" size="50" value="{$user[\'syncom_realname\']}" /></td></tr>
 <tr><td><span class="smalltext">{$lang->syncom_realmail}</span></td></tr>
 <tr><td><input type="text" class="textbox" name="syncom_realmail" size="50" value="{$user[\'syncom_realmail\']}" /></td>');
-
+*/
 }
  /*
  * _deactivate():
@@ -487,7 +487,7 @@ function syncom_activate()
 function syncom_deactivate()
 {
 	require MYBB_ROOT.'/inc/adminfunctions_templates.php';
-        
+/*        
 	find_replace_templatesets('usercp_profile',
 		preg_quote('#</tr>
 <tr><td><span class="smalltext">{$lang->syncom_realname}</span></td></tr>
@@ -495,7 +495,7 @@ function syncom_deactivate()
 <tr><td><span class="smalltext">{$lang->syncom_realmail}</span></td></tr>
 <tr><td><input type="text" class="textbox" name="syncom_realmail" size="50" value="{$user[\'syncom_realmail\']}" /></td>#is'),
                 '', 0);
-
+*/
 }
 
 function syncom_usercp_start() {
@@ -506,13 +506,13 @@ function syncom_usercp_start() {
 function syncom_datahandler_user_update($it) {
         global $mybb;
 
-        if (isset($mybb->input['syncom_realname'])) {
+/*        if (isset($mybb->input['syncom_realname'])) {
                 $it->user_update_data['syncom_realname'] = $mybb->input['syncom_realname'];
         }
 
         if (isset($mybb->input['syncom_realmail'])) {
                 $it->user_update_data['syncom_realmail'] = $mybb->input['syncom_realmail'];
-        }
+        }*/
 }
 
 function syncom_update($data)
@@ -738,16 +738,16 @@ function syncom_getnamebyid($uid, $username)
 	} else
 		$user = array();
 
-	if ($user['syncom_realname'] != '')
+	/*if ($user['syncom_realname'] != '')
 		$name = $user['syncom_realname'];
-	else if ($user['username'] != '')
+	else*/ if ($user['username'] != '')
 		$name = $user['username'];
 	else
 		$name = $username;
 
-	if ($user['syncom_realmail'] != '')
+	/*if ($user['syncom_realmail'] != '')
 		$name .= ' <'.$user['syncom_realmail'].'>';
-	else if ($user['username'] != '')
+	else*/ if ($user['username'] != '')
 		$name .= ' <'.urlencode($user['username']).'@'.$syncom['mailhostname'].'>';
 	else
 		$name .= ' <'.urlencode($username).'@'.$syncom['mailhostname'].'>';

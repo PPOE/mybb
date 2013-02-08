@@ -55,6 +55,8 @@ switch($mybb->input['action'])
 
 if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_register") && $mybb->usergroup['cancp'] != 1)
 {
+  if (isset($mybb->input['username']))
+      $mybb->input['username'] = preg_replace( '/[^[:print:]]/', '',$mybb->input['username']);
 	if($mybb->settings['disableregs'] == 1)
 	{
 		error($lang->registrations_disabled);
