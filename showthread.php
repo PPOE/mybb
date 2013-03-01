@@ -886,7 +886,10 @@ if($mybb->input['action'] == "thread")
 
 		
 		//$threadedbits = buildtree();
-                $posts .= buildtree2($pids);
+      if ($mybb->input['mode'] == "linear")
+        $posts .= buildtree2($pids,true);
+      else
+        $posts .= buildtree2($pids,false);
 		//eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
 		$plugins->run_hooks("showthread_threaded");
 	}
@@ -894,7 +897,7 @@ if($mybb->input['action'] == "thread")
 	{
 		if(!$mybb->settings['postsperpage'])
 		{
-			$mybb->settings['postperpage'] = 20;
+			$mybb->settings['postperpage'] = 50;
 		}
 		
 		// Figure out if we need to display multiple pages.
@@ -1060,6 +1063,7 @@ if($mybb->input['action'] == "thread")
 				$post['visible'] = 0;
 			}
 			$posts .= build_postbit($post);
+      $posts .= "</div>";
 			$post = '';
 		}
 		$plugins->run_hooks("showthread_linear");
@@ -1398,7 +1402,7 @@ function buildtree($replyto="0", $indent="0")
  * @param unknown_type $indent
  * @return unknown
  */
-function buildtree2($pids=array(), $replyto="0", $indent="0", $uncover="")
+function buildtree2($pids=array(), $linear = true, $replyto="0", $indent="0", $uncover="")
 {
         global $db, $tree, $mybb, $theme, $mybb, $pid, $fid, $tid, $templates, $parser, $ismod;
         
@@ -1462,8 +1466,8 @@ function buildtree2($pids=array(), $replyto="0", $indent="0", $uncover="")
                                 //if (in_array($post['pid'], $pids))
                                 {
                                         $content = build_postbit($showpost, 0, $uncover . "Thread.showIgnoredPost({$post['pid']});");
-                                        eval("\$posts .= \"".$templates->get("indented_content")."\";");
-					$end_div = true;
+	                                      eval("\$posts .= \"".$templates->get("indented_content")."\";");
+				$end_div = true;
                                 }
                                 /*else
                                 {
@@ -1472,17 +1476,20 @@ function buildtree2($pids=array(), $replyto="0", $indent="0", $uncover="")
 
 	                        if($tree[$post['pid']])
 	                        {
-	                                $posts .= buildtree2($pids, $post['pid'], $indent, $uncover . "Thread.showIgnoredPost({$post['pid']});");
+	                                $posts .= buildtree2($pids, $linear, $post['pid'], $indent, $uncover . "Thread.showIgnoredPost({$post['pid']});");
                           }
-                          if ($mybb->input['pid'] && intval($mybb->input['pid']) == intval($post['pid']))
+                          if ($mybb->input['pid'] && intval($mybb->input['pid']) != 0 && intval($mybb->input['pid']) == intval($post['pid']))
                           {
                                   $posts .= '<script type="text/javascript">' . $uncover . "Thread.showIgnoredPost({$post['pid']});" . '</script>';
                           }
-				$posts .= '</div>';
-                                if ($end_div)
-                                {
-                                        $posts .= '</div>';
-                                }
+                          if (!$linear)
+                          {
+                  				$posts .= '</div>';
+                          if ($end_div)
+                          {
+                                $posts .= '</div>';
+                          }
+                          }
                 }
                 --$indent;
         }

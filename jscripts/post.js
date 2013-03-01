@@ -99,3 +99,8 @@ var Post = {
 	}
 };
 Event.observe(document, 'dom:loaded', Post.init);
+document.onunload = disableSubmit();
+function disableSubmit(){
+document.getElementsById('btnpreview').disabled = true;
+document.getElementsById('btnsubmit').disabled = true;
+}

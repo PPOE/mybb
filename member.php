@@ -8,7 +8,6 @@
  *
  * $Id$
  */
-
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'member.php');
 define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword");
@@ -126,7 +125,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"language" => $mybb->input['language'],
 		"profile_fields" => $mybb->input['profile_fields'],
 		"regip" => $session->ipaddress,
-		"longregip" => my_ip2long($session->ipaddress),
+		"longregip" => 1,
 		"coppa_user" => intval($mybb->cookies['coppauser']),
 	);
 	
@@ -356,7 +355,7 @@ if($mybb->input['action'] == "coppa_form")
 	output_page($coppa_form);
 }
 
-if($mybb->input['action'] == "register")
+if($mybb->input['action'] == "register" || $mybb->input['action'] == "new_agreement")
 {
 	$bdaysel = '';
 	if($mybb->settings['coppa'] == "disabled")
@@ -413,7 +412,16 @@ if($mybb->input['action'] == "register")
 			exit;
 		}
 	}
-
+  if (isset($mybb->input['agree']))
+  {
+    if ($mybb->input['action'] == "new_agreement")
+    {
+      $uid = $mybb->user[uid];
+      $db->update_query("users", array('longregip' => 1), "uid='{$uid}'");
+      redirect("index.php","Danke!");
+      return;
+    }
+  }
 	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
 	{
 		// Is this user a COPPA user? We need to show the COPPA agreement too
@@ -428,7 +436,11 @@ if($mybb->input['action'] == "register")
 		}
 
 		$plugins->run_hooks("member_register_agreement");
-
+    $action = "register";
+    if ($mybb->input['action'] == "new_agreement")
+    {
+      $action = "new_agreement";
+    }
 		eval("\$agreement = \"".$templates->get("member_register_agreement")."\";");
 		output_page($agreement);
 	}
@@ -1872,8 +1884,14 @@ if($mybb->input['action'] == "profile")
 	// Get reputation ratings from Thumbspostrating addon
 	$query = $db->simple_select("thumbspostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid", "SUM(A.thumbsdown) AS scoredown, SUM(A.thumbsup) AS scoreup", "B.uid='$uid'");
 	$post = $db->fetch_array($query);
+  $query = $db->query("SELECT COUNT(*) AS c FROM (SELECT 1 FROM mybb_thumbspostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid WHERE A.thumbsdown = 1 AND B.uid = '$uid' GROUP BY A.uid) A;");
+  $post2 = $db->fetch_array($query);
+  $query = $db->query("SELECT COUNT(*) AS c FROM (SELECT 1 FROM mybb_thumbspostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid WHERE A.thumbsup = 1 AND B.uid = '$uid' GROUP BY A.uid) A;");
+  $post3 = $db->fetch_array($query);
 	$reppostingsdown = intval($post['scoredown']);
+  $reppostingsdownusers = intval($post2['c']);
 	$reppostingsup = intval($post['scoreup']);
+  $reppostingsupusers = intval($post3['c']);
 				
 	// Fetch the reputation for this user
 	if($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))

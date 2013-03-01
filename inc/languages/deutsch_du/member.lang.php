@@ -19,13 +19,11 @@ $l['nav_resetpassword'] = "Passwort zurücksetzen";
 $l['nav_login'] = "Anmelden";
 $l['nav_emailuser'] = "E-Mail an Benutzer schicken";
 $l['nav_profile'] = "Profil von {1}";
-
 $l['tpp_option'] = "{1} Themen pro Seite anzeigen";
 $l['ppp_option'] = "{1} Nachrichten pro Seite anzeigen";
 $l['account_activation'] = "Konto-Aktivierung";
 $l['activate_account'] = "Konto aktivieren";
 $l['activation_code'] = "Aktivierungscode";
-
 $l['email_user'] = "Schicke {1} eine E-Mail";
 $l['email_subject'] = "E-Mail-Betreff";
 $l['email_message'] = "E-Mail-Nachricht";
@@ -33,7 +31,6 @@ $l['send_email'] = "E-Mail senden";
 $l['error_hideemail'] = "Der Empfänger hat ausgewählt, seine E-Mail-Adresse zu verstecken. Daher kann die Mail nicht verschickt werden.";
 $l['error_no_email_subject'] = "Du musst einen Betreff für die E-Mail eingeben";
 $l['error_no_email_message'] = "Du musst eine Nachricht für die E-Mail eingeben";
-
 $l['login'] = "Anmelden";
 $l['pw_note'] = "Bitte achte auf Groß- und Kleinschreibung.";
 $l['lostpw_note'] = "Passwort vergessen?";
@@ -45,7 +42,7 @@ $l['profile'] = "Profil von {1}";
 $l['registration_date'] = "Registriert seit:";
 $l['date_of_birth'] = "Geburtstag:";
 $l['birthdayhidden'] = "Versteckt";
-$l['birthday'] ="Geburtstag:";
+$l['birthday'] = "Geburtstag:";
 $l['local_time'] = "Ortszeit:";
 $l['local_time_format'] = "{1} um {2}";
 $l['users_forum_info'] = "Informationen über {1}";
@@ -78,11 +75,32 @@ $l['email'] = "E-Mail:";
 $l['send_user_email'] = "{1} eine E-Mail schicken.";
 $l['users_signature'] = "Signatur von {1}";
 $l['agreement'] = "Einverständniserklärung";
-$l['agreement_1'] = "Die Administratoren und Moderatoren dieses Forums bemühen sich, Beiträge mit fragwürdigem Inhalt so schnell wie möglich zu bearbeiten oder ganz zu löschen; aber es ist nicht möglich, jede einzelne Nachricht zu überprüfen. Du bestätigst mit dem Absenden dieser Einverständniserklärung, dass du akzeptierst, dass jeder Beitrag in diesem Forum die Meinung des Urhebers wiedergibt und dass die Administratoren, Moderatoren und Betreiber dieses Forums nur für ihre eigenen Beiträge verantwortlich sind.";
-$l['agreement_2'] = "Du verpflichtest dich, keine beleidigenden, obszönen, vulgären, verleumdenden, gewaltverherrlichenden oder aus anderen Gründen strafbaren Inhalte in diesem Forum zu veröffentlichen. Verstöße gegen diese Regel führen zu sofortiger und permanenter Sperrung. Wir behalten uns vor, Verbindungsdaten u. Ä. an die strafverfolgenden Behörden weiterzugeben. Du räumst den Betreibern, Administratoren und Moderatoren dieses Forums das Recht ein, Beiträge nach eigenem Ermessen zu entfernen, zu bearbeiten, zu verschieben oder zu sperren. Du stimmst zu, dass die im Rahmen der Registrierung erhobenen Daten in einer Datenbank gespeichert werden.";
-$l['agreement_3'] = "Dieses System verwendet Cookies, um Informationen auf deinem Computer zu speichern. Diese Cookies enthalten keine der oben angegebenen Informationen, sondern dienen ausschließlich deinem Komfort. Deine E-Mail-Adresse wird nur zur Bestätigung der Registrierung und ggf. zum Versand eines neuen Passwortes verwendet.";
-$l['agreement_4'] = "Durch das Abschließen der Registrierung stimmst du diesen Nutzungsbedingungen zu.";
-$l['agreement_5'] = "Wenn du auf 'Ich stimme zu' klickst, erklärst du dich mit den Regeln einverstanden.";
+$l['agreement_1'] = "Betreiber dieses Forum ist die Piratenpartei Österreichs. Die Teilnahme im Forum unterliegt den jeweils gültigen Forenregeln laut <a href=\"https://wiki.piratenpartei.at/wiki/Forenregeln\">https://wiki.piratenpartei.at/wiki/Forenregeln</a>, die von der Piratenpartei Österreichs oder für autonom moderierte Forenbereiche von einzelnen ihrer Gliederungen erstellt und geändert werden. Mitglieder der Piratenpartei Österreichs sind als Administratoren und Moderatoren freiwillig tätig.<br />
+<br />
+Dieses Forum ist ein Sync-Forum. Alle Beiträge können auch per Newsreader oder Mailingliste empfangen werden. Aus diesem Grund ist eine nachträgliche Veränderung der Beiträge nur mit erheblichem Aufwand der Administratoren möglich und wird ausschließlich aus für die Piratenpartei Österreichs oder einzelne ihrer Gliederung zwingenden rechtlichen Gründen vorgenommen, wobei die Piratenpartei Österreichs sich die Einschätzung dieser Gründe vorbehält.<br />
+<br />
+Da die Piratenpartei Österreichs Schranken im Teilen von Wissen ablehnt, gilt jeder originäre Beitrag in diesem Forum als unter <a href=\"http://creativecommons.org/licenses/by-nc-nd/3.0/at/\">http://creativecommons.org/licenses/by-nc-nd/3.0/at/</a> lizensiert veröffentlicht. Diese Lizenz verbietet kommerzielle Nutzung solcher Beiträge und, um vor einem Missbrauch in politischen Auseinandersetzungen zu schützen, auch Bearbeitungen der Beiträge. Zitate sind jedoch unter Namensnennung erlaubt. Für die Namensnennung gilt der Forennick, unter dem der jeweilige Beitrag veröffentlicht wird.<br />
+<br />
+WICHTIG: Die Piratenpartei Österreichs lehnt jede Verantwortung für die konkrete Wahl eines Forennicks ab. Die Piratenpartei Österreichs empfiehlt ausdrücklich die Wahl eines beliebigen Pseudonyms.<br />
+<br />
+Die Arbeit der Piratenpartei Österreichs soll auch auf Diskussionen in diesem Forum aufbauen. Jeder Beitrag unterliegt daher der Einräumung eines unwiderruflichen, einfachen, zeitlich und räumlich unbeschränkten und unentgeltlichen Nutzungsrechtes an die Piratenpartei Österreichs. Dieses Nutzungsrecht erstreckt sich im Rahmen dieses Forums, des Piraten-Wikis, der Piratepads und der jeweiligen LiquidFeedback-Instanz im Rahmen der Parteiarbeit auch auf Gliederungen und die Mitglieder der Piratenpartei Österreichs.<br />
+<br />
+Du erklärst mit der Erstellung eines Beitrags, dass er keine Inhalte enthält, die gegen geltendes Recht oder die guten Sitten verstoßen. Du erklärst insbesondere, dass du das Recht besitzt, die in deinen Beiträgen verwendeten Texte und Bilder zu verwenden. Du räumst den Betreibern, Administratoren und Moderatoren dieses Forums jeweils das Recht ein, gegen die gültigen Forenregeln oder das Gesetz verstoßende Inhalte innerhalb des Forums und verbundener Archive nach eigenem Ermessen zu entfernen, durch Entfernung oder Überschreibung mit unbedenklichen Platzhaltern abzuändern, zu verschieben oder zu sperren.<br />
+<br />
+Mit dem Erstellen eines Beitrags erteilst du dem Betreiber ein unwiderrufliches, einfaches, zeitlich und räumlich unbeschränktes und unentgeltliches Recht, deinen Beitrag im Rahmen des Forums und weiterer Plattformen der Piratenpartei zu nutzen. Du verzichtest auf jeden Löschungsanspruch, insbesondere nach Datenschutzgesetzen, hinsichtlich deiner eigenen Beiträge.<br />";
+$l['agreement_2'] = "<h2>Newsserver und Mailingliste</h2>
+Bei der Erstellung von Beiträgen mittels des Newsservers oder der Mailingliste ist es möglich, eine Mailadresse und einen Namen zu wählen. Diese Informationen sind Teil des eigentlichen Beitrags. Der Beitrag wird als Gesamtes veröffentlicht. Wir empfehlen die Nutzung einer <Foren-Nickname>@forum.piratenpartei.at-Mailadresse, um deine private Mailadresse hinreichend zu schützen.";
+$l['agreement_3'] = "Dieses System verwendet Cookies, um Informationen auf deinem Computer zu speichern. Diese Cookies enthalten keine der oben angegebenen Informationen, sondern dienen ausschließlich deinem Komfort.
+
+<h2>Einverständnis Datenverwendungen</h2>
+Du stimmst zu, dass die im Rahmen der Registrierung erhobenen Daten gemäß <a href=\"https://forum.piratenpartei.at/datenschutzerklaerung.php\">https://forum.piratenpartei.at/datenschutzerklaerung.php</a> verwendet werden.";
+$l['agreement_4'] = "<h2>Haftungsbeschränkungen</h2>
+Du akzeptierst, dass jeder Beitrag in diesem Forum die Meinung des Urhebers wiedergibt und dass die Administratoren, Moderatoren und Betreiber dieses Forums nur für ihre eigenen Beiträge verantwortlich sind.<br />
+<br />
+Streitigkeiten, die aus der Nutzung des Forums entstehen, unterliegen materiellem österreichischem Recht. Ein Gerichtsstand ist Wien. Eine allfällige Schiedsgerichtsbarkeit des Schiedsgerichts der Piratenpartei Österreichs ist explizit ausgeschlossen.<br />
+<br />
+Durch das Abschließen der Registrierung stimmst du diesen Nutzungsbedingungen zu.";
+$l['agreement_5'] = "Wenn du auf 'Ich stimme zu' klickst, erklärst du dich mit den Nutzungsbedingungen und der Datenschutzerklärung einverstanden.";
 $l['registration'] = "Registrierung";
 $l['required_fields'] = "Erforderliche Felder";
 $l['complex_password'] = "<acronym title=\"Ein Passwort mit mindestens {1} Zeichen, dass große Buchstaben, kleine Buchstaben und Zahlen enthält.\">Komplexes</acronym> Passwort:";
@@ -128,13 +146,10 @@ $l['full_name'] = "Vollständiger Name:";
 $l['relation'] = "Beziehung:";
 $l['phone_no'] = "Telefonnummer #:";
 $l['coppa_parent_agreement'] = "Ich versichere, dass die von mir angegebenen Informationen der Wahrheit entsprechen. Ich habe verstanden, dass ich alle angegebenen Informationen mit Eingabe des bereitgestellten Passworts ändern und dass ich meinen Account jederzeit löschen lassen kann.";
-
 $l['coppa_agreement_1'] = "Benutzer, die jünger als 13 Jahre sind, brauchen eine Genehmigung ihrer Eltern oder gesetzlichen Vertreter, um sich bei {1} zu registrieren.";
 $l['coppa_agreement_2'] = "Ein Elternteil oder gesetzlicher Verteter muss unser <a href=\"member.php?action=coppa_form\">COPPA Zustimmungs- &amp; Erlaubnisformular</a> herunterladen, ausfüllen und uns eine vollständige Kopie schicken, bevor eine Mitgliedschaft gewährt wird.";
 $l['coppa_agreement_3'] = "Wenn du möchtest, kannst du den Registrierungsvorgang jetzt beginnen. Der Account wird jedoch erst nutzbar, wenn wir das oben genannte Einverständnisformular erhalten haben.";
-
 $l['error_awaitingcoppa'] = "Du kannst dich nicht mit diesem Account einloggen, weil wir noch immer auf die Altersüberprüfung eines Elternteils oder gesetzlichen Vertreters warten.<br /><br />Ein Elternteil oder gesetzlicher Verteter muss unser <a href=\"member.php?action=coppa_form\">COPPA Zustimmungs- &amp; Erlaubnisformular</a> herunterladen, ausfüllen und uns eine vollständige Kopie schicken.<br /><br />Sobald wir eine vollständige Kopie erhalten haben, wird der Account aktiviert.";
-
 $l['lang_select'] = "Spracheinstellungen:";
 $l['lang_select_desc'] = "Solltest du in einem Land leben, in dem eine von der Standardsprache dieses Forums abweichende Sprache gesprochen wird, kannst du, sofern das entsprechende Sprachpaket installiert ist, eine andere Sprache wählen.";
 $l['lang_select_default'] = "Benutze Standard";
@@ -172,7 +187,6 @@ $l['already_logged_in'] = "Hinweis: Du bist momentan als {1} angemeldet.";
 $l['admin_edit_in_acp'] = "Diesen Benutzer im Admin-CP bearbeiten";
 $l['admin_ban_in_acp'] = "Diesen Benutzer im Admin-CP ausschließen";
 $l['admin_options'] = "Administrator-Optionen";
-
 $l['redirect_registered_activation'] = "Vielen Dank für deine Registrierung bei {1}, {2}.<p>Um deine Registrierung abzuschließen, musst du den Anweisungen in der E-Mail folgen, die dir gerade geschickt wurde. Erst danach kannst du Beiträge schreiben.";
 $l['redirect_emailupdated'] = "Deine E-Mail-Adresse wurde erfolgreich geändert.<br />Du wirst jetzt zur Startseite weitergeleitet.";
 $l['redirect_accountactivated'] = "Dein Account wurde erfolgreich aktiviert.<br />Du wirst jetzt zur Startseite weitergeleitet.";
@@ -186,7 +200,6 @@ $l['redirect_passwordreset'] = "Vielen Dank! Das Passwort für deinen Account wu
 $l['redirect_memberrated'] = "Der Benutzer wurde erfolgreich bewertet.";
 $l['redirect_registered_passwordsent'] = "Ein zufällig erstelltes Passwort wurde an deine E-Mail-Adresse versandt. Bevor du dich ins Forum einloggen kannst, musst du deine E-Mails abrufen, um das neue Passwort zu bekommen. Viel Spaß im Forum&hellip;";
 $l['redirect_validated'] = "Vielen Dank und herzlich willkommen! Dein Account wurde freigeschaltet.<br />Du wirst jetzt zu den Foren weitergeleitet.";
-
 $l['error_activated_by_admin'] = "Du kannst dir keine Aktivierungsmail schicken lassen, da alle Anmeldungen erst von einem Administrator überprüft werden.";
 $l['error_alreadyregistered'] = "Entschuldigung, aber Du hast dich schon in diesem Forum registriert und die Registrierung von mehreren Accounts wurde unterbunden.";
 $l['error_alreadyregisteredtime'] = "Die Registrierung kann nicht fortgesetzt werden, da es in den letzten {2} Stunden {1} neue Registrierung(en) von deiner IP-Adresse aus gab. Bitte versuche es später erneut.";
@@ -199,7 +212,6 @@ $l['error_notloggedout'] = "Deine Benutzer-ID konnte nicht verifiziert werden, u
 $l['error_regimageinvalid'] = "Der Verifizierungscode des Bildes war falsch. Bitte gib den Code genau so ein, wie er im Bild erscheint.";
 $l['error_regimagerequired'] = "Bitte gib den Bestätigungscode ein, um mit der Anmeldung fortzufahren. Gib den Code genau so ein, wie er im Bild zu sehen ist.";
 $l['error_spam_deny'] = "Unser System hat erkannt, dass du ein Spammer bist und deshalb die Registrierung verhindert. Wenn du dies für einen Fehler hältst, kontaktiere bitte den Administrator.";
-
 $l['js_validator_no_username'] = "Du musst einen Benutzernamen eingeben";
 $l['js_validator_invalid_email'] = "Du musst eine gültige E-Mail-Adresse eingeben";
 $l['js_validator_email_match'] = "Du musst dieselbe E-Mail-Adresse zwei mal eingeben";
@@ -212,12 +224,10 @@ $l['js_validator_checking_username'] = "Benutzername wird geprüft";
 $l['js_validator_username_length'] = "Benutzernamen müssen zwischen {1} und {2} Zeichen haben";
 $l['js_validator_checking_referrer'] = "Der Referrer wird geprüft.";
 $l['js_validator_captcha_valid'] = "Prüfe, ob Du den richtigen Verifizierungscode eingegeben hast.";
-
 $l['subscription_method'] = "Standard Themenabonnement-Modus:";
 $l['no_auto_subscribe'] = "Nicht abonnieren";
 $l['no_email_subscribe'] = "Keine E-Mail Benachrichtigung";
 $l['instant_email_subscribe'] = "Sofortige E-Mail Benachrichtigung";
-
 $l['remove_from_buddy_list'] = "Von Freundesliste entfernen";
 $l['add_to_buddy_list'] = "Zur Freundesliste hinzufügen";
 $l['remove_from_ignore_list'] = "Von Ignorierliste entfernen";

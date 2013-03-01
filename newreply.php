@@ -24,6 +24,14 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("newreply");
 
+if($mybb->user['uid'] != 0)
+{
+  if ($mybb->user['longregip'] == 0)
+  {
+    header("Location: member.php?action=new_agreement");
+  }
+}
+
 // Get the pid and tid and replyto from the input.
 $pid = $replyto = $mybb->input['pid'];
 $tid = $mybb->input['tid'];

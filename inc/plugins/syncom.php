@@ -314,7 +314,7 @@ function syncom_member_register_start()
 	global $mybb;
 
 	if (($mybb->input['step'] == 'agreement') and ($mybb->input['syncom_dsb'] != 1))
-		 error('Du musst den Nutzungsbedingungen und Datenschutzbestimmungen zustimmen, um mit der Registrierung fortzufahren.');
+		 error('Du musst den Nutzungsbedingungen und Datenschutzbestimmungen zustimmen, um fortzufahren.');
 }
 
 function syncom_member_register_agreement()

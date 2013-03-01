@@ -30,6 +30,10 @@ $lang->load("index");
 $logoutlink = $loginform = '';
 if($mybb->user['uid'] != 0)
 {
+  if ($mybb->user['longregip'] == 0)
+  {
+    header("Location: member.php?action=new_agreement");
+  }
 	eval("\$logoutlink = \"".$templates->get("index_logoutlink")."\";");
 }
 else

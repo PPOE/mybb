@@ -23,6 +23,14 @@ require_once MYBB_ROOT."inc/functions_user.php";
 // Load global language phrases
 $lang->load("newthread");
 
+if($mybb->user['uid'] != 0)
+{
+  if ($mybb->user['longregip'] == 0)
+  {
+    header("Location: member.php?action=new_agreement");
+  }
+}
+
 $tid = $pid = "";
 if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $mybb->input['tid']) || ($mybb->input['tid'] && $mybb->input['pid']))
 {
