@@ -91,6 +91,8 @@ $plugins->run_hooks("modcp_start");
 
 // Make navigation
 add_breadcrumb($lang->nav_modcp, "modcp.php");
+if ($mybb->usergroup['canmodcp'] != 1 && !($mybb->input['action'] == null || strlen($mybb->input['action']) == 0))
+  error_no_permission();
 
 if($mybb->input['action'] == "do_reports")
 {
