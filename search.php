@@ -332,7 +332,7 @@ if($mybb->input['action'] == "results")
 			'limit' => $perpage
 		);
 		$query = $db->query("
-			SELECT t.*, u.username AS userusername, p.displaystyle AS threadprefix,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=t.tid)) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=t.tid) AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
+			SELECT t.*, u.username AS userusername, p.displaystyle AS threadprefix,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = t.firstpost) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = t.firstpost AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 			LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
@@ -788,7 +788,7 @@ if($mybb->input['action'] == "results")
 		}
 
 		$query = $db->query("
-			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=p.tid)) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=p.tid) AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
+			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = t.firstpost) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = t.firstpost AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)

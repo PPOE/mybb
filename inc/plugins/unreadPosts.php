@@ -330,6 +330,7 @@ class unreadPosts
                     AND ((tr.dateline NOTNULL AND t.lastpost > tr.dateline) OR t.lastpost > {$mybb->user['lastmark']}) 
                     AND ((fr.dateline NOTNULL AND t.lastpost > fr.dateline) OR t.lastpost > {$mybb->user['lastmark']}) 
                     AND t.lastpost > {$mybb->user['lastmark']}
+                    AND to_timestamp(t.lastpost) > now() - '2 month'::interval
                 ORDER BY t.dateline DESC
                 LIMIT 1000";
         $result = $db->query($sql);

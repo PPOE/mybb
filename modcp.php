@@ -1645,11 +1645,11 @@ if($mybb->input['action'] == "do_editprofile")
 		"aim" => $mybb->input['aim'],
 		"yahoo" => $mybb->input['yahoo'],
 		"msn" => $mybb->input['msn'],
-		"signature" => $mybb->input['signature'],
+		//"signature" => $mybb->input['signature'],
 		"usernotes" => $mybb->input['usernotes']
 	);
 
-	$updated_user['birthday'] = array(
+	/*$updated_user['birthday'] = array(
 		"day" => $mybb->input['birthday_day'],
 		"month" => $mybb->input['birthday_month'],
 		"year" => $mybb->input['birthday_year']
@@ -1662,7 +1662,7 @@ if($mybb->input['action'] == "do_editprofile")
 	else if($mybb->input['reverttitle'])
 	{
 		$updated_user['usertitle'] = '';
-	}
+	}*/
 
 	if($mybb->input['remove_avatar'])
 	{
@@ -1700,7 +1700,7 @@ if($mybb->input['action'] == "do_editprofile")
 				"time" => "action_time", // The time we've entered
 				"update_field" => "suspendsignature", // The field in the database to update if true
 				"update_length" => "suspendsigtime" // The length of suspension field in the database
-			),
+			)/*,
 			2 => array(
 				"action" => "moderateposting",
 				"period" => "modpost_period",
@@ -1714,7 +1714,7 @@ if($mybb->input['action'] == "do_editprofile")
 				"time" => "suspost_time",
 				"update_field" => "suspendposting",
 				"update_length" => "suspensiontime"
-			)
+			)*/
 		);
 
 		require_once MYBB_ROOT."inc/functions_warnings.php";
@@ -1839,7 +1839,7 @@ if($mybb->input['action'] == "editprofile")
 		$user['icq'] = "";
 	}
 
-	if(!$errors)
+/*	if(!$errors)
 	{
 		$mybb->input = array_merge($user, $mybb->input);
 		list($mybb->input['birthday_day'], $mybb->input['birthday_month'], $mybb->input['birthday_year']) = explode("-", $user['birthday']);
@@ -1892,7 +1892,7 @@ if($mybb->input['action'] == "editprofile")
 		}
 	}
 	$bdaymonthsel[$mybb->input['birthday_month']] = 'selected="selected"';
-	
+	*/
 	$plugins->run_hooks("modcp_editprofile_start");
 
 	// Fetch profile fields
@@ -2068,7 +2068,7 @@ if($mybb->input['action'] == "editprofile")
 	$lang->edit_profile = $lang->sprintf($lang->edit_profile, $user['username']);
 	$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 
-	$codebuttons = build_mycode_inserter("signature");
+/*	$codebuttons = build_mycode_inserter("signature");
 
 	// Do we mark the suspend signature box?
 	if($user['suspendsignature'] || ($mybb->input['suspendsignature'] && !empty($errors)))
@@ -2199,7 +2199,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	eval("\$suspend_signature = \"".$templates->get("modcp_editprofile_signature")."\";");
-	
+	*/
 	$plugins->run_hooks("modcp_editprofile_end");
 
 	eval("\$edituser = \"".$templates->get("modcp_editprofile")."\";");

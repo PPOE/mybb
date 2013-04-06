@@ -755,7 +755,7 @@ if($fpermissions['canviewthreads'] != 0)
 {
 	// Start Getting Threads
 	$query = $db->query("
-		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=t.tid)) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = (SELECT MIN(pp.pid) FROM ".TABLE_PREFIX."posts pp WHERE pp.tid=t.tid) AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
+		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = t.firstpost) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = t.firstpost AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 		WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2

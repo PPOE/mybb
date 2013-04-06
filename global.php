@@ -598,11 +598,7 @@ if(is_banned_ip($session->ipaddress, true))
 {
 	if ($mybb->user['uid'])
     {
-        $db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
-    }
-    else
-    {
-        $db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."'");
+        $db->delete_query("sessions", "uid='{$mybb->user['uid']}'");
     }
 	error($lang->error_banned);
 }
