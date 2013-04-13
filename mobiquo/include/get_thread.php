@@ -195,7 +195,7 @@ function get_thread_func($xmlrpc_params)
     // Get the actual posts from the database here.
     $posts = '';
     $query = $db->query("
-        SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername, IF(b.lifted > UNIX_TIMESTAMP() OR b.lifted = 0, 1, 0) as isbanned
+        SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername, CASE WHEN b.lifted = 0 THEN 1 ELSE 0 END as isbanned
         FROM ".TABLE_PREFIX."posts p
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
         LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)

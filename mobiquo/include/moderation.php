@@ -257,7 +257,7 @@ function m_get_report_post_func($xmlrpc_params){
 
     $reports = '';
     $query = $db->query("
-        SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, p.dateline as postdateline, up.avatar, p.message as postmessage, p.subject as postsubject, t.views, t.replies, IF(b.lifted > UNIX_TIMESTAMP() OR b.lifted = 0, 1, 0) as isbanned, p.visible
+        SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, p.dateline as postdateline, up.avatar, p.message as postmessage, p.subject as postsubject, t.views, t.replies, CASE WHEN b.lifted = 0 THEN 1 ELSE 0 END as isbanned, p.visible
         FROM ".TABLE_PREFIX."reportedposts r
         LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid)
         LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
@@ -848,7 +848,7 @@ function m_get_moderate_topic_func($xmlrpc_params)
     $unapproved_threads = $db->fetch_field($query, "unapprovedthreads");
 
     $query = $db->query("
-        SELECT t.*, p.message AS postmessage, u.avatar, f.name as forumname, IF(b.lifted > UNIX_TIMESTAMP() OR b.lifted = 0, 1, 0) as isbanned
+        SELECT t.*, p.message AS postmessage, u.avatar, f.name as forumname, CASE WHEN b.lifted = 0 THEN 1 ELSE 0 END as isbanned
         FROM ".TABLE_PREFIX."threads t
         LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
@@ -965,7 +965,7 @@ function m_get_moderate_post_func($xmlrpc_params)
     $unapproved_posts = $db->fetch_field($query, "unapprovedposts");
 
     $query = $db->query("
-        SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline, u.avatar, t.views, t.replies, IF(b.lifted > UNIX_TIMESTAMP() OR b.lifted = 0, 1, 0) as isbanned
+        SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline, u.avatar, t.views, t.replies, CASE WHEN b.lifted = 0 THEN 1 ELSE 0 END as isbanned
         FROM  ".TABLE_PREFIX."posts p
         LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)

@@ -196,7 +196,7 @@ function get_topic_func($xmlrpc_params)
     {
         // Start Getting Threads
         $query = $db->query("
-            SELECT t.*, {$ratingadd}{$select_rating_user}t.username AS threadusername, u.username, u.avatar, if({$mybb->user['uid']} > 0 and s.uid = {$mybb->user['uid']}, 1, 0) as subscribed, po.message, IF(b.lifted > UNIX_TIMESTAMP() OR b.lifted = 0, 1, 0) as isbanned $icon_urls_sql
+            SELECT t.*, {$ratingadd}{$select_rating_user}t.username AS threadusername, u.username, u.avatar, if({$mybb->user['uid']} > 0 and s.uid = {$mybb->user['uid']}, 1, 0) as subscribed, po.message, IF (b.lifted = 0, 1, 0) as isbanned $icon_urls_sql
             FROM ".TABLE_PREFIX."threads t
             LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid){$select_voting}
             LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid = t.uid)

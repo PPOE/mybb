@@ -1388,7 +1388,7 @@ if($mybb->input['action'] == "results")
             // tapatalk add for short content of latest post
             $permsql = $inactiveforums ? " AND p.fid NOT IN ($inactiveforums)" : '';
             $query = $db->query("
-                SELECT p.*, u.avatar, IF(b.lifted > UNIX_TIMESTAMP() OR b.lifted = 0, 1, 0) as isbanned
+                SELECT p.*, u.avatar, CASE WHEN b.lifted = 0 THEN 1 ELSE 0 END as isbanned
                 FROM ".TABLE_PREFIX."posts p
                 LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
                 LEFT JOIN ".TABLE_PREFIX."banned b ON (p.uid = b.uid)
@@ -1577,7 +1577,7 @@ if($mybb->input['action'] == "results")
 
         $query = $db->query("
             SELECT p.*, u.username AS userusername, u.avatar, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid
-                , IF(b.lifted > UNIX_TIMESTAMP() OR b.lifted = 0, 1, 0) as isbanned
+                , CASE WHEN b.lifted = 0 THEN 1 ELSE 0 END as isbanned
             FROM ".TABLE_PREFIX."posts p
             LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
             LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)

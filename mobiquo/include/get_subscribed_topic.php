@@ -71,7 +71,7 @@ function get_subscribed_topic_func($xmlrpc_params)
 
 	// Fetch subscriptions
 	$query = $db->query("
-		SELECT s.*, t.*, t.username AS threadusername, u.username, u.username, u.avatar, if({$mybb->user['uid']} > 0 and s.uid = {$mybb->user['uid']}, 1, 0) as subscribed, po.message, f.name as forumname, IF(b.lifted > UNIX_TIMESTAMP() OR b.lifted = 0, 1, 0) as isbanned
+		SELECT s.*, t.*, t.username AS threadusername, u.username, u.username, u.avatar, if({$mybb->user['uid']} > 0 and s.uid = {$mybb->user['uid']}, 1, 0) as subscribed, po.message, f.name as forumname, CASE WHEN b.lifted = 0 THEN 1 ELSE 0 END as isbanned
 		FROM ".TABLE_PREFIX."threadsubscriptions s
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
