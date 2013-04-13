@@ -248,7 +248,7 @@ if ($pid == -1) {
 					$replies++;
 					$unapprovedposts--;
 				}
-				$db->update_query("threads", array('visible'=>1, 'replies'=>$replies, 'unapprovedposts'=>$unapprovedposts), "tid=".$db->escape_string($postedmsg['tid']));
+				$db->update_query("threads", array('visible'=>1, 'replies'=>($replies + 0), 'unapprovedposts'=>($unapprovedposts + 0)), "tid=".$db->escape_string($postedmsg['tid']));
 
 				$query = $db->simple_select("forums", "unapprovedthreads,unapprovedposts,threads,posts", "fid=".$db->escape_string($postedmsg['fid']), array('limit' => 1));
 				$forum = $db->fetch_array($query);
@@ -339,11 +339,14 @@ function fetchgroups()
 			return(false);
 		}
 	}*/
-	foreach ($newsgroups as $fid => $newsgroup) {
-		$query = $db->simple_select("posts", "syncom_articlenumber", "fid=".$fid, array("order_by" => "syncom_articlenumber desc", "limit"=>1));
-
-		if ($posts = $db->fetch_array($query))
-			$lastpost = $posts["syncom_articlenumber"];
+  $query = $db->simple_select("posts", "DISTINCT ON (fid) syncom_articlenumber,fid", "fid IN (".implode(",",array_keys($newsgroups)).")", array("order_by" => "fid asc, syncom_articlenumber desc"));
+  while ($post = $db->fetch_array($query))
+  {
+    $forums[$post['fid']] = $post;
+  }
+  foreach ($newsgroups as $fid => $newsgroup) {
+    if (intval($forums[$fid]['syncom_articlenumber']) > 0)
+			$lastpost = $forums[$fid]["syncom_articlenumber"];
 		else
 			$lastpost = -1;
 
