@@ -15,7 +15,6 @@ $l['click_no_wait'] = "Bitte klicke hier, wenn Du nicht länger warten willst.";
 $l['redirect_return_forum'] = "<br /><br />Alternativ dazu, kannst du hier <a href=\"{1}\">zum Forum zurückkehren</a>.";
 $l['redirect_emailsent'] = "Deine E-Mail wurde erfolgreich versandt.";
 $l['redirect_loggedin'] = "Du hast dich erfolgreich eingeloggt.<br />Du wirst jetzt zu deinem letzten Aufenthaltsort weitergeleitet.";
-
 $l['error_invalidpworusername'] = "Der eingegebene Benutzername und/oder das Passwort ist falsch!<br /><br />Falls du dein Passwort vergessen hast, fordere bitte <a href=\"member.php?action=lostpw\">hier</a> ein neues an.";
 $l['error_invalidpworusername1'] = "Die eingegebene E-Mail-Adresse und/oder das Passwort ist falsch!<br /><br />Falls du dein Passwort vergessen hast, fordere bitte <a href=\"member.php?action=lostpw\">hier</a> ein neues an.";
 $l['error_invalidpworusername2'] = "Der eingegebene Benutzername bzw. die eingegebene E-Mail-Adresse und/oder das Passwort ist falsch!<br /><br />Falls du dein Passwort vergessen hast, fordere bitte <a href=\"member.php?action=lostpw\">hier</a> ein neues an.";
@@ -27,10 +26,10 @@ $l['error_invalidemail'] = "Du hast eine ungültige E-Mail-Adresse angegeben.";
 $l['error_nomember'] = "Dieser Benutzer ist ungültig oder nicht vorhanden.";
 $l['error_maxposts'] = "Leider hast du dein tägliches Beitrags-Limit erreicht. Warte bitte bis morgen oder wende dich an einen Administrator.<br /><br />Die maximal zulässige Anzahl an Beiträgen pro Tag beträgt {1}";
 $l['error_nohostname'] = "Für diese IP-Adresse konnte kein Hostname gefunden werden.";
-$l['error_invalidthread'] = "Das angegebene Thema existiert nicht.";
-$l['error_invalidpost'] = "Der angegebene Beitrag existiert nicht.";
-$l['error_invalidannouncement'] = "Die angegebene Ankündigung existiert nicht.";
-$l['error_invalidattachment'] = "Das angegebene Attachment existiert nicht.";
+$l['error_invalidthread'] = "Das angegebene Thema befindet sich noch in der Moderation oder existiert gar nicht.";
+$l['error_invalidpost'] = "Der angegebene Beitrag befindet sich noch in der Moderation oder existiert gar nicht.";
+$l['error_invalidannouncement'] = "Die angegebene Ankündigung befindet sich noch in der Moderation oder existiert gar nicht.";
+$l['error_invalidattachment'] = "Das angegebene Attachment befindet sich noch in der Moderation oder existiert gar nicht.";
 $l['error_invalidforum'] = "Ungültiges Forum";
 $l['error_closedinvalidforum'] = "Du kannst keinen Beitrag in diesem Forum schreiben, da das Forum entweder geschlossen ist, es auf eine andere Website verweist oder es sich um eine Kategorie handelt.";
 $l['error_attachtype'] = "Der Datei-Typ ist nicht erlaubt. Bitte lösche das Attachment oder wähle ein anderes.";
@@ -85,7 +84,6 @@ $l['error_message_too_short'] = "Entschuldigung, deine Nachricht ist zu kurz und
 $l['failed_login_wait'] = "Die maximale Anzahl an Login-Versuchen wurde erreicht. Du musst {1} Stunde(n), {2} Minute(n) und {3} Sekunde(n) warten, bevor du dich wieder einloggen kannst.";
 $l['failed_login_again'] = "<br />Du hast noch <strong>{1}</strong> Login-Versuche.";
 $l['error_max_emails_day'] = "Du kannst die Funktionen 'Einem Freund schicken' und 'Benutzer eine E-Mail schreiben' nicht nutzen, weil du dein E-Mail Limit von {1} Nachrichten in den letzten 24 Stunden bereits erreicht hast.";
-
 $l['emailsubject_lostpw'] = "Neues Passwort für {1}";
 $l['emailsubject_passwordreset'] = "Neues Passwort für {1}";
 $l['emailsubject_subscription'] = "Neue Antwort zu {1}";
@@ -98,7 +96,6 @@ $l['emailsubject_changeemail'] = "E-Mail-Adresswechsel bei {1}";
 $l['emailsubject_newpm'] = "Neue Private Nachricht bei {1}";
 $l['emailsubject_sendtofriend'] = "Interessante Internetseite bei {1}";
 $l['emailbit_viewthread'] = "... (Besuche das Thema, um weiterzulesen)";
-
 $l['email_lostpw'] = "Hallo {1},
 
 um ein neues Passwort für {2} zu erhalten, musst du die folgende URL in deinem Browser öffnen:
@@ -147,7 +144,6 @@ Aktivierungscode: {5}
 
 Vielen Dank,
 {2}-Team";
-
 $l['email_reportpost'] = "Hallo,
 
 {1} von {2} hat diesen Beitrag gemeldet:
@@ -161,7 +157,6 @@ Der Benutzer hat diesen Grund angegeben:
 Diese Nachricht wurde an alle Moderatoren des Forums versandt oder an alle Administratoren und Super-Moderatoren, wenn es keine Moderatoren gibt.
 
 Bitte überprüfe den Beitrag so schnell wie möglich.";
-
 $l['email_passwordreset'] = "Hallo {1},
 
 ein neues Passwort für {2} wurde erstellt.
@@ -172,7 +167,6 @@ Du benötigst dieses Passwort, um dich im Forum einzuloggen. Bitte ändere das P
 
 Vielen Dank,
 {2}-Team";
-
 $l['email_randompassword'] = "Hallo {1},
 
 vielen Dank für die Registrierung bei {2}. Hier ist dein Benutzername und dein zufallsgeneriertes Passwort. Um dich bei {2} einzuloggen, benötigst du diese Daten:
@@ -206,7 +200,6 @@ Bitte ändere das Passwort so schnell wie möglich. Du kannst das Passwort in de
 
 Vielen Dank,
 {2}-Team";
-
 $l['email_sendtofriend'] = "Hallo,
 
 {1} aus {2} dachte, dass du vielleicht Interesse an der folgenden Internetseite hast:
@@ -220,7 +213,6 @@ $l['email_sendtofriend'] = "Hallo,
 
 Vielen Dank,
 {2}-Team";
-
 $l['email_forumsubscription'] = "Hallo {1},
 
 {2} hat in {3} ein neues Thema gestartet. Du hast dieses Forum bei {4} abonniert.
@@ -247,7 +239,6 @@ Wenn du keine weiteren Benachrichtigungen zu diesem Thema erhalten möchtest, kl
 {7}/usercp2.php?action=removesubscription&type=forum&fid={9}&my_post_key={10}
 
 ------------------------------------------";
-
 $l['email_activateaccount'] = "Hallo {1},
 
 um die Registrierung bei {2} abzuschließen, musst du die folgende URL in deinem Browser öffnen:
@@ -296,7 +287,6 @@ Aktivierungscode: {5}
 
 Vielen Dank,
 {2}-Team";
-
 $l['email_subscription'] = "Hallo {1},
 
 {2} hat auf ein Thema geantwortet, das du bei {3} abonniert hast. Das Thema trägt den Titel: {4}.
@@ -321,7 +311,6 @@ Klicke auf den folgenden Link, wenn du keine weiteren Benachrichtigungen zu dies
 {6}/usercp2.php?action=removesubscription&tid={8}&key={9}&my_post_key={10}
 
 ------------------------------------------";
-
 $l['email_reachedpmquota'] = "Hallo {1},
 
 dies ist eine automatisch versandte E-Mail von {2}. Dein Posteingang für private Nachrichten hat seine Kapazität erreicht.
@@ -333,7 +322,6 @@ Bitte lösche ein paar deiner gespeicherten Nachrichten. Denke daran, sie auch a
 Vielen Dank,
 {2}-Team
 {3}";
-
 $l['email_changeemail'] = "Hallo {1},
 
 wir haben bei {2} die Anfrage bekommen, deine E-Mail-Adresse zu ändern.
@@ -358,7 +346,6 @@ Wenn du deine neue E-Mail-Adresse nicht aktivierst, bleibt deine alte E-Mail-Adr
 Vielen Dank,
 {2}-Team
 {5}";
-
 $l['email_newpm'] = "Hallo {1},
 
 du hast bei {3} eine neue private Nachricht von {2} erhalten. Um die Nachricht zu lesen, kannst du auf den folgenden Link klicken:
@@ -374,7 +361,6 @@ Du kannst die Benachrichtigungsfunktion in den Optionen in deinem Profil abschal
 Vielen Dank,
 {3}-Team
 {4}";
-
 $l['email_emailuser'] = "Hallo {1},
 
 {2} aus {3} hat dir folgende Nachricht geschickt:
