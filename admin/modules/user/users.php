@@ -3150,7 +3150,7 @@ function build_users_view($view)
 	}
 
 	// Post IP searching
-	if($view['conditions']['postip'])
+/*	if($view['conditions']['postip'])
 	{
 		// IPv6 IP
 		if(strpos($view['conditions']['postip'], ":") !== false)
@@ -3179,7 +3179,7 @@ function build_users_view($view)
 		$search_sql .= " AND u.uid IN(".implode(',', $ip_uids).")";
 		unset($ip_uids);
 	}
-	
+	*/
 	// Custom Profile Field searching
 	if($view['custom_profile_fields'])
 	{
