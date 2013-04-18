@@ -1629,7 +1629,11 @@ class Moderation
 	 */
 	function approve_posts($pids)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
+
+    // Set up posthandler.
+    require_once MYBB_ROOT."inc/datahandlers/post.php";
+    $posthandler = new PostDataHandler("update");
 
 		$num_posts = 0;
 
@@ -1668,7 +1672,7 @@ class Moderation
 		}
 		
 		$query = $db->query("
-			SELECT p.pid, p.tid, f.fid, f.usepostcounts, p.uid, t.visible AS threadvisible
+			SELECT p.*, f.fid, f.usepostcounts, t.visible AS threadvisible
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
@@ -1693,6 +1697,9 @@ class Moderation
 			{
 				$db->update_query("users", array("postnum" => "postnum+1"), "uid='{$post['uid']}'", 1, true);
 			}
+      $posthandler->set_data($post);
+
+      $plugins->run_hooks("datahandler_post_insert", $posthandler);
 		}
 		
 		if(empty($pids) && empty($threads_to_update))
