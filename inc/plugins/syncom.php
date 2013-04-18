@@ -595,6 +595,11 @@ function syncom_insert($data)
 
 	require MYBB_ROOT.'/syncom/config.php';
 
+  // TODO
+  //if ($data->data['visible'] == 0)
+  //  return;
+
+
 	if (array_key_exists('syncom_messageid', $data->data)) {
 		// Wenn eine Message-ID angegeben ist, wird sie hier gespeichert
 		$data->post_insert_data['syncom_messageid'] = $data->data['syncom_messageid'];
