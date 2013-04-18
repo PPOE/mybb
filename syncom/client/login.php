@@ -9,11 +9,36 @@ echo $stdin . "\n";
 print_r($match);
 $match['user'] = str_replace('%20', ' ', $match['user']);
 
-$ch = curl_init();
+//$ch = curl_init();
 
 $postdata = array('username' => $match['user'], 
 		'password' => $match['password']);
 
+// NEW BY LAVA
+
+define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'login.php');
+define("IN_SYNCOM", 1);
+
+$basepath = dirname($_SERVER["SCRIPT_FILENAME"]);
+
+require_once $basepath."/../../global.php";
+
+require MYBB_ROOT.'/syncom/config.php';
+
+require_once MYBB_ROOT."/syncom/mybbapi.php";
+
+$api = new mybbapi;
+
+if ($api->login($postdata['username'], $postdata['password'])) {
+  fwrite(STDOUT, 'User:'.$match['user']."\n");
+  exit(0);
+} else {
+  fwrite(STDOUT, 'invalid user or password '.$httpcode);
+  exit(-1);
+}
+
+/*
 // setze die URL und andere Optionen
 curl_setopt($ch, CURLOPT_URL, $authurl);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
@@ -38,5 +63,5 @@ if ($httpcode != '200') {
 } else {
 	fwrite(STDOUT, 'User:'.$match['user']."\n");
 	exit(0);
-}
+}*/
 ?>

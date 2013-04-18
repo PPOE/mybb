@@ -10,10 +10,13 @@ fi
 
 echo "${PID}" > "${PIDFILE}"
 
+mkdir -p /var/lock/syncom
+chown www-data:www-data /var/lock/syncom
+
 while true; do
   su www-data -c "/bin/sh /var/www/syncom/bin/synctonews >> /var/log/syncom/syncom.forum2news.log"
   su www-data -c "/bin/sh /var/www/syncom/bin/syncfromnews >> /var/log/syncom/syncom.news2forum.log"
-  sleep 30
+  sleep 60
 done
 
 
