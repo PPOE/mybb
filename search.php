@@ -49,7 +49,7 @@ $mybb->input['keywords'] = trim($mybb->input['keywords']);
 $limitsql = "";
 if(intval($mybb->settings['searchhardlimit']) > 0)
 {
-	$limitsql = "ORDER BY t.dateline DESC LIMIT ".intval($mybb->settings['searchhardlimit']);
+	$limitsql = " ORDER BY t.dateline DESC LIMIT ".intval($mybb->settings['searchhardlimit']);
 }
 
 if($mybb->input['action'] == "results")
@@ -258,7 +258,7 @@ if($mybb->input['action'] == "results")
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' {$limitsql}");
+			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' GROUP BY t.tid,t.dateline {$limitsql}");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -286,7 +286,7 @@ if($mybb->input['action'] == "results")
 				else
 					$where_conditions = " t.tid IN (".$search['threads'].")";
 			}
-			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' {$limitsql}");
+			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' GROUP BY t.tid,t.dateline {$limitsql}");
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])

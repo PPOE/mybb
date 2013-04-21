@@ -110,6 +110,7 @@ if($forum['open'] == 0 || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
+if($forumpermissions['gid'] != 2) {
 if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1)
 {
 	error_no_permission();
@@ -119,7 +120,7 @@ if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->u
 {
 	error_no_permission();
 }
-
+}
 // Coming from quick reply? Set some defaults
 if($mybb->input['method'] == "quickreply")
 {
@@ -380,6 +381,17 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 	// Apply moderation options if we have them
 	$post['modoptions'] = $mybb->input['modoptions'];
+  $post['visible'] = 1;
+  if(in_array($forumpermissions['gid'],array(1,7,5)) || (!in_array($forumpermissions['gid'],array(11,6,8,4,9,3)) && $forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1))
+  {
+    $post['visible'] = 0;
+    if ($mybb->user['uid'] == 1) { die("here"); }
+  }
+  if(!in_array($forumpermissions['gid'],array(11,6,8,4,9,3)) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+  {
+    $post['visible'] = 0;
+    if ($mybb->user['uid'] == 1) { die("here2"); }
+  }
 
 	$posthandler->set_data($post);
 

@@ -71,10 +71,11 @@ if($forum['open'] == 0 || $forum['type'] != "f" || $forum['linkto'] != "")
 {
 	error($lang->error_closedinvalidforum);
 }
-
+if($forumpermissions['gid'] != 2) {
 if($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0 || $mybb->user['suspendposting'] == 1)
 {
 	error_no_permission();
+}
 }
 
 // Check if this forum is password protected and we have a valid password
@@ -317,7 +318,11 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	
 	// Apply moderation options if we have them
 	$new_thread['modoptions'] = $mybb->input['modoptions'];
-
+  $new_thread['visible'] = 1;
+  if(in_array($forumpermissions['gid'],array(1,7,5)) || (!in_array($forumpermissions['gid'],array(11,6,8,4,9,3)) && $forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0 || $mybb->user['suspendposting'] == 1))
+  {
+      $new_thread['visible'] = 0;
+  }
 	$posthandler->set_data($new_thread);
 	
 	// Now let the post handler do all the hard work.

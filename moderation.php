@@ -562,7 +562,7 @@ switch($mybb->input['action'])
 		break;
 
 	// Delete thread confirmation page
-	/*case "deletethread":
+	case "deletethread":
 
 		add_breadcrumb($lang->nav_deletethread);
 
@@ -667,7 +667,7 @@ switch($mybb->input['action'])
 
 		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_polldeleted);
 		break;
-*/
+
 	// Approve a thread
 	case "approvethread":
 
@@ -715,7 +715,7 @@ switch($mybb->input['action'])
 		break;
 
 	// Delete selective posts in a thread
-/*	case "deleteposts":
+	case "deleteposts":
 		add_breadcrumb($lang->nav_deleteposts);
 		if(!is_moderator($fid, "candeleteposts"))
 		{
@@ -877,7 +877,7 @@ switch($mybb->input['action'])
 		mark_reports($plist, "posts");
 		log_moderator_action($modlogdata, $lang->merged_selective_posts);
 		moderation_redirect(get_post_link($masterpid)."#pid$masterpid", $lang->redirect_mergeposts);
-		break;*/
+		break;
 
 	// Move a thread
 	case "move":

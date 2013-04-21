@@ -47,7 +47,7 @@ class templates
 			$sql .= " ,'".trim($title)."'";
 		}
 
-		$query = $db->simple_select("templates", "title,template", "title IN (''$sql) AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'asc'));
+		$query = $db->simple_select("templates", "title,template", "title IN (''$sql) AND sid IN ('-2','-1','".($theme['templateset']+0)."')", array('order_by' => 'sid', 'order_dir' => 'asc'));
 		while($template = $db->fetch_array($query))
 		{
 			$this->cache[$template['title']] = $template['template'];
@@ -80,7 +80,7 @@ class templates
 		
 		if(!isset($this->cache[$title]))
 		{
-			$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
+			$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1','".($theme['templateset']+0)."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
 
 			$gettemplate = $db->fetch_array($query);
 			if($mybb->debug_mode)

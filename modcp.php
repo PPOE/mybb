@@ -2516,7 +2516,7 @@ if($mybb->input['action'] == "ipsearch")
 		$ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
 
 		// Searching post IP addresses
-		if($mybb->input['search_posts'])
+/*		if($mybb->input['search_posts'])
 		{
 			// IPv6 IP
 			if(strpos($mybb->input['ipaddress'], ":") !== false)
@@ -2552,7 +2552,7 @@ if($mybb->input['action'] == "ipsearch")
 
 				$post_results = $db->fetch_field($query, "count");
 			}
-		}
+		}*/
 
 		// Searching user IP addresses
 		if($mybb->input['search_users'])
@@ -3077,7 +3077,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	}*/
         // Check forum rights
 
-        $query = $db->query("SELECT 1 FROM ".TABLE_PREFIX."moderators A WHERE A.fid = '{$mybb->input['fid']}' AND A.id = '{$mybb->user['uid']}'");
+        $query = $db->query("SELECT 1 FROM ".TABLE_PREFIX."moderators A WHERE A.fid = '".($mybb->input['fid']+0)."' AND A.id = '".($mybb->user['uid']+0)."'");
         if ($rights = $db->fetch_array($query)) {
         }
         else

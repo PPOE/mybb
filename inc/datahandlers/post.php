@@ -753,13 +753,17 @@ class PostDataHandler extends DataHandler
 
 			// Fetch the forum this post is being made in
 			$forum = get_forum($post['fid']);
-
+      $visible = 1;
+			if (isset($post['visible']) && $post['visible'] == 0)
+      {
+        $visible = 0;
+      }
 			// Decide on the visibility of this post.
-			if($forum['modposts'] == 1 && !is_moderator($thread['fid'], "", $post['uid']))
+			if(($forum['modposts'] == 1 && !is_moderator($thread['fid'], "", $post['uid'])))
 			{
 				$visible = 0;
 			}
-			else
+      else if ($visible)
 			{
 				$visible = 1;
 			}
@@ -1142,11 +1146,11 @@ class PostDataHandler extends DataHandler
 		{
 
 			// Decide on the visibility of this post.
-			if(($forum['modthreads'] == 1 || $forum['modposts'] == 1) && !is_moderator($thread['fid'], "", $thread['uid']))
+			if((($forum['modthreads'] == 1 || $forum['modposts'] == 1) && !is_moderator($thread['fid'], "", $thread['uid'])))
 			{
 				$visible = 0;
 			}
-			else
+			else if (!isset($thread['visible']) || $thread['visible'] == 1)
 			{
 				$visible = 1;
 			}
@@ -1226,7 +1230,7 @@ class PostDataHandler extends DataHandler
 				"lastposter" => $db->escape_string($thread['username']),
 				"views" => 0,
 				"replies" => 0,
-				"visible" => $visible,
+				"visible" => intval($visible),
 				"notes" => ''
 			);
 
@@ -1247,7 +1251,7 @@ class PostDataHandler extends DataHandler
 				"longipaddress" => intval(my_ip2long(get_ip())),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
-				"visible" => $visible,
+				"visible" => intval($visible),
 				"posthash" => $db->escape_string($thread['posthash'])
 			);
 			$plugins->run_hooks("datahandler_post_insert_thread_post", $this);

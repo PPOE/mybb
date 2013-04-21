@@ -1,4 +1,5 @@
 <?php
+die("NO NO NO!");
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'fetchnews.php');
 define("IN_SYNCOM", 1);

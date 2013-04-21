@@ -67,7 +67,7 @@ function postarticle($message)
 	$mime = new Mail_mime("\n");
 
 //	$body = stripslashes(str_replace(array('\r', '\n'), array("\r", "\n"), $message['body']));
-	$body = str_replace(array('\r', '\n', "''"), array("\r", "\n", "'"), $message['body']);
+	$body = str_replace(array('\r', '\n'), array("\r", "\n"), $message['body']);
 
 	// Quotes umstellen
 	//$pattern = "/\[quote=\"'(.*?)' pid='(\d+)' dateline='(\d+)'\"\].*?/is";
@@ -133,7 +133,7 @@ function postarticle($message)
 	$additional .= "X-Sync-Path: forum2news\r\n";
 	$additional .= "X-Path: ".$syncom['hostname']."\r\n";
 
-	$subject = "=?UTF-8?B?".base64_encode(stripslashes($message['subject']))."?=";
+	$subject = "=?UTF-8?B?".base64_encode($message['subject'])."?=";
 
 	if (!$message['moderated']) {
 		$ret = $nntp->mail($message['newsgroups'], $subject, $body, $additional);

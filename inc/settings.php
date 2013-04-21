@@ -82,7 +82,7 @@ $settings['enablewarningsystem'] = "0";
 $settings['use_xmlhttprequest'] = "1";
 $settings['tpr_closerate'] = "1";
 $settings['seourls_archive'] = "0";
-$settings['seourls'] = "no";
+$settings['seourls'] = "yes";
 $settings['tpr_undorate'] = "1";
 $settings['enablepruning'] = "1";
 $settings['tapatalk_enable'] = "1";
@@ -95,11 +95,13 @@ $settings['tpr_forums'] = "0";
 $settings['modlist'] = "1";
 $settings['redirects'] = "0";
 $settings['gziplevel'] = "9";
-$settings['searchhardlimit'] = "0";
+$settings['searchhardlimit'] = "1000";
 $settings['hiddencaptchaimagefield'] = "email3";
 $settings['unreadPostsStatusCounterHide'] = "0";
 $settings['tapatalk_hide_forum'] = "";
 $settings['hideprivateforums'] = "0";
+$settings['gomobile_homelink'] = "http://piratenpartei.at";
+$settings['gomobile_homename'] = "Piratenpartei Österreichs";
 $settings['homename'] = "Piratenpartei Österreichs";
 $settings['homeurl'] = "http://piratenpartei.at";
 $settings['tapatalk_datakeep'] = "keep";
@@ -137,6 +139,7 @@ $settings['minmessagelength'] = "1";
 $settings['minpasswordlength'] = "6";
 $settings['minsearchword'] = "0";
 $settings['minnamelength'] = "3";
+$settings['gomobile_mobile_name'] = "Sync-Forum Piratenpartei Österreichs";
 $settings['sigcountmycode'] = "0";
 $settings['smilieinsertercols'] = "4";
 $settings['smilieinsertertot'] = "20";
@@ -208,6 +211,7 @@ $settings['reCAPTCHA_Style'] = "red";
 $settings['subforumsindex'] = "2";
 $settings['unreadPostsCounterPages'] = "index.php";
 $settings['tapatalk_directory'] = "mobiquo";
+$settings['gomobile_theme_id'] = "11";
 $settings['thousandssep'] = ".";
 $settings['threadsperpage'] = "20";
 $settings['betweenregstime'] = "2";
@@ -223,7 +227,27 @@ $settings['useerrorhandling'] = "1";
 $settings['gzipoutput'] = "1";
 $settings['usereferrals'] = "0";
 $settings['allowthreadratings'] = "0";
+$settings['gomobile_permstoggle'] = "0";
 $settings['threadusenetstyle'] = "1";
+$settings['gomobile_strings'] = "iPhone
+iPod
+mobile
+Android
+Opera Mini
+BlackBerry
+IEMobile
+Windows Phone
+HTC
+Nokia
+Netfront
+SmartPhone
+Symbian
+SonyEricsson
+AvantGo
+DoCoMo
+Pre/
+UP.Browser
+Playstation Vita";
 $settings['userpppoptions'] = "5,10,15,20,25,50,75,100";
 $settings['usertppoptions'] = "10,20,25,30,40,50";
 $settings['tpr_usergroups'] = "3,4,6,9";

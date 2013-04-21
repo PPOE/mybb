@@ -507,6 +507,10 @@ function build_postbit($post, $post_type=0, $uncover="")
 		else
 		{
 			$post['inlinecheck'] = "";
+      if($post['visible'] == 0)
+      {
+        $invisiblepost = 1;
+      }
 		}
 		$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
@@ -634,12 +638,12 @@ function build_postbit($post, $post_type=0, $uncover="")
 				$post_visibility = "display: none;";
 			}
 			else if ($mybb->user['disablereddit'] != 1) {
-	                $query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '{$post['pid']}';");
+	                $query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '".intval($post['pid'])."';");
 			$thumbs = $db->fetch_array($query);
 			$thumbs_sum = $thumbs['sum'] + 0;
 			if ($thumbs['sum'] && $mybb->user['uid'])
 			{
-                        	$query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '{$post['pid']}' AND uid = '{$mybb->user['uid']}';");
+                        	$query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '".intval($post['pid'])."' AND uid = '{$mybb->user['uid']}';");
                        		$thumbs_own = $db->fetch_array($query);
 				$thumbs_sum_own = $thumbs_own['sum'] + 0;
 			}

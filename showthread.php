@@ -81,6 +81,12 @@ if(!$thread['username'])
 $visibleonly = "AND visible='1'";
 $visibleonly2 = "AND p.visible='1' AND t.visible='1'";
 
+if(intval($mybb->user['uid']) != 0)
+{
+  $visibleonly = "AND (visible='1' OR uid = ".intval($mybb->user['uid']).")";
+  $visibleonly2 = "AND ((p.visible='1' AND t.visible='1') OR p.uid = ".intval($mybb->user['uid']).")";
+}
+
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
 {
@@ -128,9 +134,8 @@ $breadcrumb_multipage = array();
 if($mybb->settings['showforumpagesbreadcrumb'])
 {
 	// How many pages are there?
-	if(!$mybb->settings['threadsperpage'])
 	{
-		$mybb->settings['threadsperpage'] = 20;
+		$mybb->settings['threadsperpage'] = 200000;
 	}
 
 	$query = $db->simple_select("forums", "threads, unapprovedthreads", "fid = '{$fid}'", array('limit' => 1));
@@ -679,9 +684,13 @@ if($mybb->input['action'] == "thread")
 	{
 		$visible = "AND (p.visible='0' OR p.visible='1')";
 	}
-	else
+	else if (intval($mybb->user['uid']) != 0)
+  {
+    $visible = "AND (p.visible='1' OR p.uid = ".intval($mybb->user['uid']).")";
+  }
+  else
 	{
-		$visible = "AND p.visible='1'";
+		$visible = "AND (p.visible='1')";
 	}
 	
 	// Can this user perform searches? If so, we can show them the "Search thread" form
@@ -1048,7 +1057,7 @@ if($mybb->input['action'] == "thread")
 		// Get the actual posts from the database here.
 		// $posts = '';
 		$query = $db->query("
-			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername, (SELECT COUNT(*) FROM mybb_users V WHERE (V.usergroup = 9 OR ',' || V.additionalgroups || ',' LIKE '%,9,%') AND (',' || V.ignorelist || ',' LIKE '%,' || p.uid || ',%')) AS ignoredby
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
@@ -1058,7 +1067,11 @@ if($mybb->input['action'] == "thread")
 		");
 		while($post = $db->fetch_array($query))
 		{
-			if($thread['firstpost'] == $post['pid'] && $thread['visible'] == 0)
+      if ($post['ignoredby'] == 0)
+        $post['ignoredby'] = '';
+      else
+        $post['ignoredby'] = 'von ' . $post['ignoredby'] . ' Piraten ignoriert<br />';
+			if($thread['firstpost'] == $post['pid'] && $thread['visible'] == 0 && (intval($mybb->user['uid']) == 0 || $post['uid'] != $mybb->user['uid']))
 			{
 				$post['visible'] = 0;
 			}
@@ -1434,6 +1447,10 @@ function buildtree2($pids=array(), $linear = true, $replyto="0", $indent="0", $u
                                {
                                        $visible = "AND (p.visible='0' OR p.visible='1')";
                                }
+                               else if (intval($mybb->user['uid']) != 0)
+                               {
+                                       $visible = "AND (p.visible='1' OR p.uid = " . intval($mybb->user['uid']) . ")";
+                               }
                                else
                                {
                                        $visible = "AND p.visible='1'";
@@ -1448,7 +1465,7 @@ function buildtree2($pids=array(), $linear = true, $replyto="0", $indent="0", $u
                                        $where = " ORDER BY dateline LIMIT 1";
                                }
                                 $query = $db->query("
-                                        SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
+                                        SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername,(SELECT COUNT(*) FROM mybb_users V WHERE (V.usergroup = 9 OR ',' || V.additionalgroups || ',' LIKE '%,9,%') AND (',' || V.ignorelist || ',' LIKE '%,' || p.uid || ',%')) AS ignoredby
                                         FROM ".TABLE_PREFIX."posts p
                                         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
                                         LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
@@ -1456,13 +1473,16 @@ function buildtree2($pids=array(), $linear = true, $replyto="0", $indent="0", $u
                                         WHERE p.tid='$tid' $visible $where
                                 ");
                                 $showpost = $db->fetch_array($query);
-
                                 // Choose what pid to display.
                                 if(!$post['pid'])
                                 {
                                         $post['pid'] = $showpost['pid'];
                                 }
 				$end_div = false;
+                                if ($showpost['ignoredby'] == 0)
+                                  $showpost['ignoredby'] = '';
+                                else
+                                  $showpost['ignoredby'] = 'von ' . $showpost['ignoredby'] . ' Piraten ignoriert<br />';
                                 //if (in_array($post['pid'], $pids))
                                 {
                                         $content = build_postbit($showpost, 0, $uncover . "Thread.showIgnoredPost({$post['pid']});");
