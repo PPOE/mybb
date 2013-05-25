@@ -166,7 +166,6 @@ function build_postbit($post, $post_type=0, $uncover="")
 	{
 		$post['subject'] = '&nbsp;';
 	}
-
 	$post['author'] = $post['uid'];
 
 	// Get the usergroup
@@ -630,29 +629,50 @@ function build_postbit($post, $post_type=0, $uncover="")
 		default: // Regular post
                         $post['uncover'] = $uncover;
 			$post = $plugins->run_hooks("postbit", $post);
-			// Is this author on the ignore list of the current user? Hide this post
+      $ignore_visibility = "";
+			// Is this author on the ignore list of the current user? Hide this pos
 			if(is_array($ignored_users) && $post['uid'] != 0 && $ignored_users[$post['uid']] == 1)
 			{
+        $ignore_visibility = "display: none;";
 				$ignored_message = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
 				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
 				$post_visibility = "display: none;";
 			}
 			else if ($mybb->user['disablereddit'] != 1) {
-	                $query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '".intval($post['pid'])."';");
-			$thumbs = $db->fetch_array($query);
-			$thumbs_sum = $thumbs['sum'] + 0;
-			if ($thumbs['sum'] && $mybb->user['uid'])
-			{
-                        	$query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '".intval($post['pid'])."' AND uid = '{$mybb->user['uid']}';");
-                       		$thumbs_own = $db->fetch_array($query);
-				$thumbs_sum_own = $thumbs_own['sum'] + 0;
-			}
-                        if(($thumbs_sum < -1 || $thumbs_sum_own < 0) && $thumbs_sum_own <= 0 && $mybb->user['uid'] != $post['uid'])
-                        {
-                                $ignored_message = "Ausgeblendet (Bewertung: " . $thumbs_sum . "): " . $post['subject'];
-                                eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
-                                $post_visibility = "display: none;";
-                        }
+        $query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '".intval($post['pid'])."';");
+        $thumbs = $db->fetch_array($query);
+        $thumbs_sum = $thumbs['sum'] + 0;
+        $query = $db->query("SELECT SUM(thumbsup) AS up,SUM(thumbsdown) AS down FROM mybb_posts P WHERE p.uid = '".intval($post['uid'])."' AND p.dateline > ".(TIME_NOW-(86400*90)).";");
+        $avg = $db->fetch_array($query);
+        if ($thumbs['sum'] && $mybb->user['uid'])
+        {
+          $query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '".intval($post['pid'])."' AND uid = '{$mybb->user['uid']}';");
+          $thumbs_own = $db->fetch_array($query);
+          $thumbs_sum_own = $thumbs_own['sum'] + 0;
+        }
+        $avg_frac = 1;
+        if ($avg['up'] + $avg['down'] > 0)
+        {
+          $avg_frac = $avg['up'] / ($avg['up'] + $avg['down']);
+        }
+        if (!$mybb->user['uid'])
+        {
+          $mybb->user['redditbase'] = 5;
+          $mybb->user['redditavg'] = 13;
+          $mybb->user['redditignore'] = 3;
+        }
+        if(($thumbs_sum_own < 0 || $thumbs_sum < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac) && $thumbs_sum_own <= 0 && $mybb->user['uid'] != $post['uid'])
+        {
+          $ignored_message = "Ausgeblendeter Beitrag";// . "(".$thumbs_sum." < ".$mybb->user['redditbase']." - ".$mybb->user['redditavg']." * ".$avg_frac.")";
+          $post_visibility = "display: none;";
+          if ((($mybb->user['redditignore'] & 2) > 0 && $thumbs_sum_own < 0) ||
+             (($mybb->user['redditignore'] & 1) > 0 && $thumbs_sum < $mybb->user['redditavg'] * $avg_frac) ||
+             (($mybb->user['redditignore'] & 4) > 0))
+          {
+            $ignore_visibility = "display: none;";
+          }
+          eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
+        }
 			}
 			$post["postbit_ignored"] = $ignore_bit;
                         $post = $plugins->run_hooks("postbit_ignored", $post);
@@ -662,7 +682,7 @@ function build_postbit($post, $post_type=0, $uncover="")
 
         if($post_visibility != "display: none;")
         {
-	        $ignored_message = "Ausgeblendet (Bewertung: " . $thumbs_sum . "): " . $post['subject'];
+	        $ignored_message = "Ausgeblendeter Beitrag";
 		$ignore_extra_style = "display: none;";
                 eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
         }
@@ -670,14 +690,7 @@ function build_postbit($post, $post_type=0, $uncover="")
         $post = $plugins->run_hooks("postbit_ignored", $post);
         $ignore_bit = $post["postbit_ignored"];
 	
-/*	if($mybb->settings['postlayout'] == "classic")
-	{
-		eval("\$postbit = \"".$templates->get("postbit_classic")."\";");
-	}
-	else*/
-	{
-		eval("\$postbit = \"".$templates->get("postbit")."\";");		
-	}
+		eval("\$postbit = \"".$templates->get("postbit")."\";");
 	$GLOBALS['post'] = "";
 	
 	return $postbit;

@@ -102,7 +102,7 @@ function disclaimer_world($page)
 {
 	$page = str_replace("<div id=\"content\">", "<div id=\"content\">".
 				"<div class=\"wrapper\"><div class=\"red_alert\">".
-					"Foreneinträge sind private Meinungen der Forenmitglieder, die keine Parteimitglieder sein müssen. Diese Meinungen sind keine offiziellen Aussagen der Piratenpartei &Ouml;sterreichs. <br />Das Forum befindet sich noch in der letzten Phase vor dem Normalbetrieb. Vereinzelt k&ouml;nnen noch Fehler auftreten.".
+					"Foreneinträge sind private Meinungen der Forenmitglieder, die keine Parteimitglieder sein müssen. Diese Meinungen sind keine offiziellen Aussagen der Piratenpartei &Ouml;sterreichs. <br />In diesem Forum wird kollaborativ moderiert. Um ausgeblendete und versteckte Beiträge lesen zu können ist eine Registrierung nötig.".
 				"</div></div>", $page);
 //	$page = str_replace("<div id=\"content\">", "<div id=\"content\">".
 //				"<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\" class=\"tborder\" style=\"clear: both; margin-bottom: 5px;\">".

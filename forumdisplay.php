@@ -753,12 +753,17 @@ $icon_cache = $cache->read("posticons");
 
 if($fpermissions['canviewthreads'] != 0)
 {
+  $ignorelist = str_replace(array(' '),array(''),$mybb->user['ignorelist']);
+  if (strlen($ignorelist) > 0)
+  {
+    $ignorelist = " t.uid NOT IN (" . $ignorelist . ") AND ";
+  }
 	// Start Getting Threads
 	$query = $db->query("
 		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = t.firstpost) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = t.firstpost AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
+		WHERE $ignorelist t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
 		ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
 		LIMIT $start, $perpage
 	");
@@ -897,6 +902,22 @@ if(is_array($threadcache))
 		$mybb->settings['postperpage'] = 20;
 	}
 
+  $uids = array();
+  foreach($threadcache as $thread)
+  {
+    $uids[$thread['uid']] = $thread;
+  }
+  $uids_q = implode(",",array_keys($uids));
+  $query = $db->query("SELECT P.uid,SUM(thumbsup) AS up,SUM(thumbsdown) AS down FROM mybb_posts P WHERE P.uid IN ($uids_q) AND p.dateline > ".(TIME_NOW-(86400*90))." GROUP BY P.uid;");
+  $avg_frac = array();
+  while ($thumbs = $db->fetch_array($query))
+  {
+    $avg_frac[$thumbs['uid']] = 1;
+    if ($thumbs['up'] + $thumbs['down'] > 0)
+    {
+      $avg_frac[$thumbs['uid']] = $thumbs['up'] / ($thumbs['up'] + $thumbs['down']);
+    }
+  }
 	foreach($threadcache as $thread)
 	{
 		$plugins->run_hooks("forumdisplay_thread");
@@ -905,6 +926,7 @@ if(is_array($threadcache))
 
 		if($thread['visible'] == 0)
 		{
+      continue;
 			$bgcolor = "trow_shaded";
 		}
 		else
@@ -942,19 +964,38 @@ if(is_array($threadcache))
 			$threadprefix = build_prefixes($thread['prefix']);
 			$thread['threadprefix'] = $threadprefix['displaystyle'].'&nbsp;';
 		}
-
+    $thread['gotounread'] = 1;
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
                 $thread['opacity'] = "1.0";
+                $thread['display'] = "block";
+                $thread['displayparts'] = "block";
                 $thread['fontsize'] = "";
 		if ($mybb->user['disablereddit'] != 1) {
 			$thread['thumbs'] = intval($thread['thumbs']);
 			$thread['my_thumbs'] = intval($thread['my_thumbs']);
-			if(($thread['thumbs'] < -1 || $thread['my_thumbs'] < 0) && $thread['my_thumbs'] <= 0 && $mybb->user['uid'] != $thread['uid'])
+      if (!$mybb->user['uid'])
+      {
+        $mybb->user['redditbase'] = 5;
+        $mybb->user['redditavg'] = 13;
+        $mybb->user['redditignore'] = 3;
+      }
+      if(($thread['my_thumbs'] < 0 || $thread['thumbs'] < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac[$thread['uid']]) && $thread['my_thumbs'] <= 0 && $mybb->user['uid'] != $thread['uid'])
 			{
-				$thread['subject'] = "Ausgeblendeter Beitrag (Bewertung: " . $thread['thumbs'] . ")";
-				$thread['opacity'] = "0.25";
-				$thread['fontsize'] = "font-size: 0.75em;";
+        $hide = 0;
+				$thread['subject'] = "Ausgeblendeter Beitrag von " . $thread['username'];
+        $thread['opacity'] = "0.28";
+        $thread['display'] = "none";
+        $thread['icon'] = -1;
+        $thread['displayparts'] = "block";
+				$thread['fontsize'] = "font-size: 0.7em;";
+        $thread['gotounread'] = 0;
+        if (($mybb->user['redditignore'] & 2) > 0 && $thread['my_thumbs'] < 0)
+          continue;
+        if (($mybb->user['redditignore'] & 1) > 0 && $thread['thumbs'] < $mybb->user['redditavg'] * $avg_frac[$thread['uid']])
+          continue;
+        if (($mybb->user['redditignore'] & 4) > 0)
+          continue;
 			}
 		}
 
@@ -1065,7 +1106,10 @@ if(is_array($threadcache))
 			}
 
 			$multitid = $thread['tid'];
-			eval("\$modbit = \"".$templates->get("forumdisplay_thread_modbit")."\";");
+      if ($thread['gotounread'] != 0)
+  			eval("\$modbit = \"".$templates->get("forumdisplay_thread_modbit")."\";");
+      else
+        $modbit = '';
 		}
 		else
 		{
@@ -1093,7 +1137,10 @@ if(is_array($threadcache))
 			$folder_label .= $lang->icon_dot;
 		}
 
-		$gotounread = '';
+    if ($thread['gotounread'] == 0)
+  		$gotounread = '';
+    else
+      $gotounread = ' ';
 		$isnew = 0;
 		$donenew = 0;
 
@@ -1124,7 +1171,8 @@ if(is_array($threadcache))
 			$folder_label .= $lang->icon_new;
 			$new_class = "subject_new";
 			$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-			eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+      if ($thread['gotounread'] != 0)
+  			eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
 			$unreadpost = 1;
 		}
 		else

@@ -253,12 +253,17 @@ if($mybb->input['action'] == "results")
 			// Normal users
 			$unapproved_where = 't.visible>0';
 		}
-		
+	  $ignorelist = str_replace(array(' '),array(''),$mybb->user['ignorelist']);
+    if (strlen($ignorelist) > 0)
+    { 
+      $ignorelist = " t.uid NOT IN (" . $ignorelist . ") AND ";
+    }
+
 		// If we have saved WHERE conditions, execute them
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' GROUP BY t.tid,t.dateline {$limitsql}");
+			$query = $db->simple_select("threads t", "t.tid", $ignorelist . $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' GROUP BY t.tid,t.dateline {$limitsql}");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -286,7 +291,8 @@ if($mybb->input['action'] == "results")
 				else
 					$where_conditions = " t.tid IN (".$search['threads'].")";
 			}
-			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' GROUP BY t.tid,t.dateline {$limitsql}");
+      if (strlen($limitsql) > 3) { $limitsql = " , t.dateline " . $limitsql; }
+			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' GROUP BY t.tid {$limitsql}");
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])
@@ -332,7 +338,9 @@ if($mybb->input['action'] == "results")
 			'limit' => $perpage
 		);
 		$query = $db->query("
-			SELECT t.*, u.username AS userusername, p.displaystyle AS threadprefix,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = t.firstpost) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = t.firstpost AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
+			SELECT t.*, u.username AS userusername, p.displaystyle AS threadprefix,
+      (SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = t.firstpost) AS thumbs,
+      " . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = t.firstpost AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 			LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
@@ -341,16 +349,28 @@ if($mybb->input['action'] == "results")
 			LIMIT $start, $perpage
 		");
 		$thread_cache = array();
+    $uids = array();
 		while($thread = $db->fetch_array($query))
 		{
 			$thread_cache[$thread['tid']] = $thread;
+      $uids[$thread['uid']] = $thread;
 		}
+    $uids_q = implode(",",array_keys($uids));
 		$thread_ids = implode(",", array_keys($thread_cache));
 		if(empty($thread_ids))
 		{
 			error($lang->error_nosearchresults);
 		}
-
+    $query = $db->query("SELECT P.uid,SUM(thumbsup) AS up,SUM(thumbsdown) AS down FROM mybb_posts P WHERE P.uid IN ($uids_q) AND p.dateline > ".(TIME_NOW-(86400*90))." GROUP BY P.uid;");
+    $avg_frac = array();
+    while ($thumbs = $db->fetch_array($query))
+    {
+      $avg_frac[$thumbs['uid']] = 1;
+      if ($thumbs['up'] + $thumbs['down'] > 0)
+      {
+        $avg_frac[$thumbs['uid']] = $thumbs['up'] / ($thumbs['up'] + $thumbs['down']);
+      }
+    }
 		// Fetch dot icons if enabled
 		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && $thread_cache)
 		{
@@ -400,22 +420,43 @@ if($mybb->input['action'] == "results")
 				$thread['threadprefix'] .= '&nbsp;';
 			}
 			
+      $thread['gotounread'] = 1;
 			$thread['subject'] = $parser->parse_badwords($thread['subject']);
 			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 			$thread['opacity'] = "1.0";
+      $thread['display'] = "block";
+      $thread['displayparts'] = "block";
 			$thread['fontsize'] = "";
                         if ($mybb->user['disablereddit'] != 1) {
 			$thread['thumbs'] = intval($thread['thumbs']);
 			$thread['my_thumbs'] = intval($thread['my_thumbs']);
-                        if(($thread['thumbs'] < -1 || $thread['my_thumbs'] < 0) && $thread['my_thumbs'] <= 0 && $mybb->user['uid'] != $thread['uid'])
+      if (!$mybb->user['uid'])
+      {
+        $mybb->user['redditbase'] = 5;
+        $mybb->user['redditavg'] = 13;
+        $mybb->user['redditignore'] = 3;
+      }
+      if(($thread['my_thumbs'] < 0 || $thread['thumbs'] < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac[$thread['uid']]) && $thread['my_thumbs'] <= 0 && $mybb->user['uid'] != $thread['uid'])
                         {
-                                $thread['subject'] = "Ausgeblendeter Beitrag (Bewertung: " . $thread['thumbs'] . ")";
-				$thread['opacity'] = "0.25";
-				$thread['fontsize'] = "font-size: 0.75em;";
+                                $thread['subject'] = "Ausgeblendeter Beitrag von " . $thread['username'];
+//                                $thread['subject'] .= " ({$thread['thumbs']} < {$mybb->user['redditbase']} - ". ($mybb->user['redditavg'] * $avg_frac[$thread['uid']]) .")";
+				$thread['opacity'] = "0.28";
+        $thread['display'] = "none";
+        $thread['icon'] = -1;
+        $thread['displayparts'] = "block";
+				$thread['fontsize'] = "font-size: 0.7em;";
+        $thread['gotounread'] = 0;
+                if (($mybb->user['redditignore'] & 2) > 0 && $thread['my_thumbs'] < 0)
+                  continue;
+                if (($mybb->user['redditignore'] & 1) > 0 && $thread['thumbs'] < $mybb->user['redditavg'] * $avg_frac[$thread['uid']])
+                  continue;
+                if (($mybb->user['redditignore'] & 4) > 0)
+                  continue;
+
                         }
                         }
 
-			if($icon_cache[$thread['icon']])
+			if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 			{
 				$posticon = $icon_cache[$thread['icon']];
 				$icon = "<img src=\"".$posticon['path']."\" alt=\"".$posticon['name']."\" />";
@@ -437,7 +478,10 @@ if($mybb->input['action'] == "results")
 				$folder = "dot_";
 				$folder_label .= $lang->icon_dot;
 			}
-			$gotounread = '';
+      if ($thread['gotounread'] == 0)
+        $gotounread = '';
+      else
+        $gotounread = ' ';
 			$isnew = 0;
 			$donenew = 0;
 			$last_read = 0;
@@ -484,7 +528,8 @@ if($mybb->input['action'] == "results")
 				$new_class = "subject_new";
 				$folder_label .= $lang->icon_new;
 				$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost").$highlight;
-				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+        if ($thread['gotounread'] != 0)
+  				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
 				$unreadpost = 1;
 			}
 			else
@@ -667,7 +712,7 @@ if($mybb->input['action'] == "results")
 			{
 				eval("\$customthreadtools = \"".$templates->get("search_results_threads_inlinemoderation_custom")."\";");
 			}
-			eval("\$inlinemod = \"".$templates->get("search_results_threads_inlinemoderation")."\";");
+  	  eval("\$inlinemod = \"".$templates->get("search_results_threads_inlinemoderation")."\";");
 		}
 		
 		$plugins->run_hooks("search_results_end");
@@ -958,18 +1003,41 @@ if($mybb->input['action'] == "results")
 			{
 				$prev = $post['message'];
 			}
+      $avg_frac = 1;
+      if ($post['uid'])
+      {
+        $query2 = $db->query("SELECT SUM(thumbsup) AS up,SUM(thumbsdown) AS down FROM mybb_posts WHERE uid = ".intval($post['uid'])." AND dateline > ".(TIME_NOW-(86400*90)).";");
+        $thumbs2 = $db->fetch_array($query2);
+        if ($thumbs2['up'] + $thumbs2['down'] > 0)
+        {
+          $avg_frac = $thumbs2['up'] / ($thumbs2['up'] + $thumbs2['down']);
+        }
+      }
                         $post['opacity'] = "1.0";
                         $post['fontsize'] = "";
                         if ($mybb->user['disablereddit'] != 1) {
                         $post['thumbs'] = intval($post['thumbs']);
                         $post['my_thumbs'] = intval($post['my_thumbs']);
-                        if(($post['thumbs'] < -1 || $post['my_thumbs'] < 0) && $post['my_thumbs'] <= 0 && $mybb->user['uid'] != $post['uid'])
+                        if (!$mybb->user['uid'])
                         {
-                                $post['opacity'] = "0.25";
-                                $post['fontsize'] = "font-size: 0.75em;";
-				$prev = "";
-                                $post['subject'] = "Ausgeblendeter Beitrag (Bewertung: " . $post['thumbs'] . ")";
+                          $mybb->user['redditbase'] = 5;
+                          $mybb->user['redditavg'] = 13;
+                          $mybb->user['redditignore'] = 3;
                         }
+                        if(($post['my_thumbs'] < 0 || $post['thumbs'] < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac) && $post['my_thumbs'] <= 0 && $mybb->user['uid'] != $post['uid'])
+                        {
+                          $post['subject'] = "Ausgeblendeter Beitrag von " . $post['username'];
+//                        $post['subject'] .= " ({$post['thumbs']} < {$mybb->user['redditbase']} - ". ($mybb->user['redditavg'] * $avg_frac) .")";
+                          $post['opacity'] = "0.28";
+                          $post['fontsize'] = "font-size: 0.7em;";
+				                  $prev = "";
+                          if (($mybb->user['redditignore'] & 2) > 0 && $post['my_thumbs'] < 0)
+                            $post['fontsize'] = "font-size: 0.7em; display: none;";
+                          if (($mybb->user['redditignore'] & 1) > 0 && $post['thumbs'] < $mybb->user['redditavg'] * $avg_frac)
+                            $post['fontsize'] = "font-size: 0.7em; display: none;";
+                          if (($mybb->user['redditignore'] & 4) > 0)
+                            $post['fontsize'] = "font-size: 0.7em; display: none;";
+                          }
                         }
 
 			$posted = my_date($mybb->settings['dateformat'], $post['dateline']).", ".my_date($mybb->settings['timeformat'], $post['dateline']);

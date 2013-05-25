@@ -638,7 +638,11 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"threadmode" => $mybb->input['threadmode'],
 		"showsigs" => $mybb->input['showsigs'],
 		"showavatars" => $mybb->input['showavatars'],
-                "disablereddit" => (($mybb->input['disablereddit'] == '1') ? '0' : '1'),
+    "disablereddit" => (($mybb->input['disablereddit'] == '1') ? '0' : '1'),
+    "disableredditsort" => (($mybb->input['disableredditsort'] == '1') ? '0' : '1'),
+    "redditbase" => intval($mybb->input['redditbase']),
+    "redditavg" => intval($mybb->input['redditavg']),
+    "redditignore" => intval($mybb->input['redditignore']),
 		"showquickreply" => $mybb->input['showquickreply'],
 		"receivepms" => $mybb->input['receivepms'],
 		"pmnotice" => $mybb->input['pmnotice'],
@@ -771,6 +775,37 @@ if($mybb->input['action'] == "options")
         {
                 $disableredditcheck = "checked=\"checked\"";
         }
+        if($user['disableredditsort'] == 1)
+        {
+          $disableredditsortcheck = "";
+        }
+        else
+        {
+          $disableredditsortcheck = "checked=\"checked\"";
+        }
+
+        $redditbase = '
+<option value="-1000000" '.($user['redditbase']==-1000000?'selected="selected"':'').'>Nur eigene Bewertungen berücksichtigen</option>
+<option value="10" '.($user['redditbase']==10?'selected="selected"':'').'>Sehr niedrige Schwelle zum Ausblenden</option>
+<option value="7" '.($user['redditbase']==7?'selected="selected"':'').'>Niedrige Schwelle zum Ausblenden</option>
+<option value="5" '.($user['redditbase']==5?'selected="selected"':'').'>Normale Schwelle zum Ausblenden</option>
+<option value="3" '.($user['redditbase']==3?'selected="selected"':'').'>Hohe Schwelle zum Ausblenden</option>
+<option value="2" '.($user['redditbase']==2?'selected="selected"':'').'>Sehr hohe Schwelle zum Ausblenden</option>
+';
+  $redditavg = '
+<option value="23" '.($user['redditavg']==23?'selected="selected"':'').'>Sehr hoher Vorteil aufgrund des Bewertungsdurchschnitts</option>
+<option value="16" '.($user['redditavg']==16?'selected="selected"':'').'>Hoher Vorteil aufgrund des Bewertungsdurchschnitts</option>
+<option value="13" '.($user['redditavg']==13?'selected="selected"':'').'>Normaler Vorteil aufgrund des Bewertungsdurchschnitts</option>
+<option value="9" '.($user['redditavg']==9?'selected="selected"':'').'>Niedriger Vorteil aufgrund des Bewertungsdurchschnitts</option>
+<option value="0" '.($user['redditavg']==0?'selected="selected"':'').'>Kein Vorteil aufgrund des Bewertungsdurchschnitts</option>
+';
+  $redditignore = '
+        <option value="0" '.($user['redditignore']==0?'selected="selected"':'').'>Ausgeblendete Beiträge nicht vollständig verstecken</option>
+        <option value="1" '.($user['redditignore']==1?'selected="selected"':'').'>Nur besonders schlecht bewertete ausgeblendete Beiträge vollständig verstecken</option>
+        <option value="2" '.($user['redditignore']==2?'selected="selected"':'').'>Nur eigens ausgeblendete Beiträge vollständig verstecken</option>
+        <option value="3" '.($user['redditignore']==3?'selected="selected"':'').'>Eigens ausgeblendete Beiträge UND besonders schlecht bewertete ausgeblendete Beiträge vollständig verstecken</option>
+        <option value="4" '.($user['redditignore']==4?'selected="selected"':'').'>Alle ausgeblendeten Beiträge vollständig verstecken</option>
+        ';
 
 	if($user['showquickreply'] == 1)
 	{

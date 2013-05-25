@@ -243,9 +243,9 @@ function send_mail_queue($count=10)
 		while($email = $db->fetch_array($query))
 		{
 			// Delete the message from the queue
-			$db->delete_query("mailqueue", "mid='{$email['mid']}'");
+	    $db->delete_query("mailqueue", "mid='{$email['mid']}'");
 			my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
-		}
+  	}
 		// Update the mailqueue cache and remove the lock
 		$cache->update_mailqueue(TIME_NOW, 0);
 	}
@@ -1630,7 +1630,9 @@ function get_post_icons()
  */
 function my_setcookie($name, $value="", $expires="", $httponly=false)
 {
-	global $mybb;
+  if (IN_SYNCOM == 1)
+    return;
+  global $mybb;
 
 	if(!$mybb->settings['cookiepath'])
 	{

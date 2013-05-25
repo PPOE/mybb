@@ -20,6 +20,8 @@
 <tr>
 <th class="trow2">Up</th>
 <th class="trow2">Down</th>
+<th class="trow2">Thumbs/Post</th>
+<th class="trow2">Posts</th>
 <th class="trow2">Percentage</th>
 <th class="trow2">Name</th>
 <th class="trow2">Ignoriert von</th>
@@ -28,12 +30,15 @@
 $dbconn = pg_connect("dbname=mybb")
   or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
 
-$data = pg_query("SELECT *,u / (1.0 * u + d) AS f FROM (SELECT username,SUM(thumbsup) AS u,SUM(thumbsdown) AS d,(SELECT COUNT(*) FROM mybb_users V WHERE (V.usergroup = 9 OR ',' || V.additionalgroups || ',' LIKE '%,9,%') AND (',' || V.ignorelist || ',' LIKE '%,' || (SELECT uu.uid + 0 FROM mybb_users uu WHERE uu.username = p.username) || ',%')) AS ignoredbypirates,(SELECT COUNT(*) FROM mybb_users V WHERE (',' || V.ignorelist || ',' LIKE '%,' || (SELECT uu.uid + 0 FROM mybb_users uu WHERE uu.username = p.username) || ',%')) AS ignoredbyall FROM mybb_posts p GROUP BY username ORDER BY username) A WHERE u+d >= 10 ORDER BY f DESC;") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+$min = isset($_GET['min']) ? intval($_GET['min']) : 10;
+$min = $min < 10 ? 10 : $min;
+
+$data = pg_query("SELECT *,u / (1.0 * u + d) AS f FROM (SELECT username,SUM(thumbsup) AS u,SUM(thumbsdown) AS d,(SELECT COUNT(*) FROM mybb_users V WHERE (V.usergroup = 9 OR ',' || V.additionalgroups || ',' LIKE '%,9,%') AND (',' || V.ignorelist || ',' LIKE '%,' || (SELECT uu.uid + 0 FROM mybb_users uu WHERE uu.username = p.username) || ',%')) AS ignoredbypirates,(SELECT COUNT(*) FROM mybb_users V WHERE (',' || V.ignorelist || ',' LIKE '%,' || (SELECT uu.uid + 0 FROM mybb_users uu WHERE uu.username = p.username) || ',%')) AS ignoredbyall, COUNT(*) AS count FROM mybb_posts p GROUP BY username ORDER BY username) A WHERE u+d >= $min ORDER BY f DESC;") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 
 $trow = 1;
 while ($line = pg_fetch_array($data, null, PGSQL_ASSOC))
 {
-  echo "<tr><td class=\"trow$trow\">{$line['u']}</td><td class=\"trow$trow\">{$line['d']}</td><td class=\"trow$trow\">{$line['f']}</td><td class=\"trow$trow\">{$line['username']}</td><td class=\"trow$trow\">{$line['ignoredbyall']} Benutzern, davon {$line['ignoredbypirates']} Piraten</td></tr>\n";
+  echo "<tr><td class=\"trow$trow\">{$line['u']}</td><td class=\"trow$trow\">{$line['d']}</td><td class=\"trow$trow\">".round(($line['u'] + $line['d']) / $line['count'],2)."</td><td class=\"trow$trow\">{$line['count']}</td><td class=\"trow$trow\">".round($line['f'] * 100,2)."</td><td class=\"trow$trow\">{$line['username']}</td><td class=\"trow$trow\">{$line['ignoredbyall']} Benutzern, davon {$line['ignoredbypirates']} Piraten</td></tr>\n";
   $trow = ($trow) % 2 + 1;
 }
 

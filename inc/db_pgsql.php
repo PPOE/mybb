@@ -297,7 +297,7 @@ class DB_PgSQL
 			}
 		}
 
-		if($write_query && $this->write_link)
+/*		if($write_query && $this->write_link)
 		{
 			while(pg_connection_busy($this->write_link));
 			$this->current_link = &$this->write_link;
@@ -310,7 +310,8 @@ class DB_PgSQL
 			$this->current_link = &$this->read_link;
 			pg_send_query($this->current_link, $string);
 			$query = pg_get_result($this->current_link);
-		}
+		}*/
+    $query = pg_query($this->write_link, $string);
 		
 		if((pg_result_error($query) && !$hide_errors))
 		{

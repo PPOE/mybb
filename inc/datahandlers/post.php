@@ -996,17 +996,16 @@ class PostDataHandler extends DataHandler
 				$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
 				$new_email = array(
 					"mailto" => $db->escape_string($subscribedmember['email']),
-					"mailfrom" => '',
+					"mailfrom" => 'noreply@forum.piratenpartei.at',
 					"subject" => $db->escape_string($emailsubject),
 					"message" => $db->escape_string($emailmessage),
 					"headers" => ''
 				);
-				$result = $db->insert_query("mailqueue", $new_email);
-				/*if ($db->affected_rows($result) != 1)
-				{
-					$new_email["subject"] = "Neuer Beitrag";
+        $query = $db->simple_select("mailqueue", "1 AS dup", "mailto='{$new_email['mailto']}' AND mailfrom='{$new_email['mailfrom']}' AND subject='{$new_email['subject']}' AND message='{$new_email['message']}'");
+        if (intval($db->fetch_field($query,"dup")) != 1)
+        {
 					$db->insert_query("mailqueue", $new_email);
-				}*/
+				}
 				unset($userlang);
 				$queued_email = 1;
 			}
@@ -1428,17 +1427,16 @@ class PostDataHandler extends DataHandler
 					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], get_thread_link($this->tid), $thread['fid'], $post_code);
 					$new_email = array(
 						"mailto" => $db->escape_string($subscribedmember['email']),
-						"mailfrom" => '',
+						"mailfrom" => 'noreply@forum.piratenpartei.at',
 						"subject" => $db->escape_string($emailsubject),
 						"message" => $db->escape_string($emailmessage),
 						"headers" => ''
 					);
-                                	$result = $db->insert_query("mailqueue", $new_email);
-                        	        if (!$result || $db->affected_rows($result) != 1)
-                               		{
-                	                        $new_email["subject"] = "Neuer Beitrag";
-        	                                $db->insert_query("mailqueue", $new_email);
-	                                }
+          $query = $db->simple_select("mailqueue", "1 AS dup", "mailto='{$new_email['mailto']}' AND mailfrom='{$new_email['mailfrom']}' AND subject='{$new_email['subject']}' AND message='{$new_email['message']}'");
+          if (intval($db->fetch_field($query,"dup")) == 1)
+          {
+            $db->insert_query("mailqueue", $new_email);
+          }
 					unset($userlang);
 					$queued_email = 1;
 				}

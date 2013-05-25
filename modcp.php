@@ -1330,9 +1330,10 @@ if($mybb->input['action'] == "do_modqueue")
 		redirect("modcp.php?action=modqueue&type=attachments", $lang->redirect_attachmentsmoderated);
 	}
 }
-
+$warning = "<div class=\"wrapper\"><div class=\"red_alert\"><font size=5>Die Freischaltung von Beiträgen sollte über die Mailingliste erfolgen! Wenn du nicht weißt was das heißen soll, frag einen Admin.</font></div></div>";
 if($mybb->input['action'] == "modqueue")
 {
+  error_no_permission();
 	if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 	{
 		$forum_cache = $cache->read("forums");
@@ -1409,7 +1410,7 @@ if($mybb->input['action'] == "modqueue")
 			
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
-			output_page($threadqueue);
+			output_page($threadqueue . $warning);
 		}
 		$type = 'threads';
 	}
@@ -1497,7 +1498,7 @@ if($mybb->input['action'] == "modqueue")
 			
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
-			output_page($postqueue);
+			output_page($postqueue . $warning);
 		}
 	}
 
@@ -1603,7 +1604,7 @@ if($mybb->input['action'] == "modqueue")
 		$plugins->run_hooks("modcp_modqueue_end");
 		
 		eval("\$queue = \"".$templates->get("modcp_modqueue_empty")."\";");
-		output_page($queue);
+		output_page($queue . $warning);
 	}
 }
 

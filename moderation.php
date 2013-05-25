@@ -41,7 +41,6 @@ switch($mybb->input['action'])
 $tid = intval($mybb->input['tid']);
 $pid = intval($mybb->input['pid']);
 $fid = intval($mybb->input['fid']);
-
 if($pid)
 {
 	$post = get_post($pid);

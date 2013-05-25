@@ -1089,6 +1089,7 @@ if($mybb->input['action'] == "results")
             }
             
             $where_conditions = "t.tid IN (".$search['threads'].")";
+            if (strlen($limitsql) > 3) { $limitsql = " , t.dateline " . $limitsql; }
             $query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' GROUP BY t.tid {$limitsql}");
             $count = $db->fetch_array($query);
 

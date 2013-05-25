@@ -90,8 +90,8 @@ if(intval($mybb->user['uid']) != 0)
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
 {
-	$visibleonly = " AND (visible='1' OR visible='0')";
-	$visibleonly2 = "AND (p.visible='1' OR p.visible='0') AND (t.visible='1' OR t.visible='0')";
+	//$visibleonly = " AND (visible='1' OR visible='0')";
+	//$visibleonly2 = "AND (p.visible='1' OR p.visible='0') AND (t.visible='1' OR t.visible='0')";
 	$ismod = true;
 }
 else
@@ -100,7 +100,7 @@ else
 }
 
 // Make sure we are looking at a real thread here.
-if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+if(!$thread['tid'] || ($thread['visible'] == 0 && intval($mybb->user['uid']) != 0 && $thread['uid'] != intval($mybb->user['uid']) && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
 	error($lang->error_invalidthread);
 }
@@ -142,10 +142,10 @@ if($mybb->settings['showforumpagesbreadcrumb'])
 	$forum_threads = $db->fetch_array($query);
 	$threadcount = $forum_threads['threads'];
 
-	if($ismod == true)
+/*	if($ismod == true)
 	{
 		$threadcount += $forum_threads['unapprovedthreads'];
-	}
+	}*/
 
 	// Limit to only our own threads
 	$uid_only = '';
@@ -604,14 +604,14 @@ if($mybb->input['action'] == "thread")
 		{
 			$adminpolloptions = "<option value=\"deletepoll\">".$lang->delete_poll."</option>";
 		}
-		if($thread['visible'] != 1)
+/*		if($thread['visible'] != 1)
 		{
 			$approveunapprovethread = "<option value=\"approvethread\">".$lang->approve_thread."</option>";
 		}
 		else
 		{
 			$approveunapprovethread = "<option value=\"unapprovethread\">".$lang->unapprove_thread."</option>";
-		}
+		}*/
 		if($thread['closed'] == 1)
 		{
 			$closelinkch = ' checked="checked"';
@@ -680,11 +680,11 @@ if($mybb->input['action'] == "thread")
 		eval("\$ratethread = \"".$templates->get("showthread_ratethread")."\";");
 	}
 	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
-	if($ismod)
+/*	if($ismod)
 	{
 		$visible = "AND (p.visible='0' OR p.visible='1')";
 	}
-	else if (intval($mybb->user['uid']) != 0)
+	else*/ if (intval($mybb->user['uid']) != 0)
   {
     $visible = "AND (p.visible='1' OR p.uid = ".intval($mybb->user['uid']).")";
   }
@@ -870,12 +870,21 @@ if($mybb->input['action'] == "thread")
 		}
 		
 		// Build the threaded post display tree.
+    $red_n = "(thumbsup + thumbsdown)";
+    $red_z = '1.64485'; //1.0 = 85%, 1.6 = 95%
+    $red_p = "(thumbsup / $red_n)";
+    $reddit = "CASE WHEN (thumbsup) = 0 THEN -1*(thumbsdown) ELSE ($red_p+$red_z*$red_z/(2*$red_n)-$red_z*sqrt(($red_p*(1-$red_p)+$red_z*$red_z/(4*$red_n))/$red_n))/(1+$red_z*$red_z/$red_n) END DESC,";
+    if ($mybb->user['disableredditsort'] == 1) {
+      $reddit = "";
+    }
 		$query = $db->query("
             SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
             FROM ".TABLE_PREFIX."posts p
             WHERE p.tid='$tid'
             $visible
-            ORDER BY p.dateline
+            ORDER BY p.replyto ASC,
+            $reddit
+            p.dateline ASC
         ");
         while($post = $db->fetch_array($query))
         {
@@ -920,8 +929,8 @@ if($mybb->input['action'] == "thread")
 			$post = get_post($mybb->input['pid']);
 			$query = $db->query("
 				SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
-				WHERE p.tid='$tid'
-				AND p.dateline <= '".$post['dateline']."'
+				WHERE p.tid='$tid'" . ((intval($post['dateline']) > 0) ? "
+				AND p.dateline <= '".$post['dateline']:"")."'
 				$visible
 			");
 			$result = $db->fetch_field($query, "count");

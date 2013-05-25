@@ -238,7 +238,7 @@ if ($pid == -1) {
 			$postedmsg = $api->getidbymessageid($struct['message-id'], $fid);
 	 		$db->update_query("posts", array('syncom_articlenumber'=>$articlenumber, 'visible'=>1), "pid=".$db->escape_string($postedmsg['pid']));
 
-			if (!$postedmsg['visible']) {
+			//if (!$postedmsg['visible']) {
 				echo "Publish thread, update counter\r\n";
 				$query = $db->simple_select("threads", "replies, unapprovedposts, visible", "tid=".$db->escape_string($postedmsg['tid']), array('limit' => 1));
 				$thread = $db->fetch_array($query);
@@ -265,7 +265,7 @@ if ($pid == -1) {
 					$unapprovedthreads--;
 				}
 				$db->update_query("forums", array('threads'=>$threads, 'posts'=>$posts, 'unapprovedposts'=>$unapprovedposts, 'unapprovedthreads'=>$unapprovedthreads), "fid=".$db->escape_string($postedmsg['fid']));
-			}
+			//}
 
 			$post = $api->getidbymessageid($struct['message-id'], $fid);
 	//		echo "Mail-Out - wenn der Artikel aus der Newsgroup kam\n";

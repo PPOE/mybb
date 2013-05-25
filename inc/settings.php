@@ -155,14 +155,14 @@ $settings['postfloodsecs'] = "60";
 $settings['postlayout'] = "classic";
 $settings['postmergemins'] = "0";
 $settings['prunepostcount'] = "0";
-$settings['postsperpage'] = "20";
+$settings['postsperpage'] = "200000";
 $settings['reCAPTCHA_PrivateKey'] = "";
 $settings['pmfloodsecs'] = "0";
 $settings['prunethreads'] = "0";
 $settings['pruneunactived'] = "1";
 $settings['enableprunebyposts'] = "1";
 $settings['reCAPTCHA_PublicKey'] = "";
-$settings['threadreadcut'] = "365";
+$settings['threadreadcut'] = "30";
 $settings['refreshwol'] = "1";
 $settings['tapatalk_reg_url'] = "member.php?action=register";
 $settings['regdateformat'] = "M Y";
@@ -213,7 +213,7 @@ $settings['unreadPostsCounterPages'] = "index.php";
 $settings['tapatalk_directory'] = "mobiquo";
 $settings['gomobile_theme_id'] = "11";
 $settings['thousandssep'] = ".";
-$settings['threadsperpage'] = "20";
+$settings['threadsperpage'] = "50";
 $settings['betweenregstime'] = "2";
 $settings['timeformat'] = "H:i";
 $settings['failedlogintime'] = "15";
@@ -248,7 +248,7 @@ DoCoMo
 Pre/
 UP.Browser
 Playstation Vita";
-$settings['userpppoptions'] = "5,10,15,20,25,50,75,100";
+$settings['userpppoptions'] = "";
 $settings['usertppoptions'] = "10,20,25,30,40,50";
 $settings['tpr_usergroups'] = "3,4,6,9";
 $settings['browsingthisforum'] = "0";

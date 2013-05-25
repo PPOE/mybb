@@ -17,6 +17,8 @@ require_once "../mybbapi.php";
 
 $query = $db->simple_select("users", "username,email");
 
+$map[] = "newsletter@forum.piratenpartei.at tf-newsletter@forum.piratenpartei.at";
+
 while ($row = $db->fetch_array($query)) {
 	$u = $row['username'];
 	$u = str_replace('+','%20',urlencode(strtolower($u)));
@@ -43,5 +45,5 @@ while ($row = $db->fetch_array($query)) {
 }
 $map[] = "$tmplist $tmpmails";
 file_put_contents("/etc/postfix/virtual", implode("\n", $map));
-exec("postmap /etc/postfix/virtual");
+shell_exec("postmap /etc/postfix/virtual");
 ?>
