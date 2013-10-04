@@ -308,6 +308,7 @@ function tpr_box(&$post)
 				{
 					$user_ru[$ttrate['pid']] = $ttrate['thumbsup'];
 					$user_rd[$ttrate['pid']] = $ttrate['thumbsdown'];
+          $user_ra[$ttrate['pid']] = intval($ttrate['thumbsup']) - intval($ttrate['thumbsdown']);
 				}
 
 				$db->free_result($query);
@@ -387,6 +388,7 @@ function tpr_box(&$post)
 	// Display number of thumbs
 	$tu_no = $post['thumbsup'];
 	$td_no = $post['thumbsdown'];
+	$ta_no = intval($tu_no) - intval($td_no);
 
 	// Display undo rating?
 	if($mybb->settings['tpr_undorate'] == 1 && $userrated[$pid] == true && !$cantrate)
@@ -401,23 +403,37 @@ function tpr_box(&$post)
 	}
 
 	// Make the box
-	$box = <<<BOX
-<table class="tpr_box" id="tpr_stat_$pid">
+	$box = "
+<table class=\"tpr_box\" id=\"tpr_stat_$pid\">
 	<tr>
-		<td class="tu_stat" id="tu_stat_$pid">$tu_no</td>
+		<td class=\"tu_stat\" id=\"tu_stat_$pid\">$tu_no</td>
 		<td>$tu_img</td>
 		<td>$td_img</td>
-		<td class="td_stat" id="td_stat_$pid">$td_no</td>
+		<td class=\"td_stat\" id=\"td_stat_$pid\">$td_no</td>
 	</tr>
 	<tr>
-		<td class="small" colspan="4" >
-			<span id="tpr_remove_$pid">$box_remove</span>
+		<td class=\"small\" colspan=\"4\" >
+			<span id=\"tpr_remove_$pid\">$box_remove</span>
 			$box_view
 		</td>
 	</tr>
 </table>
-BOX;
-
+";
+/*  $box = "
+<table class=\"tpr_box\" id=\"tpr_stat_$pid\">
+  <tr>
+    <td>$tu_img</td>
+    <td class=\"ta_stat\" id=\"ta_stat_$pid\">$ta_no</td>
+    <td>$td_img</td>
+  </tr>
+  <tr>
+    <td class=\"small\" colspan=\"4\" >
+      <span id=\"tpr_remove_$pid\">$box_remove</span>
+      $box_view
+    </td>
+  </tr>
+</table>
+";*/
 $post['tprdsp'] = $box;
 }
 
@@ -478,6 +494,8 @@ function tpr_action()
 		// Insert the data into database
 		$db->insert_query('thumbspostrating',$insert_thumbs);
 		$db->write_query('UPDATE '.TABLE_PREFIX.'posts SET thumbsup = thumbsup +1 WHERE pid='.$pid);
+    if ($uid != 0)
+      $db->write_query('UPDATE '.TABLE_PREFIX.'users SET thumbs_up = thumbs_up +1 WHERE uid='.$postuid);
 
 		++$post['thumbsup'];
 	}
@@ -493,7 +511,8 @@ function tpr_action()
 		// Insert the data into database
 		$db->insert_query('thumbspostrating',$insert_thumbs);
 		$db->write_query('UPDATE '.TABLE_PREFIX.'posts SET thumbsdown = thumbsdown +1 WHERE pid='.$pid);
-		
+    if ($uid != 0)
+      $db->write_query('UPDATE '.TABLE_PREFIX.'users SET thumbs_down = thumbs_down +1 WHERE uid='.$postuid);
 		++$post['thumbsdown'];
 	}
 	// Action for user who undo rating
@@ -502,11 +521,15 @@ function tpr_action()
 		if ($rated['thumbsup'] == 1)
 		{
 			$db->write_query('UPDATE '.TABLE_PREFIX.'posts SET thumbsup = thumbsup -1 WHERE pid='.$pid);
+      if ($postuid != 0)
+        $db->write_query('UPDATE '.TABLE_PREFIX.'users SET thumbs_up = thumbs_up -1 WHERE uid='.$postuid);
 			--$post['thumbsup'];
 		}
 		elseif ($rated['thumbsdown'] == 1)
 		{
 			$db->write_query('UPDATE '.TABLE_PREFIX.'posts SET thumbsdown = thumbsdown -1 WHERE pid='.$pid);
+      if ($postuid != 0)
+        $db->write_query('UPDATE '.TABLE_PREFIX.'users SET thumbs_down = thumbs_down -1 WHERE uid='.$postuid);
 			--$post['thumbsdown'];
 		}
 		else

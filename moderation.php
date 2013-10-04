@@ -732,7 +732,8 @@ switch($mybb->input['action'])
 		while($post = $db->fetch_array($query))
 		{
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+      $posttime = "";
+      if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], $post['dateline']); }
 
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
@@ -823,7 +824,8 @@ switch($mybb->input['action'])
 		while($post = $db->fetch_array($query))
 		{
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+      $posttime = "";
+      if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], $post['dateline']); }
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
@@ -1285,7 +1287,8 @@ switch($mybb->input['action'])
 		while($post = $db->fetch_array($query))
 		{
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+      $posttime = "";
+      if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], $post['dateline']); }
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
@@ -1950,7 +1953,8 @@ switch($mybb->input['action'])
 		while($post = $db->fetch_array($query))
 		{
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+      $posttime = "";
+      if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], $post['dateline']); }
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],

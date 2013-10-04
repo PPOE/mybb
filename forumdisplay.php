@@ -618,7 +618,7 @@ else
 }
 $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
-if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
+/*if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 {
 	$lang->load("ratethread");
 
@@ -636,7 +636,7 @@ if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 
 	eval("\$ratingsort = \"".$templates->get("forumdisplay_threadlist_sortrating")."\";");
 	$colspan = "7";
 }
-else
+else*/
 {
 	if($sortfield == "averagerating")
 	{
@@ -704,7 +704,8 @@ if($has_announcements == true)
 		$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 		$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 		$postdate = my_date($mybb->settings['dateformat'], $announcement['startdate']);
-		$posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']);
+		$posttime = "";
+    if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']); }
 		$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 
 		if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
@@ -759,14 +760,18 @@ if($fpermissions['canviewthreads'] != 0)
     $ignorelist = " t.uid NOT IN (" . $ignorelist . ") AND ";
   }
 	// Start Getting Threads
-	$query = $db->query("
-		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = t.firstpost) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = t.firstpost AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
-		FROM ".TABLE_PREFIX."threads t
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE $ignorelist t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
-		ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
-		LIMIT $start, $perpage
-	");
+  $query = $db->query("
+    SELECT t.*, t.username AS threadusername, u.username, post.thumbsup-post.thumbsdown AS thumbs,
+    " . (($mybb->user['uid'] != 0) ? "thumb.thumbsup-thumb.thumbsdown" : "0") . " AS my_thumbs
+    FROM ".TABLE_PREFIX."threads t
+    LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
+    LEFT JOIN ".TABLE_PREFIX."posts post ON (post.tid = t.tid AND post.pid = t.firstpost)
+    " . (($mybb->user['uid'] != 0) ? "LEFT JOIN ".TABLE_PREFIX."thumbspostrating thumb ON (thumb.pid = t.firstpost AND thumb.uid = ".intval($mybb->user['uid']).")":"")."
+    LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
+    WHERE $ignorelist t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
+    ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
+    LIMIT $start, $perpage
+  ");
 
 	$ratings = false;
 	while($thread = $db->fetch_array($query))
@@ -908,7 +913,7 @@ if(is_array($threadcache))
     $uids[$thread['uid']] = $thread;
   }
   $uids_q = implode(",",array_keys($uids));
-  $query = $db->query("SELECT P.uid,SUM(thumbsup) AS up,SUM(thumbsdown) AS down FROM mybb_posts P WHERE P.uid IN ($uids_q) AND p.dateline > ".(TIME_NOW-(86400*90))." GROUP BY P.uid;");
+  $query = $db->query("SELECT uid,thumbs_up AS up,thumbs_down AS down FROM mybb_users WHERE uid IN ($uids_q);");
   $avg_frac = array();
   while ($thumbs = $db->fetch_array($query))
   {
@@ -918,6 +923,7 @@ if(is_array($threadcache))
       $avg_frac[$thumbs['uid']] = $thumbs['up'] / ($thumbs['up'] + $thumbs['down']);
     }
   }
+  $avg_frac[0] = 1;
 	foreach($threadcache as $thread)
 	{
 		$plugins->run_hooks("forumdisplay_thread");
@@ -983,7 +989,7 @@ if(is_array($threadcache))
       if(($thread['my_thumbs'] < 0 || $thread['thumbs'] < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac[$thread['uid']]) && $thread['my_thumbs'] <= 0 && $mybb->user['uid'] != $thread['uid'])
 			{
         $hide = 0;
-				$thread['subject'] = "Ausgeblendeter Beitrag von " . $thread['username'];
+				$thread['subject'] = "Ausgeblendeter Beitrag von " . $thread['username'] . " ({$thread['my_thumbs']} < 0 || {$thread['thumbs']} < {$mybb->user['redditbase']} - {$mybb->user['redditavg']} * {$avg_frac[$thread['uid']]}) && {$thread['my_thumbs']} <= 0";
         $thread['opacity'] = "0.28";
         $thread['display'] = "none";
         $thread['icon'] = -1;
@@ -1215,7 +1221,8 @@ if(is_array($threadcache))
 		$load_inline_edit_js = 1;
 
 		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+    $lastposttime = "";
+    if (preg_match('/\d/',$lastpostdate) == 0) { $lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']); }
 		$lastposter = $thread['lastposter'];
 		$lastposteruid = $thread['lastposteruid'];
 

@@ -306,7 +306,8 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$post['forumlink'] = get_forum_link($post['fid']);
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+			$posttime = "";
+      if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], $post['dateline']); }
 			$profile_link = build_profile_link($post['username'], $post['uid'], "_blank");
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
 

@@ -1345,7 +1345,8 @@ if($mybb->input['action'] == "results")
                 $thread['multipage'] = '';
             }
             $lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-            $lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+            $lastposttime = "";
+            if (preg_match('/\d/',$lastpostdate) == 0) { $lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']); }
             $lastposter = $thread['lastposter'];
             $thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
             $lastposteruid = $thread['lastposteruid'];

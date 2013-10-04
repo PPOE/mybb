@@ -1333,7 +1333,7 @@ if($mybb->input['action'] == "do_modqueue")
 $warning = "<div class=\"wrapper\"><div class=\"red_alert\"><font size=5>Die Freischaltung von Beiträgen sollte über die Mailingliste erfolgen! Wenn du nicht weißt was das heißen soll, frag einen Admin.</font></div></div>";
 if($mybb->input['action'] == "modqueue")
 {
-  error_no_permission();
+//  error_no_permission();
 	if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 	{
 		$forum_cache = $cache->read("forums");
@@ -1477,7 +1477,8 @@ if($mybb->input['action'] == "modqueue")
 			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+      $posttime = "";
+      if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], $post['dateline']); }
 			$profile_link = build_profile_link($post['username'], $post['uid']);
 			$thread = "<strong>{$lang->meta_thread} <a href=\"{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
 			$forum = "<strong>{$lang->meta_forum} <a href=\"{$post['forumlink']}\">{$forum_name}</a></strong><br />";

@@ -1506,7 +1506,8 @@ if($mybb->input['action'] == "subscriptions")
 
 			// Build last post info
 			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+      $lastposttime = "";
+      if (preg_match('/\d/',$lastpostdate) == 0) { $lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']); }
 			$lastposter = $thread['lastposter'];
 			$lastposteruid = $thread['lastposteruid'];
 
@@ -3307,7 +3308,8 @@ if(!$mybb->input['action'])
 						}
 		
 						$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-						$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+            $lastposttime = "";
+            if (preg_match('/\d/',$lastpostdate) == 0) { $lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']); }
 						$lastposter = $thread['lastposter'];
 						$lastposteruid = $thread['lastposteruid'];
 		
@@ -3535,7 +3537,8 @@ if(!$mybb->input['action'])
 				$folder .= "folder";
 
 				$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-				$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+	      $lastposttime = "";
+        if (preg_match('/\d/',$lastpostdate) == 0) { $lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']); }
 				$lastposter = $thread['lastposter'];
 				$lastposteruid = $thread['lastposteruid'];
 

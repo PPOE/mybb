@@ -117,7 +117,8 @@ class Tapatalk_Parser extends postParser {
 			if($match[1] < TIME_NOW)
 			{
 				$postdate = my_date($mybb->settings['dateformat'], intval($match[1]));
-				$posttime = my_date($mybb->settings['timeformat'], intval($match[1]));
+        $posttime = "";
+        if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], intval($match[1])); }
 				$date = " ({$postdate} {$posttime})";
 			}
 			$username = preg_replace("#(?:&quot;|\"|')? dateline=(?:&quot;|\"|')?[0-9]+(?:&quot;|\"|')?#i", '', $username);

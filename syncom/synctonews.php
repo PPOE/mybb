@@ -156,24 +156,24 @@ function postarticle($message)
 
 }
 
-function postarticles()
+function postarticles($outgoing)
 {
 	global $syncom;
 
-	$dir = scandir($syncom['outgoing-spool'].'/');
+	$dir = scandir($outgoing.'/');
 
 	foreach ($dir as $spoolfile) {
-		$file = $syncom['outgoing-spool'].'/'.$spoolfile;
+		$file = $outgoing.'/'.$spoolfile;
 		if (!is_dir($file) and (file_exists($file))) {
 			$message = unserialize(file_get_contents($file));
+			
+      echo $message['newsgroup']." - ".$message['subject']."\r\n";
 
-			echo $message['newsgroup']." - ".$message['subject']."\r\n";
-
-			//	rename($file, $syncom['outgoing-spool'].'/test/'.$spoolfile);
+			//	rename($file, $outgoing.'/test/'.$spoolfile);
 			if (postarticle($message))
 				@unlink($file);
 			else
-				rename($file, $syncom['outgoing-spool'].'/error/'.$spoolfile);
+				rename($file, $outgoing.'/error/'.$spoolfile);
 		}
 	}
 }
@@ -207,5 +207,5 @@ function bbcode2html($post)
 }
 
 // Ausgangsspool -> Newsgroups
-postarticles();
+postarticles($syncom['outgoing-spool']);
 ?>

@@ -870,16 +870,17 @@ if($mybb->input['action'] == "thread")
 		}
 		
 		// Build the threaded post display tree.
-    $red_n = "(thumbsup + thumbsdown)";
+    $red_n = "(p.thumbsup + p.thumbsdown)";
     $red_z = '1.64485'; //1.0 = 85%, 1.6 = 95%
-    $red_p = "(thumbsup / $red_n)";
-    $reddit = "CASE WHEN (thumbsup) = 0 THEN -1*(thumbsdown) ELSE ($red_p+$red_z*$red_z/(2*$red_n)-$red_z*sqrt(($red_p*(1-$red_p)+$red_z*$red_z/(4*$red_n))/$red_n))/(1+$red_z*$red_z/$red_n) END DESC,";
+    $red_p = "(p.thumbsup / $red_n)";
+    $reddit = "CASE WHEN (p.thumbsup * $red_n) = 0 THEN -1*(p.thumbsdown) ELSE ($red_p+$red_z*$red_z/(2*$red_n)-$red_z*sqrt(($red_p*(1-$red_p)+$red_z*$red_z/(4*$red_n))/$red_n))/(1+$red_z*$red_z/$red_n) END DESC,";
     if ($mybb->user['disableredditsort'] == 1) {
       $reddit = "";
     }
 		$query = $db->query("
-            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline
+            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline, p.thumbsup, p.thumbsdown
             FROM ".TABLE_PREFIX."posts p
+            LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid = u.uid)
             WHERE p.tid='$tid'
             $visible
             ORDER BY p.replyto ASC,
@@ -1156,7 +1157,8 @@ if($mybb->input['action'] == "thread")
 			$similar_thread['lastpostlink'] = get_thread_link($similar_thread['tid'], 0, "lastpost");
 
 			$lastpostdate = my_date($mybb->settings['dateformat'], $similar_thread['lastpost']);
-			$lastposttime = my_date($mybb->settings['timeformat'], $similar_thread['lastpost']);
+      $lastposttime = "";
+      if (preg_match('/\d/',$lastpostdate) == 0) { $lastposttime = my_date($mybb->settings['timeformat'], $similar_thread['lastpost']); }
 			$lastposter = $similar_thread['lastposter'];
 			$lastposteruid = $similar_thread['lastposteruid'];
 
@@ -1388,7 +1390,8 @@ function buildtree($replyto="0", $indent="0")
 		foreach($tree[$replyto] as $key => $post)
 		{
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+      $posttime = "";
+      if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], $post['dateline']); }
 			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
 			
 			if(!$post['subject'])
@@ -1442,7 +1445,8 @@ function buildtree2($pids=array(), $linear = true, $replyto="0", $indent="0", $u
                 foreach($tree[$replyto] as $key => $post)
                 {
                         $postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-                        $posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+                        $posttime = "";
+                        if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], $post['dateline']); }
                         $post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
                         if(!$post['subject'])
                         {

@@ -808,7 +808,8 @@ if($mybb->input['action'] == "send")
 		{ // forward/reply
 			$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
 			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
+      $posttime = "";
+      if (preg_match('/\d/',$postdate) == 0) { $posttime = my_date($mybb->settings['timeformat'], $pm['dateline']); }
 			$message = "[quote='{$pm['quotename']}']\n$message\n[/quote]";
 			$message = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $message);
 

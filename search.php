@@ -339,10 +339,12 @@ if($mybb->input['action'] == "results")
 		);
 		$query = $db->query("
 			SELECT t.*, u.username AS userusername, p.displaystyle AS threadprefix,
-      (SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = t.firstpost) AS thumbs,
-      " . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = t.firstpost AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
+      post.thumbsup-post.thumbsdown AS thumbs,
+      " . (($mybb->user['uid'] != 0) ? "thumb.thumbsup-thumb.thumbsdown" : "0") . " AS my_thumbs
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
+      LEFT JOIN ".TABLE_PREFIX."posts post ON (post.tid = t.tid AND post.pid = t.firstpost)
+      " . (($mybb->user['uid'] != 0) ? "LEFT JOIN ".TABLE_PREFIX."thumbspostrating thumb ON (thumb.pid = t.firstpost AND thumb.uid = ".intval($mybb->user['uid']).")":"")."
 			LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
 			WHERE $where_conditions AND {$unapproved_where} {$permsql} AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
@@ -361,7 +363,7 @@ if($mybb->input['action'] == "results")
 		{
 			error($lang->error_nosearchresults);
 		}
-    $query = $db->query("SELECT P.uid,SUM(thumbsup) AS up,SUM(thumbsdown) AS down FROM mybb_posts P WHERE P.uid IN ($uids_q) AND p.dateline > ".(TIME_NOW-(86400*90))." GROUP BY P.uid;");
+    $query = $db->query("SELECT uid,thumbs_up AS up,thumbs_down AS down FROM mybb_users WHERE uid IN ($uids_q);");
     $avg_frac = array();
     while ($thumbs = $db->fetch_array($query))
     {
@@ -371,6 +373,7 @@ if($mybb->input['action'] == "results")
         $avg_frac[$thumbs['uid']] = $thumbs['up'] / ($thumbs['up'] + $thumbs['down']);
       }
     }
+    $avg_frac[0] = 1;
 		// Fetch dot icons if enabled
 		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && $thread_cache)
 		{
@@ -592,7 +595,8 @@ if($mybb->input['action'] == "results")
 				$thread['multipage'] = '';
 			}
 			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+      $lastposttime = "";
+      if (preg_match('/\d/',$lastpostdate) == 0) { $lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']); }
 			$lastposter = $thread['lastposter'];
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 			$lastposteruid = $thread['lastposteruid'];
@@ -833,10 +837,11 @@ if($mybb->input['action'] == "results")
 		}
 
 		$query = $db->query("
-			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid,(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = t.firstpost) AS thumbs," . (($mybb->user['uid'] != 0) ? "(SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating thumb WHERE pid = t.firstpost AND thumb.uid = {$mybb->user['uid']})" : "0") . " AS my_thumbs
+			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid,p.thumbsup-p.thumbsdown AS thumbs," . (($mybb->user['uid'] != 0) ? "thumb.thumbsup-thumb.thumbsdown":"0") . " AS my_thumbs
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+      " . (($mybb->user['uid'] != 0) ? "LEFT JOIN ".TABLE_PREFIX."thumbspostrating thumb ON (thumb.pid = p.pid AND thumb.uid = ".intval($mybb->user['uid']).")":"")."
 			WHERE p.pid IN (".$db->escape_string($search['posts']).")
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
@@ -1006,7 +1011,7 @@ if($mybb->input['action'] == "results")
       $avg_frac = 1;
       if ($post['uid'])
       {
-        $query2 = $db->query("SELECT SUM(thumbsup) AS up,SUM(thumbsdown) AS down FROM mybb_posts WHERE uid = ".intval($post['uid'])." AND dateline > ".(TIME_NOW-(86400*90)).";");
+        $query2 = $db->query("SELECT thumbs_up AS up,thumbs_down AS down FROM mybb_users WHERE uid = ".intval($post['uid']).";");
         $thumbs2 = $db->fetch_array($query2);
         if ($thumbs2['up'] + $thumbs2['down'] > 0)
         {

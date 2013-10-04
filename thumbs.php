@@ -33,7 +33,7 @@ $dbconn = pg_connect("dbname=mybb")
 $min = isset($_GET['min']) ? intval($_GET['min']) : 10;
 $min = $min < 10 ? 10 : $min;
 
-$data = pg_query("SELECT *,u / (1.0 * u + d) AS f FROM (SELECT username,SUM(thumbsup) AS u,SUM(thumbsdown) AS d,(SELECT COUNT(*) FROM mybb_users V WHERE (V.usergroup = 9 OR ',' || V.additionalgroups || ',' LIKE '%,9,%') AND (',' || V.ignorelist || ',' LIKE '%,' || (SELECT uu.uid + 0 FROM mybb_users uu WHERE uu.username = p.username) || ',%')) AS ignoredbypirates,(SELECT COUNT(*) FROM mybb_users V WHERE (',' || V.ignorelist || ',' LIKE '%,' || (SELECT uu.uid + 0 FROM mybb_users uu WHERE uu.username = p.username) || ',%')) AS ignoredbyall, COUNT(*) AS count FROM mybb_posts p GROUP BY username ORDER BY username) A WHERE u+d >= $min ORDER BY f DESC;") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+$data = pg_query("SELECT U.username, COUNT(P.pid) AS count, thumbs_up AS u,thumbs_down AS d, thumbs_up / (1.0 * thumbs_up + thumbs_down) AS f,(SELECT COUNT(*) FROM mybb_users V WHERE (V.usergroup = 9 OR ',' || V.additionalgroups || ',' LIKE '%,9,%') AND (',' || V.ignorelist || ',' LIKE '%,' || U.uid || ',%')) AS ignoredbypirates,(SELECT COUNT(*) FROM mybb_users V WHERE (',' || V.ignorelist || ',' LIKE '%,' || U.uid || ',%')) AS ignoredbyall FROM mybb_users U LEFT JOIN mybb_posts P ON P.uid = U.uid WHERE thumbs_up+thumbs_down >= $min GROUP BY U.username, U.thumbs_up, U.thumbs_down, U.uid, P.uid ORDER BY f DESC;") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 
 $trow = 1;
 while ($line = pg_fetch_array($data, null, PGSQL_ASSOC))

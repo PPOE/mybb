@@ -151,7 +151,8 @@ function build_postbit($post, $post_type=0, $uncover="")
 
 	// Format the post date and time using my_date
 	$post['postdate'] = my_date($mybb->settings['dateformat'], $post['dateline']);
-	$post['posttime'] = my_date($mybb->settings['timeformat'], $post['dateline']);
+  $post['posttime'] = "";
+  if (preg_match('/\d/',$post['postdate']) == 0) { $post['posttime'] = my_date($mybb->settings['timeformat'], $post['dateline']); }
 
 	// Dont want any little 'nasties' in the subject
 	$post['subject'] = $parser->parse_badwords($post['subject']);
@@ -630,6 +631,8 @@ function build_postbit($post, $post_type=0, $uncover="")
                         $post['uncover'] = $uncover;
 			$post = $plugins->run_hooks("postbit", $post);
       $ignore_visibility = "";
+      if (!isset($_GET['all']) || $_GET['all'] != 1)
+      {
 			// Is this author on the ignore list of the current user? Hide this pos
 			if(is_array($ignored_users) && $post['uid'] != 0 && $ignored_users[$post['uid']] == 1)
 			{
@@ -639,17 +642,12 @@ function build_postbit($post, $post_type=0, $uncover="")
 				$post_visibility = "display: none;";
 			}
 			else if ($mybb->user['disablereddit'] != 1) {
-        $query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '".intval($post['pid'])."';");
-        $thumbs = $db->fetch_array($query);
-        $thumbs_sum = $thumbs['sum'] + 0;
-        $query = $db->query("SELECT SUM(thumbsup) AS up,SUM(thumbsdown) AS down FROM mybb_posts P WHERE p.uid = '".intval($post['uid'])."' AND p.dateline > ".(TIME_NOW-(86400*90)).";");
-        $avg = $db->fetch_array($query);
-        if ($thumbs['sum'] && $mybb->user['uid'])
-        {
-          $query = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '".intval($post['pid'])."' AND uid = '{$mybb->user['uid']}';");
-          $thumbs_own = $db->fetch_array($query);
-          $thumbs_sum_own = $thumbs_own['sum'] + 0;
-        }
+        $thumbs = intval($post['thumbsup']) - intval($post['thumbsdown']);
+        $thumbs_sum = intval($thumbs);
+        $avg = array();
+        $avg['up'] = $post['thumbs_up'];
+        $avg['down'] = $post['thumbs_down'];
+        $thumbs_sum_own = intval($post['mythumbs']);
         $avg_frac = 1;
         if ($avg['up'] + $avg['down'] > 0)
         {
@@ -674,6 +672,7 @@ function build_postbit($post, $post_type=0, $uncover="")
           eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
         }
 			}
+      }
 			$post["postbit_ignored"] = $ignore_bit;
                         $post = $plugins->run_hooks("postbit_ignored", $post);
 			$ignore_bit = $post["postbit_ignored"];

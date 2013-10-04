@@ -152,7 +152,41 @@ while($postrow = $db->fetch_array($query))
 	{
 		$parser_options['allow_smilies'] = 0;
 	}
-
+  $post = $postrow;
+  if (!isset($_GET['all']) || $_GET['all'] != 1)
+  {
+  if(is_array($ignored_users) && $post['uid'] != 0 && $ignored_users[$post['uid']] == 1)
+  {
+    continue;
+  }
+  else if ($mybb->user['disablereddit'] != 1) {
+        $thumbs = intval($post['thumbsup']) - intval($post['thumbsdown']);
+        $thumbs_sum = intval($thumbs);
+        $query2 = $db->query("SELECT SUM(thumbsup) AS up,SUM(thumbsdown) AS down FROM mybb_posts P WHERE p.uid = '".intval($post['uid'])."' AND p.dateline > ".(TIME_NOW-(86400*90)).";");
+        $avg = $db->fetch_array($query2);
+        if ($mybb->user['uid'])
+        {
+          $query2 = $db->query("SELECT SUM(thumbsup)-SUM(thumbsdown) AS sum FROM mybb_thumbspostrating WHERE pid = '".intval($post['pid'])."' AND uid = '{$mybb->user['uid']}';");
+          $thumbs_own = $db->fetch_array($query2);
+          $thumbs_sum_own = $thumbs_own['sum'] + 0;
+        }
+        $avg_frac = 1;
+        if ($avg['up'] + $avg['down'] > 0)
+        {
+          $avg_frac = $avg['up'] / ($avg['up'] + $avg['down']);
+        }
+        if (!$mybb->user['uid'])
+        {
+          $mybb->user['redditbase'] = 5;
+          $mybb->user['redditavg'] = 13;
+          $mybb->user['redditignore'] = 3;
+        }
+        if(($thumbs_sum_own < 0 || $thumbs_sum < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac) && $thumbs_sum_own <= 0 && $mybb->user['uid'] != $post['uid'])
+        {
+          continue;
+        }
+  }
+  }
 	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
 	$plugins->run_hooks("printthread_post");
 	eval("\$postrows .= \"".$templates->get("printthread_post")."\";");

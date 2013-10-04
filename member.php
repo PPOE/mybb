@@ -1882,7 +1882,7 @@ if($mybb->input['action'] == "profile")
 	
 	
 	// Get reputation ratings from Thumbspostrating addon
-	$query = $db->simple_select("thumbspostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid", "SUM(A.thumbsdown) AS scoredown, SUM(A.thumbsup) AS scoreup", "B.uid='$uid'");
+	$query = $db->query("SELECT thumbs_up AS scoreup, thumbs_down AS scoredown FROM mybb_users WHERE uid='$uid'");
 	$post = $db->fetch_array($query);
   $query = $db->query("SELECT COUNT(*) AS c FROM (SELECT 1 FROM mybb_thumbspostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid WHERE A.thumbsdown = 1 AND B.uid = '$uid' GROUP BY A.uid) A;");
   $post2 = $db->fetch_array($query);

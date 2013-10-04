@@ -339,7 +339,8 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		}
 
 		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+    $lastposttime = "";
+    if (preg_match('/\d/',$lastpostdate) == 0) { $lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']); }
 		// Don't link to guest's profiles (they have no profile).
 		if($thread['lastposteruid'] == 0)
 		{

@@ -109,7 +109,7 @@ class captcha
 		if($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
 			// We want to use reCAPTCHA, set the server options
-			$this->server = "http://www.google.com/recaptcha/api";
+			$this->server = "https://www.google.com/recaptcha/api";
 			$this->secure_server = "https://www.google.com/recaptcha/api";
 			$this->verify_server = "www.google.com";
 

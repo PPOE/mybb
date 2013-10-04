@@ -118,7 +118,7 @@ if ($pid == -1) {
 
 	if ($supersede) {
 		$post = $api->getidbymessageid($struct['supersedes'], $fid);
-		if ($post['pid'] == 0)
+		if (intval($post['pid']) == 0)
 			$supersede = false;
 	}
 
@@ -128,13 +128,13 @@ if ($pid == -1) {
 	$isnewmessage = ($post['syncom_articlenumber'] != $articlenumber);
 
 	//echo "Pruefung, ob der Artikel bereits ohne Nummer existiert\n";
-	if (($post['syncom_articlenumber'] != $articlenumber) and ($post['pid'] != 0)) {
+	if (($post['syncom_articlenumber'] != $articlenumber) and (intval($post['pid']) != 0)) {
 		echo "Insert articlenumber\r\n";
-		$db->update_query("posts", array('syncom_articlenumber'=>$articlenumber, 'visible'=>1), "pid=".$db->escape_string($post['pid']));
+		$db->update_query("posts", array('syncom_articlenumber'=>$articlenumber, 'visible'=>1), "pid=".intval($post['pid']));
 
 		if (!$post['visible']) {
 			echo "Publish thread, update counter\r\n";
-			$query = $db->simple_select("threads", "replies, unapprovedposts, visible", "tid=".$db->escape_string($post['tid']), array('limit' => 1));
+			$query = $db->simple_select("threads", "replies, unapprovedposts, visible", "tid=".intval($post['tid']), array('limit' => 1));
 			$thread = $db->fetch_array($query);
 			$replies = $thread['replies'];
 			$unapprovedposts = $thread['unapprovedposts'];
@@ -142,9 +142,9 @@ if ($pid == -1) {
 				$replies++;
 				$unapprovedposts--;
 			}
-			$db->update_query("threads", array('visible'=>1, 'replies'=>($replies)+0, 'unapprovedposts'=>($unapprovedposts)+0), "tid=".$db->escape_string($post['tid']));
+			$db->update_query("threads", array('visible'=>1, 'replies'=>($replies)+0, 'unapprovedposts'=>($unapprovedposts)+0), "tid=".intval($post['tid']));
 
-			$query = $db->simple_select("forums", "unapprovedthreads,unapprovedposts,threads,posts", "fid=".$db->escape_string($post['fid']), array('limit' => 1));
+			$query = $db->simple_select("forums", "unapprovedthreads,unapprovedposts,threads,posts", "fid=".intval($post['fid']), array('limit' => 1));
 			$forum = $db->fetch_array($query);
 			$threads = $forum['threads'];
 			$posts = $forum['posts'];
@@ -158,12 +158,12 @@ if ($pid == -1) {
 				$threads++;
 				$unapprovedthreads--;
 			}
-			$db->update_query("forums", array('threads'=>$threads, 'posts'=>$posts, 'unapprovedposts'=>$unapprovedposts, 'unapprovedthreads'=>$unapprovedthreads), "fid=".$db->escape_string($post['fid']));
+			$db->update_query("forums", array('threads'=>intval($threads), 'posts'=>intval($posts), 'unapprovedposts'=>intval($unapprovedposts), 'unapprovedthreads'=>intval($unapprovedthreads)), "fid=".intval($post['fid']));
 		}
 	}
 
 	//echo "wenn ja und kein Supersede => nicht posten\n";
-	if (($post['pid'] != 0) and !$supersede) {
+	if ((intval($post['pid']) != 0) and !$supersede) {
 
 		//echo "Mail-Out - wenn der Artikel aus dem Forum erzeugt wurde\n";
 	//	echo "Aber nur, wenn der Artikel nicht bereits ins Forum zurueckkam\n";
@@ -228,19 +228,19 @@ if ($pid == -1) {
 	if ($supersede) {
 		$old = $api->getidbymessageid($struct['supersedes'], $fid);
 
-		$success = $api->edit($old['tid'], $old['pid'], $old['replyto'], $struct['subject'], $db->escape_string($struct['body']),
+		$success = $api->edit(intval($old['tid']), intval($old['pid']), $old['replyto'], $struct['subject'], $db->escape_string($struct['body']),
 			$userdata['uid'], $user, $struct['date'], $struct['message-id'], $articlenumber, $email);
 		return($success);
 	} else {
-		$success = $api->post($fid, $post['tid'], $post['pid'], $struct['subject'], $db->escape_string($struct['body']),
+		$success = $api->post(intval($fid), intval($post['tid']), intval($post['pid']), $struct['subject'], $db->escape_string($struct['body']),
 			$userdata['uid'], $user, $struct['date'], $struct['message-id'], $articlenumber, $email);
 		if ($success) {
 			$postedmsg = $api->getidbymessageid($struct['message-id'], $fid);
-	 		$db->update_query("posts", array('syncom_articlenumber'=>$articlenumber, 'visible'=>1), "pid=".$db->escape_string($postedmsg['pid']));
+	 		$db->update_query("posts", array('syncom_articlenumber'=>$articlenumber, 'visible'=>1), "pid=".intval($postedmsg['pid']));
 
 			//if (!$postedmsg['visible']) {
 				echo "Publish thread, update counter\r\n";
-				$query = $db->simple_select("threads", "replies, unapprovedposts, visible", "tid=".$db->escape_string($postedmsg['tid']), array('limit' => 1));
+				$query = $db->simple_select("threads", "replies, unapprovedposts, visible", "tid=".intval($postedmsg['tid']), array('limit' => 1));
 				$thread = $db->fetch_array($query);
 				$replies = $thread['replies'];
 				$unapprovedposts = $thread['unapprovedposts'];
@@ -248,9 +248,9 @@ if ($pid == -1) {
 					$replies++;
 					$unapprovedposts--;
 				}
-				$db->update_query("threads", array('visible'=>1, 'replies'=>($replies + 0), 'unapprovedposts'=>($unapprovedposts + 0)), "tid=".$db->escape_string($postedmsg['tid']));
+				$db->update_query("threads", array('visible'=>1, 'replies'=>($replies + 0), 'unapprovedposts'=>($unapprovedposts + 0)), "tid=".intval($postedmsg['tid']));
 
-				$query = $db->simple_select("forums", "unapprovedthreads,unapprovedposts,threads,posts", "fid=".$db->escape_string($postedmsg['fid']), array('limit' => 1));
+				$query = $db->simple_select("forums", "unapprovedthreads,unapprovedposts,threads,posts", "fid=".intval($postedmsg['fid']), array('limit' => 1));
 				$forum = $db->fetch_array($query);
 				$threads = $forum['threads'];
 				$posts = $forum['posts'];
@@ -264,7 +264,7 @@ if ($pid == -1) {
 					$threads++;
 					$unapprovedthreads--;
 				}
-				$db->update_query("forums", array('threads'=>$threads, 'posts'=>$posts, 'unapprovedposts'=>$unapprovedposts, 'unapprovedthreads'=>$unapprovedthreads), "fid=".$db->escape_string($postedmsg['fid']));
+				$db->update_query("forums", array('threads'=>intval($threads), 'posts'=>intval($posts), 'unapprovedposts'=>intval($unapprovedposts), 'unapprovedthreads'=>intval($unapprovedthreads)), "fid=".intval($postedmsg['fid']));
 			//}
 
 			$post = $api->getidbymessageid($struct['message-id'], $fid);
