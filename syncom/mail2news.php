@@ -64,8 +64,10 @@ $structure = $decoder->decode($params);
 // Werte des Headers zuweisen
 $hostname = php_uname('n');
 $subject = $structure->headers['subject'];
-$from = imap_rfc822_parse_adrlist($structure->headers['from'], $hostname);
-$sender = $from[0]->mailbox.'@'.$from[0]->host;
+//$from = imap_rfc822_parse_adrlist($structure->headers['from'], $hostname);
+$from = 'Gast';
+//$sender = $from[0]->mailbox.'@'.$from[0]->host;
+$sender = 'gast@piratenpartei.at';
 $deliveredto = imap_rfc822_parse_adrlist($structure->headers['delivered-to'], $hostname);
 $receiver = $deliveredto[0]->mailbox.'@'.$deliveredto[0]->host;
 $newsgroup = $deliveredto[0]->mailbox;
