@@ -1882,11 +1882,11 @@ if($mybb->input['action'] == "profile")
 	
 	
 	// Get reputation ratings from Thumbspostrating addon
-	$query = $db->query("SELECT thumbs_up AS scoreup, thumbs_down AS scoredown FROM mybb_users WHERE uid='$uid'");
+	$query = $db->query("SELECT rates_up AS scoreup, rates_down AS scoredown FROM mybb_users WHERE uid='$uid'");
 	$post = $db->fetch_array($query);
-  $query = $db->query("SELECT COUNT(*) AS c FROM (SELECT 1 FROM mybb_thumbspostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid WHERE A.thumbsdown = 1 AND B.uid = '$uid' GROUP BY A.uid) A;");
+  $query = $db->query("SELECT COUNT(*) AS c FROM (SELECT 1 FROM mybb_ratespostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid WHERE A.ratesdown = 1 AND B.uid = '$uid' GROUP BY A.uid) A;");
   $post2 = $db->fetch_array($query);
-  $query = $db->query("SELECT COUNT(*) AS c FROM (SELECT 1 FROM mybb_thumbspostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid WHERE A.thumbsup = 1 AND B.uid = '$uid' GROUP BY A.uid) A;");
+  $query = $db->query("SELECT COUNT(*) AS c FROM (SELECT 1 FROM mybb_ratespostrating A LEFT JOIN mybb_posts B ON A.pid = B.pid WHERE A.ratesup = 1 AND B.uid = '$uid' GROUP BY A.uid) A;");
   $post3 = $db->fetch_array($query);
 	$reppostingsdown = intval($post['scoredown']);
   $reppostingsdownusers = intval($post2['c']);

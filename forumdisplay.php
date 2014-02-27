@@ -761,12 +761,12 @@ if($fpermissions['canviewthreads'] != 0)
   }
 	// Start Getting Threads
   $query = $db->query("
-    SELECT t.*, t.username AS threadusername, u.username, post.thumbsup-post.thumbsdown AS thumbs,
-    " . (($mybb->user['uid'] != 0) ? "thumb.thumbsup-thumb.thumbsdown" : "0") . " AS my_thumbs
+    SELECT t.*, t.username AS threadusername, u.username, post.ratesup-post.ratesdown AS rates,
+    " . (($mybb->user['uid'] != 0) ? "rate.ratesup-rate.ratesdown" : "0") . " AS my_rates
     FROM ".TABLE_PREFIX."threads t
     LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
     LEFT JOIN ".TABLE_PREFIX."posts post ON (post.tid = t.tid AND post.pid = t.firstpost)
-    " . (($mybb->user['uid'] != 0) ? "LEFT JOIN ".TABLE_PREFIX."thumbspostrating thumb ON (thumb.pid = t.firstpost AND thumb.uid = ".intval($mybb->user['uid']).")":"")."
+    " . (($mybb->user['uid'] != 0) ? "LEFT JOIN ".TABLE_PREFIX."ratespostrating rate ON (rate.pid = t.firstpost AND rate.uid = ".intval($mybb->user['uid']).")":"")."
     LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
     WHERE $ignorelist t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
     ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
@@ -913,14 +913,14 @@ if(is_array($threadcache))
     $uids[$thread['uid']] = $thread;
   }
   $uids_q = implode(",",array_keys($uids));
-  $query = $db->query("SELECT uid,thumbs_up AS up,thumbs_down AS down FROM mybb_users WHERE uid IN ($uids_q);");
+  $query = $db->query("SELECT uid,rates_up AS up,rates_down AS down FROM mybb_users WHERE uid IN ($uids_q);");
   $avg_frac = array();
-  while ($thumbs = $db->fetch_array($query))
+  while ($rates = $db->fetch_array($query))
   {
-    $avg_frac[$thumbs['uid']] = 1;
-    if ($thumbs['up'] + $thumbs['down'] > 0)
+    $avg_frac[$rates['uid']] = 1;
+    if ($rates['up'] + $rates['down'] > 0)
     {
-      $avg_frac[$thumbs['uid']] = $thumbs['up'] / ($thumbs['up'] + $thumbs['down']);
+      $avg_frac[$rates['uid']] = $rates['up'] / ($rates['up'] + $rates['down']);
     }
   }
   $avg_frac[0] = 1;
@@ -978,27 +978,27 @@ if(is_array($threadcache))
                 $thread['displayparts'] = "block";
                 $thread['fontsize'] = "";
 		if ($mybb->user['disablereddit'] != 1) {
-			$thread['thumbs'] = intval($thread['thumbs']);
-			$thread['my_thumbs'] = intval($thread['my_thumbs']);
+			$thread['rates'] = intval($thread['rates']);
+			$thread['my_rates'] = intval($thread['my_rates']);
       if (!$mybb->user['uid'])
       {
         $mybb->user['redditbase'] = 5;
         $mybb->user['redditavg'] = 13;
         $mybb->user['redditignore'] = 3;
       }
-      if(($thread['my_thumbs'] < 0 || $thread['thumbs'] < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac[$thread['uid']]) && $thread['my_thumbs'] <= 0 && $mybb->user['uid'] != $thread['uid'])
+      if(($thread['my_rates'] < 0 || $thread['rates'] < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac[$thread['uid']]) && $thread['my_rates'] <= 0 && $mybb->user['uid'] != $thread['uid'])
 			{
         $hide = 0;
-				$thread['subject'] = "Ausgeblendeter Beitrag von " . $thread['username'] . " ({$thread['my_thumbs']} < 0 || {$thread['thumbs']} < {$mybb->user['redditbase']} - {$mybb->user['redditavg']} * {$avg_frac[$thread['uid']]}) && {$thread['my_thumbs']} <= 0";
+				$thread['subject'] = "Ausgeblendeter Beitrag von " . $thread['username'] . " ({$thread['my_rates']} < 0 || {$thread['rates']} < {$mybb->user['redditbase']} - {$mybb->user['redditavg']} * {$avg_frac[$thread['uid']]}) && {$thread['my_rates']} <= 0";
         $thread['opacity'] = "0.28";
         $thread['display'] = "none";
         $thread['icon'] = -1;
         $thread['displayparts'] = "block";
 				$thread['fontsize'] = "font-size: 0.7em;";
         $thread['gotounread'] = 0;
-        if (($mybb->user['redditignore'] & 2) > 0 && $thread['my_thumbs'] < 0)
+        if (($mybb->user['redditignore'] & 2) > 0 && $thread['my_rates'] < 0)
           continue;
-        if (($mybb->user['redditignore'] & 1) > 0 && $thread['thumbs'] < $mybb->user['redditavg'] * $avg_frac[$thread['uid']])
+        if (($mybb->user['redditignore'] & 1) > 0 && $thread['rates'] < $mybb->user['redditavg'] * $avg_frac[$thread['uid']])
           continue;
         if (($mybb->user['redditignore'] & 4) > 0)
           continue;

@@ -13,6 +13,9 @@
    2014-01-16
      Deaktivierung des Ausblendes von Posts aufgrund der Bewertung
      changes can be found with date
+   2014-02-27
+    Aktivieren des Ausblendens aufgrund des Mülleimers
+    changes can be found with date
  */
 
 /**
@@ -648,12 +651,12 @@ function build_postbit($post, $post_type=0, $uncover="")
 				$post_visibility = "display: none;";
 			}
 			else if ($mybb->user['disablereddit'] != 1) {
-        $thumbs = intval($post['thumbsup']) - intval($post['thumbsdown']);
-        $thumbs_sum = intval($thumbs);
+        $rates = intval($post['ratesup']) - intval($post['ratesdown']);
+        $rates_sum = intval($rates);
         $avg = array();
-        $avg['up'] = $post['thumbs_up'];
-        $avg['down'] = $post['thumbs_down'];
-        $thumbs_sum_own = intval($post['mythumbs']);
+        $avg['up'] = $post['rates_up'];
+        $avg['down'] = $post['rates_down'];
+        $rates_sum_own = intval($post['myrates']);
         $avg_frac = 1;
         if ($avg['up'] + $avg['down'] > 0)
         {
@@ -666,20 +669,19 @@ function build_postbit($post, $post_type=0, $uncover="")
           $mybb->user['redditignore'] = 3;
         }
           eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
-        /* 2014-01-16
-        if(($thumbs_sum_own < 0 || $thumbs_sum < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac) && $thumbs_sum_own <= 0 && $mybb->user['uid'] != $post['uid'])
+        /* 2014-02-27 */
+        if(($rates_sum_own < 0 || $rates_sum < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac) && $rates_sum_own <= 0 && $mybb->user['uid'] != $post['uid'])
         {
-          $ignored_message = "Ausgeblendeter Beitrag";// . "(".$thumbs_sum." < ".$mybb->user['redditbase']." - ".$mybb->user['redditavg']." * ".$avg_frac.")";
+          $ignored_message = "Ausgeblendeter Beitrag";// . "(".$rates_sum." < ".$mybb->user['redditbase']." - ".$mybb->user['redditavg']." * ".$avg_frac.")";
           $post_visibility = "display: none;";
-          if ((($mybb->user['redditignore'] & 2) > 0 && $thumbs_sum_own < 0) ||
-             (($mybb->user['redditignore'] & 1) > 0 && $thumbs_sum < $mybb->user['redditavg'] * $avg_frac) ||
+          if ((($mybb->user['redditignore'] & 2) > 0 && $rates_sum_own < 0) ||
+             (($mybb->user['redditignore'] & 1) > 0 && $rates_sum < $mybb->user['redditavg'] * $avg_frac) ||
              (($mybb->user['redditignore'] & 4) > 0))
           {
             $ignore_visibility = "display: none;";
           }
           eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
         }
-        */
 			}
       }
 			$post["postbit_ignored"] = $ignore_bit;

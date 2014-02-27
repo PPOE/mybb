@@ -339,12 +339,12 @@ if($mybb->input['action'] == "results")
 		);
 		$query = $db->query("
 			SELECT t.*, u.username AS userusername, p.displaystyle AS threadprefix,
-      post.thumbsup-post.thumbsdown AS thumbs,
-      " . (($mybb->user['uid'] != 0) ? "thumb.thumbsup-thumb.thumbsdown" : "0") . " AS my_thumbs
+      post.ratesup-post.ratesdown AS rates,
+      " . (($mybb->user['uid'] != 0) ? "rate.ratesup-rate.ratesdown" : "0") . " AS my_rates
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
       LEFT JOIN ".TABLE_PREFIX."posts post ON (post.tid = t.tid AND post.pid = t.firstpost)
-      " . (($mybb->user['uid'] != 0) ? "LEFT JOIN ".TABLE_PREFIX."thumbspostrating thumb ON (thumb.pid = t.firstpost AND thumb.uid = ".intval($mybb->user['uid']).")":"")."
+      " . (($mybb->user['uid'] != 0) ? "LEFT JOIN ".TABLE_PREFIX."ratespostrating rate ON (rate.pid = t.firstpost AND rate.uid = ".intval($mybb->user['uid']).")":"")."
 			LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
 			WHERE $where_conditions AND {$unapproved_where} {$permsql} AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
@@ -363,14 +363,14 @@ if($mybb->input['action'] == "results")
 		{
 			error($lang->error_nosearchresults);
 		}
-    $query = $db->query("SELECT uid,thumbs_up AS up,thumbs_down AS down FROM mybb_users WHERE uid IN ($uids_q);");
+    $query = $db->query("SELECT uid,rates_up AS up,rates_down AS down FROM mybb_users WHERE uid IN ($uids_q);");
     $avg_frac = array();
-    while ($thumbs = $db->fetch_array($query))
+    while ($rates = $db->fetch_array($query))
     {
-      $avg_frac[$thumbs['uid']] = 1;
-      if ($thumbs['up'] + $thumbs['down'] > 0)
+      $avg_frac[$rates['uid']] = 1;
+      if ($rates['up'] + $rates['down'] > 0)
       {
-        $avg_frac[$thumbs['uid']] = $thumbs['up'] / ($thumbs['up'] + $thumbs['down']);
+        $avg_frac[$rates['uid']] = $rates['up'] / ($rates['up'] + $rates['down']);
       }
     }
     $avg_frac[0] = 1;
@@ -431,27 +431,27 @@ if($mybb->input['action'] == "results")
       $thread['displayparts'] = "block";
 			$thread['fontsize'] = "";
                         if ($mybb->user['disablereddit'] != 1) {
-			$thread['thumbs'] = intval($thread['thumbs']);
-			$thread['my_thumbs'] = intval($thread['my_thumbs']);
+			$thread['rates'] = intval($thread['rates']);
+			$thread['my_rates'] = intval($thread['my_rates']);
       if (!$mybb->user['uid'])
       {
         $mybb->user['redditbase'] = 5;
         $mybb->user['redditavg'] = 13;
         $mybb->user['redditignore'] = 3;
       }
-      if(($thread['my_thumbs'] < 0 || $thread['thumbs'] < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac[$thread['uid']]) && $thread['my_thumbs'] <= 0 && $mybb->user['uid'] != $thread['uid'])
+      if(($thread['my_rates'] < 0 || $thread['rates'] < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac[$thread['uid']]) && $thread['my_rates'] <= 0 && $mybb->user['uid'] != $thread['uid'])
                         {
                                 $thread['subject'] = "Ausgeblendeter Beitrag von " . $thread['username'];
-//                                $thread['subject'] .= " ({$thread['thumbs']} < {$mybb->user['redditbase']} - ". ($mybb->user['redditavg'] * $avg_frac[$thread['uid']]) .")";
+//                                $thread['subject'] .= " ({$thread['rates']} < {$mybb->user['redditbase']} - ". ($mybb->user['redditavg'] * $avg_frac[$thread['uid']]) .")";
 				$thread['opacity'] = "0.28";
         $thread['display'] = "none";
         $thread['icon'] = -1;
         $thread['displayparts'] = "block";
 				$thread['fontsize'] = "font-size: 0.7em;";
         $thread['gotounread'] = 0;
-                if (($mybb->user['redditignore'] & 2) > 0 && $thread['my_thumbs'] < 0)
+                if (($mybb->user['redditignore'] & 2) > 0 && $thread['my_rates'] < 0)
                   continue;
-                if (($mybb->user['redditignore'] & 1) > 0 && $thread['thumbs'] < $mybb->user['redditavg'] * $avg_frac[$thread['uid']])
+                if (($mybb->user['redditignore'] & 1) > 0 && $thread['rates'] < $mybb->user['redditavg'] * $avg_frac[$thread['uid']])
                   continue;
                 if (($mybb->user['redditignore'] & 4) > 0)
                   continue;
@@ -837,11 +837,11 @@ if($mybb->input['action'] == "results")
 		}
 
 		$query = $db->query("
-			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid,p.thumbsup-p.thumbsdown AS thumbs," . (($mybb->user['uid'] != 0) ? "thumb.thumbsup-thumb.thumbsdown":"0") . " AS my_thumbs
+			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid,p.ratesup-p.ratesdown AS rates," . (($mybb->user['uid'] != 0) ? "rate.ratesup-rate.ratesdown":"0") . " AS my_rates
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-      " . (($mybb->user['uid'] != 0) ? "LEFT JOIN ".TABLE_PREFIX."thumbspostrating thumb ON (thumb.pid = p.pid AND thumb.uid = ".intval($mybb->user['uid']).")":"")."
+      " . (($mybb->user['uid'] != 0) ? "LEFT JOIN ".TABLE_PREFIX."ratespostrating rate ON (rate.pid = p.pid AND rate.uid = ".intval($mybb->user['uid']).")":"")."
 			WHERE p.pid IN (".$db->escape_string($search['posts']).")
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
@@ -1011,34 +1011,34 @@ if($mybb->input['action'] == "results")
       $avg_frac = 1;
       if ($post['uid'])
       {
-        $query2 = $db->query("SELECT thumbs_up AS up,thumbs_down AS down FROM mybb_users WHERE uid = ".intval($post['uid']).";");
-        $thumbs2 = $db->fetch_array($query2);
-        if ($thumbs2['up'] + $thumbs2['down'] > 0)
+        $query2 = $db->query("SELECT rates_up AS up,rates_down AS down FROM mybb_users WHERE uid = ".intval($post['uid']).";");
+        $rates2 = $db->fetch_array($query2);
+        if ($rates2['up'] + $rates2['down'] > 0)
         {
-          $avg_frac = $thumbs2['up'] / ($thumbs2['up'] + $thumbs2['down']);
+          $avg_frac = $rates2['up'] / ($rates2['up'] + $rates2['down']);
         }
       }
                         $post['opacity'] = "1.0";
                         $post['fontsize'] = "";
                         if ($mybb->user['disablereddit'] != 1) {
-                        $post['thumbs'] = intval($post['thumbs']);
-                        $post['my_thumbs'] = intval($post['my_thumbs']);
+                        $post['rates'] = intval($post['rates']);
+                        $post['my_rates'] = intval($post['my_rates']);
                         if (!$mybb->user['uid'])
                         {
                           $mybb->user['redditbase'] = 5;
                           $mybb->user['redditavg'] = 13;
                           $mybb->user['redditignore'] = 3;
                         }
-                        if(($post['my_thumbs'] < 0 || $post['thumbs'] < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac) && $post['my_thumbs'] <= 0 && $mybb->user['uid'] != $post['uid'])
+                        if(($post['my_rates'] < 0 || $post['rates'] < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac) && $post['my_rates'] <= 0 && $mybb->user['uid'] != $post['uid'])
                         {
                           $post['subject'] = "Ausgeblendeter Beitrag von " . $post['username'];
-//                        $post['subject'] .= " ({$post['thumbs']} < {$mybb->user['redditbase']} - ". ($mybb->user['redditavg'] * $avg_frac) .")";
+//                        $post['subject'] .= " ({$post['rates']} < {$mybb->user['redditbase']} - ". ($mybb->user['redditavg'] * $avg_frac) .")";
                           $post['opacity'] = "0.28";
                           $post['fontsize'] = "font-size: 0.7em;";
 				                  $prev = "";
-                          if (($mybb->user['redditignore'] & 2) > 0 && $post['my_thumbs'] < 0)
+                          if (($mybb->user['redditignore'] & 2) > 0 && $post['my_rates'] < 0)
                             $post['fontsize'] = "font-size: 0.7em; display: none;";
-                          if (($mybb->user['redditignore'] & 1) > 0 && $post['thumbs'] < $mybb->user['redditavg'] * $avg_frac)
+                          if (($mybb->user['redditignore'] & 1) > 0 && $post['rates'] < $mybb->user['redditavg'] * $avg_frac)
                             $post['fontsize'] = "font-size: 0.7em; display: none;";
                           if (($mybb->user['redditignore'] & 4) > 0)
                             $post['fontsize'] = "font-size: 0.7em; display: none;";

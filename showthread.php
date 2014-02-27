@@ -870,15 +870,15 @@ if($mybb->input['action'] == "thread")
 		}
 		
 		// Build the threaded post display tree.
-    $red_n = "(p.thumbsup + p.thumbsdown)";
+    $red_n = "(p.ratesup + p.ratesdown)";
     $red_z = '1.64485'; //1.0 = 85%, 1.6 = 95%
-    $red_p = "(p.thumbsup / $red_n)";
-    $reddit = "CASE WHEN (p.thumbsup * $red_n) = 0 THEN -1*(p.thumbsdown) ELSE ($red_p+$red_z*$red_z/(2*$red_n)-$red_z*sqrt(($red_p*(1-$red_p)+$red_z*$red_z/(4*$red_n))/$red_n))/(1+$red_z*$red_z/$red_n) END DESC,";
+    $red_p = "(p.ratesup / $red_n)";
+    $reddit = "CASE WHEN (p.ratesup * $red_n) = 0 THEN -1*(p.ratesdown) ELSE ($red_p+$red_z*$red_z/(2*$red_n)-$red_z*sqrt(($red_p*(1-$red_p)+$red_z*$red_z/(4*$red_n))/$red_n))/(1+$red_z*$red_z/$red_n) END DESC,";
     if ($mybb->user['disableredditsort'] == 1) {
       $reddit = "";
     }
 		$query = $db->query("
-            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline, p.thumbsup, p.thumbsdown
+            SELECT p.username, p.uid, p.pid, p.replyto, p.subject, p.dateline, p.ratesup, p.ratesdown
             FROM ".TABLE_PREFIX."posts p
             LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid = u.uid)
             WHERE p.tid='$tid'
