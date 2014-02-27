@@ -266,7 +266,7 @@ function tpr_box(&$post)
 	// Stick in JS and CSS
 	if (!$GLOBALS['tpr_box_headerincluded'])
 	{
-		$GLOBALS['headerinclude'] .= '<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/thumbspostrating.js?ver=1600"></script><link type="text/css" rel="stylesheet" href="'.$mybb->settings['bburl'].'/css/thumbspostrating.css" />';
+		$GLOBALS['headerinclude'] .= '<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/thumbspostrating.js?ver=1602"></script><link type="text/css" rel="stylesheet" href="'.$mybb->settings['bburl'].'/css/thumbspostrating.css" />';
 	        $GLOBALS['tpr_box_headerincluded'] = true;
 	}
 
@@ -274,6 +274,27 @@ function tpr_box(&$post)
 	static $done_init = false;
 	static $user_ru = null;
 	static $user_rd = null;
+
+/*
+  20140206: Begin
+*/
+  $tu_no = 0;
+  $td_no = 0;
+
+  $query = $db->simple_select('thumbspostrating', 'thumbsup,thumbsdown', 'pid='.$post['pid']);
+
+  while($ttrate = $db->fetch_array($query))
+  {
+    $tu_no += $ttrate['thumbsup'];
+    $td_no += $ttrate['thumbsdown'];
+  }
+
+  $db->free_result($query);
+
+/*
+  20140206: End
+*/
+
 	if(!$done_init)
 	{
 		$done_init = true;
@@ -375,7 +396,7 @@ function tpr_box(&$post)
 		{
 			$tu_img = '<a href="'.$tu_url.'" class="tpr_thumb tu2" title="'.$lang->tpr_rate_up.'" onclick="return thumbRate(1,0,'.$pid.')" ></a>';
 			$td_img = '<a href="'.$td_url.'" class="tpr_thumb td2" title="'.$lang->tpr_rate_down.'" onclick="return thumbRate(0,1,'.$pid.')" ></a>';
-			
+
 			// Respect MyBB's wish to disable xmlhttp
 			if($mybb->settings['use_xmlhttprequest'] == 0)
 			{
@@ -386,8 +407,18 @@ function tpr_box(&$post)
 	}
 
 	// Display number of thumbs
+
+/*
+  20140206: Begin
+*/
+  /*
 	$tu_no = $post['thumbsup'];
 	$td_no = $post['thumbsdown'];
+  */
+
+/*
+  20140206: End
+*/
 	$ta_no = intval($tu_no) - intval($td_no);
 
 	// Display undo rating?
@@ -403,6 +434,7 @@ function tpr_box(&$post)
 	}
 
 	// Make the box
+
 	$box = "
 <table class=\"tpr_box\" id=\"tpr_stat_$pid\">
 	<tr>

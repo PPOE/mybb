@@ -9,6 +9,12 @@
  * $Id: functions_post.php 5753 2012-03-09 14:53:07Z Tomm $
  */
 
+ /*
+   2014-01-16
+     Deaktivierung des Ausblendes von Posts aufgrund der Bewertung
+     changes can be found with date
+ */
+
 /**
  * Build a post bit
  *
@@ -659,6 +665,8 @@ function build_postbit($post, $post_type=0, $uncover="")
           $mybb->user['redditavg'] = 13;
           $mybb->user['redditignore'] = 3;
         }
+          eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
+        /* 2014-01-16
         if(($thumbs_sum_own < 0 || $thumbs_sum < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac) && $thumbs_sum_own <= 0 && $mybb->user['uid'] != $post['uid'])
         {
           $ignored_message = "Ausgeblendeter Beitrag";// . "(".$thumbs_sum." < ".$mybb->user['redditbase']." - ".$mybb->user['redditavg']." * ".$avg_frac.")";
@@ -671,6 +679,7 @@ function build_postbit($post, $post_type=0, $uncover="")
           }
           eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
         }
+        */
 			}
       }
 			$post["postbit_ignored"] = $ignore_bit;

@@ -46,4 +46,5 @@ while ($row = $db->fetch_array($query)) {
 $map[] = "$tmplist $tmpmails";
 file_put_contents("/etc/postfix/virtual", implode("\n", $map));
 shell_exec("postmap /etc/postfix/virtual");
+echo "DONE " . date("d.m.Y H:i");
 ?>

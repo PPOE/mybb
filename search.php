@@ -1383,6 +1383,145 @@ elseif($mybb->input['action'] == "getnew")
 	$db->insert_query("searchlog", $searcharray);
 	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
 }
+elseif($mybb->input['action'] == "getgeneral")
+{
+	if($mybb->input['days'] < 1)
+	{
+		$days = 1;
+	}
+	else
+	{
+		$days = intval($mybb->input['days']);
+	}
+	$datecut = TIME_NOW-(86400*$days);
+
+	$where_sql = "t.lastpost >='".$datecut."'";
+
+//    $where_sql .= " AND t.fid IN (41,61,60,42,71,72,74,75,73)";
+if($mybb->input['fid'])
+        {
+                $where_sql .= " AND t.fid='".intval($mybb->input['fid'])."'";
+        }
+        else if($mybb->input['fids'])
+        {
+                $fids = explode(',', $mybb->input['fids']);
+                foreach($fids as $key => $fid)
+                {
+                        $fids[$key] = intval($fid);
+                }
+
+                if(!empty($fids))
+                {
+                        $where_sql .= " AND t.fid IN (".implode(',', $fids).")";
+                }
+        }
+ $where_sql .= " AND t.fid NOT IN (34,39,36,118,41,61,60,42,72,74,75,73,121,16)";
+	$unsearchforums = get_unsearchable_forums();
+	if($unsearchforums)
+	{
+		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+	}
+	$inactiveforums = get_inactive_forums();
+	if($inactiveforums)
+	{
+		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
+	}
+	
+	$permsql = "";
+	$onlyusfids = array();
+
+	// Check group permissions if we can't view threads not started by us
+	$group_permissions = forum_permissions();
+	foreach($group_permissions as $fid => $forum_permissions)
+	{
+		if($forum_permissions['canonlyviewownthreads'] == 1)
+		{
+			$onlyusfids[] = $fid;
+		}
+	}
+	if(!empty($onlyusfids))
+	{
+		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+	}
+
+	$sid = md5(uniqid(microtime(), 1));
+	$searcharray = array(
+		"sid" => $db->escape_string($sid),
+		"uid" => $mybb->user['uid'],
+		"dateline" => TIME_NOW,
+		"ipaddress" => $db->escape_string($session->ipaddress),
+		"threads" => '',
+		"posts" => '',
+		"resulttype" => "threads",
+		"querycache" => $db->escape_string($where_sql),
+		"keywords" => ''
+	);
+
+	$plugins->run_hooks("search_do_search_process");
+	$db->insert_query("searchlog", $searcharray);
+	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
+}
+elseif($mybb->input['action'] == "getother")
+{
+	if($mybb->input['days'] < 1)
+	{
+		$days = 1;
+	}
+	else
+	{
+		$days = intval($mybb->input['days']);
+	}
+	$datecut = TIME_NOW-(86400*$days);
+
+	$where_sql = "t.lastpost >='".$datecut."'";
+
+    $where_sql .= " AND t.fid IN (34,39,36,118,41,60,42,71,72,74,75,73,16)";
+
+	$unsearchforums = get_unsearchable_forums();
+	if($unsearchforums)
+	{
+		$where_sql .= " AND t.fid NOT IN ($unsearchforums)";
+	}
+	$inactiveforums = get_inactive_forums();
+	if($inactiveforums)
+	{
+		$where_sql .= " AND t.fid NOT IN ($inactiveforums)";
+	}
+	
+	$permsql = "";
+	$onlyusfids = array();
+
+	// Check group permissions if we can't view threads not started by us
+	$group_permissions = forum_permissions();
+	foreach($group_permissions as $fid => $forum_permissions)
+	{
+		if($forum_permissions['canonlyviewownthreads'] == 1)
+		{
+			$onlyusfids[] = $fid;
+		}
+	}
+	if(!empty($onlyusfids))
+	{
+		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+	}
+
+	$sid = md5(uniqid(microtime(), 1));
+	$searcharray = array(
+		"sid" => $db->escape_string($sid),
+		"uid" => $mybb->user['uid'],
+		"dateline" => TIME_NOW,
+		"ipaddress" => $db->escape_string($session->ipaddress),
+		"threads" => '',
+		"posts" => '',
+		"resulttype" => "threads",
+		"querycache" => $db->escape_string($where_sql),
+		"keywords" => ''
+	);
+
+	$plugins->run_hooks("search_do_search_process");
+	$db->insert_query("searchlog", $searcharray);
+	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
+}
 elseif($mybb->input['action'] == "getdaily")
 {
 	if($mybb->input['days'] < 1)
@@ -1397,23 +1536,26 @@ elseif($mybb->input['action'] == "getdaily")
 
 	$where_sql = "t.lastpost >='".$datecut."'";
 
+//        $where_sql .= " AND t.fid IN (80,79,106,66,64,63,65,104,125,124)";
 	if($mybb->input['fid'])
-	{
-		$where_sql .= " AND t.fid='".intval($mybb->input['fid'])."'";
+        {
+                $where_sql .= " AND t.fid='".intval($mybb->input['fid'])."'";
+        }
+        else if($mybb->input['fids'])
+        {
+                $fids = explode(',', $mybb->input['fids']);
+                foreach($fids as $key => $fid)
+                {
+                        $fids[$key] = intval($fid);
+                }
+
+                if(!empty($fids))
+                {
+                        $where_sql .= " AND t.fid IN (".implode(',', $fids).")";
+        	}
 	}
-	else if($mybb->input['fids'])
-	{
-		$fids = explode(',', $mybb->input['fids']);
-		foreach($fids as $key => $fid)
-		{
-			$fids[$key] = intval($fid);
-		}
-		
-		if(!empty($fids))
-		{
-			$where_sql .= " AND t.fid IN (".implode(',', $fids).")";
-		}
-	}
+
+//	$where_sql .= " AND t.fid NOT IN (34,41,61,60,42,71,72,74,75,73,39,36,118)";	
 	
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)

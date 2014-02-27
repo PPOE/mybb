@@ -10,7 +10,7 @@
  *
  */
 
-$l['unreadPostsLink'] = "Ungelesene Beiträge";
+$l['unreadPostsLink'] = "Ungelesenes";
 $l['unreadPostsMarker'] = "Ungelesen";
 $l['unreadPostsMarkAllRead'] = "Alle Beiträge als gelesen markieren";
 ?>

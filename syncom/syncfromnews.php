@@ -216,9 +216,21 @@ if ($pid == -1) {
 	if ($user == '')
 		$user = $db->escape_string($struct['from']['mailbox']);
 
-	$email = $db->escape_string($struct['from']['mailbox']).'@'.$db->escape_string($struct['from']['host']);
+  $email = $db->escape_string($struct['from']['mailbox']).'@'.$db->escape_string($struct['from']['host']);
 
 	$sender = $db->escape_string($struct['sender']['mailbox']).'@'.$db->escape_string($struct['sender']['host']);
+
+  if (strpos($user,' ') !== false)
+  {
+    $user_r = explode(' ',$user);
+    $user = $user_r[0];
+  }
+  if (preg_match('/^.*@(forum\.)?piratenpartei\.at$/',$email) != 1 || preg_match('/^.*@(forum\.)?piratenpartei\.at$/',$sender) != 1)
+  {
+    $email = $user . "@forum.piratenpartei.at";
+    $sender = $user . "@forum.piratenpartei.at";
+    $struct['body'] = preg_replace(array('/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/'),array('<EMAIL ADRESSE AUTOMATISCH ENTFERNT>'),$struct['body']);
+  }
 
 	if ($sender == $syncom['syncuser'])
 		$sender = '';

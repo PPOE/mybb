@@ -3,6 +3,7 @@
  * thumbspostrating.js
  */
 
+
 function thumbRate(tu,td,pid)
 {
 	new Ajax.Request('xmlhttp.php?action=tpr&tu=' + tu + '&td=' + td + '&pid=' + pid + "&ajax=1&my_post_key=" + my_post_key,{onComplete:thumbResponse});
