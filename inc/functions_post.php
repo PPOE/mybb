@@ -656,7 +656,7 @@ function build_postbit($post, $post_type=0, $uncover="")
         $avg = array();
         $avg['up'] = $post['rates_up'];
         $avg['down'] = $post['rates_down'];
-        $rates_sum_own = intval($post['myrates']);
+        $rates_sum_own = intval($post['my_rates']);
         $avg_frac = 1;
         if ($avg['up'] + $avg['down'] > 0)
         {
@@ -672,7 +672,7 @@ function build_postbit($post, $post_type=0, $uncover="")
         /* 2014-02-27 */
         if(($rates_sum_own < 0 || $rates_sum < $mybb->user['redditbase'] - $mybb->user['redditavg'] * $avg_frac) && $rates_sum_own <= 0 && $mybb->user['uid'] != $post['uid'])
         {
-          $ignored_message = "Ausgeblendeter Beitrag";// . "(".$rates_sum." < ".$mybb->user['redditbase']." - ".$mybb->user['redditavg']." * ".$avg_frac.")";
+          $ignored_message = "Ausgeblendeter Beitrag" . "(".$rates_sum." < ".$mybb->user['redditbase']." - ".$mybb->user['redditavg']." * ".$avg_frac.")";
           $post_visibility = "display: none;";
           if ((($mybb->user['redditignore'] & 2) > 0 && $rates_sum_own < 0) ||
              (($mybb->user['redditignore'] & 1) > 0 && $rates_sum < $mybb->user['redditavg'] * $avg_frac) ||

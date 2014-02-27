@@ -1068,6 +1068,9 @@ if($mybb->input['action'] == "thread")
 		// $posts = '';
 		$query = $db->query("
 			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername, (SELECT COUNT(*) FROM mybb_users V WHERE (V.usergroup = 9 OR ',' || V.additionalgroups || ',' LIKE '%,9,%') AND (',' || V.ignorelist || ',' LIKE '%,' || p.uid || ',%')) AS ignoredby
+, p.ratesup-p.ratesdown AS rates,
+    " . ((intval($mybb->user['uid']) != 0) ? "rate.ratesup-rate.ratesdown" : "0") . " AS my_rates
+    " . ((intval($mybb->user['uid']) != 0) ? "LEFT JOIN ".TABLE_PREFIX."ratespostrating rate ON (rate.pid = p.pid AND rate.uid = ".intval($mybb->user['uid']).")":"")."
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
@@ -1479,7 +1482,10 @@ function buildtree2($pids=array(), $linear = true, $replyto="0", $indent="0", $u
                                }
                                 $query = $db->query("
                                         SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername,(SELECT COUNT(*) FROM mybb_users V WHERE (V.usergroup = 9 OR ',' || V.additionalgroups || ',' LIKE '%,9,%') AND (',' || V.ignorelist || ',' LIKE '%,' || p.uid || ',%')) AS ignoredby
-                                        FROM ".TABLE_PREFIX."posts p
+, p.ratesup-p.ratesdown AS rates,
+    " . ((intval($mybb->user['uid']) != 0) ? "rate.ratesup-rate.ratesdown" : "0") . " AS my_rates
+                        FROM ".TABLE_PREFIX."posts p
+    " . ((intval($mybb->user['uid']) != 0) ? "LEFT JOIN ".TABLE_PREFIX."ratespostrating rate ON (rate.pid = p.pid AND rate.uid = ".intval($mybb->user['uid']).")":"")."
                                         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
                                         LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
                                         LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)

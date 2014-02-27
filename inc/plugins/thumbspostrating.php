@@ -424,7 +424,7 @@ function tpr_box(&$post)
 	// Display undo rating?
 	if($mybb->settings['tpr_undorate'] == 1 && $userrated[$pid] == true && !$cantrate)
 	{
-		$box_remove = '<a href='.$un_url.' onclick="return thumbRate(0,0,'.$pid.')" >'.$lang->tpr_undo_rate.'</a><br />';
+		$box_remove = '<a href="'.$un_url.'" onclick="return thumbRate(0,0,'.$pid.')" >'.$lang->tpr_undo_rate.'</a><br />';
 
 		// Respect MyBB's wish to disable xmlhttp
 		if($mybb->settings['use_xmlhttprequest'] == 0)
