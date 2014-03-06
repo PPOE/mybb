@@ -4401,7 +4401,7 @@ function update_first_post($tid)
 	}
 
 	$firstpostup = array(
-		"firstpost" => $post['pid']
+		"firstpost" => intval($post['pid'])
 	);
 	$db->update_query("threads", $firstpostup, "tid='$tid'");
 }

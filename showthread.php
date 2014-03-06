@@ -1071,7 +1071,7 @@ if($mybb->input['action'] == "thread")
 , p.ratesup-p.ratesdown AS rates,
     " . ((intval($mybb->user['uid']) != 0) ? "rate.ratesup-rate.ratesdown" : "0") . " AS my_rates
 			FROM ".TABLE_PREFIX."posts p
-    " . ((intval($mybb->user['uid']) != 0) ? "LEFT JOIN ".TABLE_PREFIX."ratespostrating rate ON (rate.pid = p.pid AND rate.uid = ".intval($mybb->user['uid']).")":"")."
+    " . ((intval($mybb->user['uid']) != 0) ? "LEFT JOIN ".TABLE_PREFIX."ratespostrating rate ON rate.pid = p.pid AND rate.uid = ".intval($mybb->user['uid']):"")."
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)
@@ -1485,7 +1485,7 @@ function buildtree2($pids=array(), $linear = true, $replyto="0", $indent="0", $u
 , p.ratesup-p.ratesdown AS rates,
     " . ((intval($mybb->user['uid']) != 0) ? "rate.ratesup-rate.ratesdown" : "0") . " AS my_rates
                         FROM ".TABLE_PREFIX."posts p
-    " . ((intval($mybb->user['uid']) != 0) ? "LEFT JOIN ".TABLE_PREFIX."ratespostrating rate ON (rate.pid = p.pid AND rate.uid = ".intval($mybb->user['uid']).")":"")."
+    " . ((intval($mybb->user['uid']) != 0) ? "LEFT JOIN ".TABLE_PREFIX."ratespostrating rate ON rate.pid = p.pid AND rate.uid = ".intval($mybb->user['uid']):"")."
                                         LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
                                         LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
                                         LEFT JOIN ".TABLE_PREFIX."users eu ON (eu.uid=p.edituid)

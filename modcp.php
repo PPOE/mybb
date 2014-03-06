@@ -1330,7 +1330,7 @@ if($mybb->input['action'] == "do_modqueue")
 		redirect("modcp.php?action=modqueue&type=attachments", $lang->redirect_attachmentsmoderated);
 	}
 }
-$warning = "<div class=\"wrapper\"><div class=\"red_alert\"><font size=5>Die Freischaltung von Beiträgen sollte über die Mailingliste erfolgen! Wenn du nicht weißt was das heißen soll, frag einen Admin.</font></div></div>";
+$warning = "";
 if($mybb->input['action'] == "modqueue")
 {
 //  error_no_permission();

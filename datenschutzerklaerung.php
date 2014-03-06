@@ -68,14 +68,14 @@ if($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $
 <p>Wir behalten uns vor &uuml;ber jeden Zugriff/Abruf folgende Daten zu speichern:</p>
 
 <ul>
-<li>anonymisierte IP-Adresse</li>
+<li>Browser-Bezeichnung</li>
 <li>Datum und Uhrzeit,</li>
 <li>aufgerufene Seite/Name der abgerufenen Datei,</li>
 <li>übertragene Datenmenge,</li>
 <li>Meldung, ob der Zugriff/Abruf erfolgreich war.</li>
 </ul>
 
-<p>Diese Daten werden (falls sie &uuml;berhaupt erhoben werden) lediglich für statistische Zwecke und zur Verbesserung des Angebots ausgewertet und anschli&szlig;end gelöscht. Eine andere Verwendung oder Weitergabe an Dritte erfolgt nicht.</p>
+<p>Diese Daten werden (falls sie &uuml;berhaupt erhoben werden) lediglich für statistische Zwecke, administrative Zwecke und zur Verbesserung des Angebots ausgewertet und anschli&szlig;end gelöscht. Eine andere Verwendung oder Weitergabe an Dritte erfolgt nicht.</p>
 
 <p>Bei der Nutzung unseres Forums werden persistente und session cookies gesetzt, um die Nutzung des Forums komfortabler zu machen, zum Beispiel um die Anmeldung über eine Sitzung hinaus im Forum zu erhalten oder den gewählten Sprachsl beizubehalten. Wer keine Speicherung seiner Sitzungsdaten möchte, sollte die Checkbox&quot;Angemeldet bleibe&quot; nicht ankreuzen und seinen Browser so einrichten, dass sämtliche Cookies beim Herunterfahren des Rechners gelöscht werden.</p>
 
@@ -92,7 +92,6 @@ if($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $
 <p>Wir behalten uns vor über jeden Zugriff/Abruf folgende Datn zu speichern:</p>
 
 <ul>
-<li>anonymisierte IP-Adresse</li>
 <li>Datum und Uhrzeit,</li>
 <li>aufgerufene Newsgroup,</li>
 <li>übertragene Datenmenge,</li>

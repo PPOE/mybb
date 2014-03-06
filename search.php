@@ -1415,7 +1415,7 @@ if($mybb->input['fid'])
                         $where_sql .= " AND t.fid IN (".implode(',', $fids).")";
                 }
         }
- $where_sql .= " AND t.fid NOT IN (34,39,36,118,41,61,60,42,72,74,75,73,121,16)";
+ $where_sql .= " AND t.fid NOT IN (34,39,36,118,41,61,60,42,72,74,71,75,73,121,16,128)";
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
 	{
@@ -1475,7 +1475,7 @@ elseif($mybb->input['action'] == "getother")
 
 	$where_sql = "t.lastpost >='".$datecut."'";
 
-    $where_sql .= " AND t.fid IN (34,39,36,118,41,60,42,71,72,74,75,73,16)";
+    $where_sql .= " AND t.fid IN (128,34,39,36,118,41,60,42,71,72,74,75,73,16)";
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)

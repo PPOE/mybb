@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><!-- start: showthread -->
 <html xml:lang="de" lang="de" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Forum Highscoreliste</title>
+<title>Forum Thumbs</title>
 <script type="text/javascript" src="sorttable.js"></script>
 <link rel="alternate" type="application/rss+xml" title="Letzte Themen (RSS 2.0)" href="https://forum.piratenpartei.at/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="Letzte Themen (Atom 1.0)" href="https://forum.piratenpartei.at/syndication.php?type=atom1.0" />
@@ -33,7 +33,7 @@ $dbconn = pg_connect("dbname=mybb")
 $min = isset($_GET['min']) ? intval($_GET['min']) : 10;
 $min = $min < 10 ? 10 : $min;
 
-$data = pg_query("SELECT U.username, COUNT(P.pid) AS count, rates_up AS u,rates_down AS d, rates_up / (1.0 * rates_up + rates_down) AS f,(SELECT COUNT(*) FROM mybb_users V WHERE (V.usergroup = 9 OR ',' || V.additionalgroups || ',' LIKE '%,9,%') AND (',' || V.ignorelist || ',' LIKE '%,' || U.uid || ',%')) AS ignoredbypirates,(SELECT COUNT(*) FROM mybb_users V WHERE (',' || V.ignorelist || ',' LIKE '%,' || U.uid || ',%')) AS ignoredbyall FROM mybb_users U LEFT JOIN mybb_posts P ON P.uid = U.uid WHERE rates_up+rates_down >= $min GROUP BY U.username, U.rates_up, U.rates_down, U.uid, P.uid ORDER BY f DESC;") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+$data = pg_query("SELECT U.username, COUNT(P.pid) AS count, thumbs_up AS u,thumbs_down AS d, thumbs_up / (1.0 * thumbs_up + thumbs_down) AS f,(SELECT COUNT(*) FROM mybb_users V WHERE (V.usergroup = 9 OR ',' || V.additionalgroups || ',' LIKE '%,9,%') AND (',' || V.ignorelist || ',' LIKE '%,' || U.uid || ',%')) AS ignoredbypithumbs,(SELECT COUNT(*) FROM mybb_users V WHERE (',' || V.ignorelist || ',' LIKE '%,' || U.uid || ',%')) AS ignoredbyall FROM mybb_users U LEFT JOIN mybb_posts P ON P.uid = U.uid WHERE thumbs_up+thumbs_down >= $min GROUP BY U.username, U.thumbs_up, U.thumbs_down, U.uid, P.uid ORDER BY f DESC;") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 
 $trow = 1;
 while ($line = pg_fetch_array($data, null, PGSQL_ASSOC))

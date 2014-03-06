@@ -457,7 +457,7 @@ class Moderation
 		// Get pid, uid, fid, tid, visibility, forum post count status of post
 		$pid = intval($pid);
 		$query = $db->query("
-			SELECT p.pid, p.uid, p.fid, p.tid, p.visible, f.usepostcounts, t.visible as threadvisible
+			SELECT p.pid, p.uid, p.fid, p.tid, p.visible, f.usepostcounts, t.visible as threadvisible, replyto
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
@@ -474,6 +474,10 @@ class Moderation
 		{
 			require MYBB_ROOT."inc/functions_upload.php";
 		}
+		$replyto = intval($post['replyto']);
+		
+		// update all affected posts
+		$query = $db->query("UPDATE ".TABLE_PREFIX."posts SET replyto='$replyto' WHERE replyto='$pid'");
 
 		// Remove attachments
 		remove_attachments($pid);
@@ -1229,7 +1233,7 @@ class Moderation
 	function split_posts($pids, $tid, $moveto, $newsubject, $destination_tid=0)
 	{
 		global $db, $thread, $plugins;
-
+		
 		$tid = intval($tid);
 		$moveto = intval($moveto);
 		$newtid = intval($destination_tid);
@@ -1244,6 +1248,25 @@ class Moderation
 		// Make sure we only have valid values
 		$pids = array_map('intval', $pids);
 
+		$pids_list = implode(',', $pids);
+		
+		$pids_list_copy = $pids_list;
+		while (strlen($pids_list_copy) > 0)
+		{
+			$new_pids = array();
+			$res = $db->query("SELECT pid FROM mybb_posts WHERE replyto IN ($pids_list_copy)");
+			while ($row = $db->fetch_array($res))
+			{
+				$newpid = intval($row['pid']);
+				if (!in_array($newpid,$pids))
+				{
+					$new_pids[] = $newpid;
+					$pids[] = $newpid;
+				}
+			}
+			$pids_list_copy = implode(",",$new_pids);
+		}
+		
 		$pids_list = implode(',', $pids);
 
 		// Get the icon for the first split post
@@ -1299,7 +1322,6 @@ class Moderation
 			$attachment_sum += $attachment['count'];
 		}
 		$thread_counters[$newtid]['attachmentcount'] = '+'.$attachment_sum;*/
-
 		// Get selected posts before moving forums to keep old fid
 		//$original_posts_query = $db->simple_select("posts", "fid, visible, pid", "pid IN ($pids_list)");
 		$original_posts_query = $db->query("
@@ -1314,10 +1336,18 @@ class Moderation
 		// Move the selected posts over
 		$sqlarray = array(
 			"tid" => $newtid,
+			"fid" => $moveto
+		);
+		$db->update_query("posts", $sqlarray, "pid IN ($pids_list) AND replyto IN ($pids_list)");
+
+		// Get posts being merged
+		// Move the selected posts over
+		$sqlarray = array(
+			"tid" => $newtid,
 			"fid" => $moveto,
 			"replyto" => 0
 		);
-		$db->update_query("posts", $sqlarray, "pid IN ($pids_list)");
+		$db->update_query("posts", $sqlarray, "pid IN ($pids_list) AND NOT replyto IN ($pids_list)");
 
 		// Get posts being merged
 		while($post = $db->fetch_array($original_posts_query))
